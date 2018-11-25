@@ -22,7 +22,7 @@ export interface Post{
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css', '../post.css', '../ui.css']
+  styleUrls: ['./home.component.scss', '../post.scss', '../ui.scss']
 })
 export class HomeComponent implements OnInit {
 

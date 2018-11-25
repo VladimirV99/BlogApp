@@ -8,7 +8,7 @@ import { AuthGuard } from '../guards/auth.guard';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css', '../form-validation.css']
+  styleUrls: ['./login.component.scss', '../form-validation.scss']
 })
 export class LoginComponent implements OnInit {
 

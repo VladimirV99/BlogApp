@@ -7,7 +7,7 @@ import { ValidateService } from '../services/validate.service';
 @Component({
   selector: 'app-write',
   templateUrl: './write.component.html',
-  styleUrls: ['./write.component.css', '../form-validation.css']
+  styleUrls: ['./write.component.scss', '../form-validation.scss']
 })
 export class WriteComponent implements OnInit {
 

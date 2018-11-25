@@ -8,7 +8,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 @Component({
   selector: 'app-replies',
   templateUrl: './replies.component.html',
-  styleUrls: ['./replies.component.css', '../post.css']
+  styleUrls: ['./replies.component.scss', '../post.scss']
 })
 export class RepliesComponent implements OnInit {
 

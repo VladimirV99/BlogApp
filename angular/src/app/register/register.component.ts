@@ -8,7 +8,7 @@ import { ValidateService } from '../services/validate.service';
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.css', '../form-validation.css']
+  styleUrls: ['./register.component.scss', '../form-validation.scss']
 })
 export class RegisterComponent implements OnInit {
 
