@@ -1,0 +1,86 @@
+.post {
+  border-radius: .3rem;
+  padding: .25rem;
+  margin: 10px 0px;
+}
+
+.post .post-header{
+  padding: .75rem;
+  padding-top: .5rem;
+}
+ 
+.post .post-body {
+  padding: .5rem;
+  background-color: white;
+}
+
+.post .post-footer {
+  padding: .25rem;
+  padding-bottom: 0rem;
+}
+
+.post .post-footer button,
+.post .post-footer span {
+  margin: .12rem;
+}
+
+.post-title {
+  margin: 0rem;
+}
+
+.post-title-link {
+  text-decoration: none;
+  color: black;
+}
+
+.post-meta {
+  color: rgb(73, 73, 73);
+}
+
+.comment-box {
+  padding-left: 0;
+  padding-right: 0;
+  margin-bottom: 2rem;
+}
+
+.comment {
+  padding: 1rem;
+  background-color:lightblue;
+  margin-bottom: .5rem;
+  /* border-radius: .25rem; */
+  padding-bottom: 2.5rem;
+}
+
+.comment hr{
+  margin: .4rem;
+}
+
+.comment-body {
+  text-align: justify;
+}
+
+.comment-button {
+  float:right;
+  margin-left: .25rem;
+}
+
+.profilePhotoContainer {
+  width: 48px;
+}
+
+.profilePhoto {
+  max-width: 70px;
+  width: 100%;
+}
+
+.profilePhoto.large {
+  max-width: unset;
+}
+
+.profilePhoto.round {
+  border-radius: 50%;
+}
+
+.indent {
+  margin-left: 2rem;
+}

@@ -1,0 +1,56 @@
+<div *ngIf="!deleted">
+  <div class="comment">
+
+    <div class="row mx-2">
+      <div class="profilePhotoContainer">
+        <img class="profilePhoto" [ngClass]="{'round': uiService.roundIcons}" [src]="(authService.domain + comment.createdBy.photo) || noPhoto" alt="">
+      </div>
+      <div class="px-2">
+        <strong>
+          {{comment.createdBy.first_name}} {{comment.createdBy.last_name}}
+        </strong>
+        <footer>
+          <small>
+            Posted on: {{ comment.createdAt | date:'HH:mm MMM dd, yyyy' }}
+          </small>
+        </footer>
+      </div>
+    </div>
+  
+    <hr>
+  
+    <div class="comment-body">
+      {{comment.comment}}
+    </div>
+  
+    <button *ngIf="authService.loggedIn() && user && user._id==postCreator._id" class=" btn btn-sm btn-danger comment-button" (click)="deleteComment()">Delete</button>
+    <button class="btn btn-sm btn-primary comment-button" (click)="toggleReplyForm()">Reply</button>
+    <button *ngIf="!showReplies && comment.replies>0" [disabled]="processingReplies" class="btn btn-sm btn-primary comment-button" (click)="showRepliesDiv()">Show Replies</button>
+    
+  </div>
+  
+  <div class="indent">
+  
+    <div *ngIf="showReply" class="comment pb-3">
+      <form [formGroup]="replyForm" (submit)="onReplySubmit()" class="row no-gutters">
+        <div class="col-12 col-md-10">
+            <textarea class="form-control" name="reply" formControlName="reply" rows="2" placeholder="Join the conversation"></textarea>
+        </div>
+        <div class="col-12 col-md-2">
+          <input [disabled]="!replyForm.valid || processing" type="submit" class="btn btn-success w-100 h-100" value="Post">
+        </div>
+      </form>
+    </div>
+  
+    <div *ngIf="showReplies">
+      <div *ngIf="replies.length>0">
+        <div *ngFor="let reply of replies">
+          <app-replies [comment]="reply" [user]="user" [postCreator]="postCreator"></app-replies>
+        </div>
+      </div>
+    
+      <button *ngIf="replies.length<comment.replies" class="btn btn-primary btn-block mb-2" (click)="loadReplies()">Load More Replies</button>  
+    </div>
+    
+  </div>
+</div>

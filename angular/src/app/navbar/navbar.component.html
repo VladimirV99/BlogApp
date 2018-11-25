@@ -1,0 +1,58 @@
+<nav class="navbar navbar-expand-sm" [ngClass]="{'navbar-light navbar-bg-light': !uiService.darkMode, 'navbar-dark navbar-bg-dark': uiService.darkMode}">
+  <a class="navbar-brand" routerLink="/">Blog</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarMain">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
+        <a class="nav-link" [routerLink]="['/']">Home</a>
+      </li>
+      <li *ngIf="authService.loggedIn()" class="nav-item" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
+        <a class="nav-link" [routerLink]="['/write']">Write</a>
+      </li>
+      <li *ngIf="authService.loggedIn()" class="nav-item" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
+        <a class="nav-link" [routerLink]="['/posts']">Posts</a>
+      </li>
+    </ul>
+
+    <div class="dropdown-divider"></div>
+
+    <ul id="navbarUser" class="navbar-nav justify-content-end">
+      <li *ngIf="!authService.loggedIn()" class="nav-item" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
+        <a class="nav-link" [routerLink]="['/login']">Login</a>
+      </li>
+      <li *ngIf="!authService.loggedIn()" class="nav-item" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
+        <a class="nav-link" [routerLink]="['/register']">Register</a>
+      </li>
+      <li *ngIf="authService.loggedIn()" class="nav-item dropdown" [ngClass]="{'show': userMenuVisible}">
+        <a class="nav-link text-right" [ngClass]="{'active': userMenuVisible}" role="button" id="dropdownUser" (click)="toggleUserMenu()" aria-haspopup="true" aria-expanded="false">
+          {{authService.user.first_name}} {{authService.user.last_name}}
+        </a>
+        <div class="dropdown-menu mb-2" [ngClass]="{'show': userMenuVisible, 'navbar-bg-light': !uiService.darkMode, 'navbar-bg-dark': uiService.darkMode}" id="dropdownMenuUser" aria-labelledby="dropdownUser">
+          <a class="dropdown-item" [routerLink]="['/profile']">Profile</a>
+          <a class="dropdown-item" [routerLink]="['/posts']">Posts</a>
+          <span class="non-link-dropdown-item">
+            Dark mode
+            <label class="switch float-right">
+              <input type="checkbox" [checked]="uiService.darkMode" (click)="toggleDarkMode($event)">
+              <span class="slider round"></span>
+            </label>
+          </span>
+          <span class="non-link-dropdown-item">
+            Round icons
+            <label class="switch float-right">
+              <input type="checkbox" [checked]="uiService.roundIcons" (click)="toggleRoundIcons($event)">
+              <span class="slider round"></span>
+            </label>
+          </span>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#" (click)="onLogoutClick()">Logout</a>
+        </div>
+      </li>
+    </ul>
+
+  </div>
+
+</nav>

@@ -1,0 +1,21 @@
+.popular{
+  list-style: none;
+  padding: 0px;
+}
+
+.popular .popular-item{
+  width: 100%;
+}
+
+.popular .popular-link{
+  display: block;
+  padding: 0.5rem;
+  text-decoration: none;
+  color: black;
+}
+
+.popular .popular-link:hover{
+  background-color: lightgrey;
+  text-decoration: none;
+  color: black;
+}

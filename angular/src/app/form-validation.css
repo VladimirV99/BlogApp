@@ -1,0 +1,34 @@
+input:focus {
+  box-shadow: inset 0 0 1px #35a7dc69, 0 0 0 2px #35a7dc69;
+}
+
+.has-error input {
+  border-color: #dc3545;
+}
+
+.has-error input:focus {
+  box-shadow: inset 0 0 1px #dc354669, 0 0 0 2px #dc354569;
+}
+
+.has-success input {
+  border-color: #28a745;
+}
+
+.has-success input:focus {
+  box-shadow: inset 0 0 1px #28a74669, 0 0 0 2px #28a74669;
+}
+
+.validation-feedback {
+  width: 100%;
+  margin-top: .25rem;
+  padding-left: 1.5rem;
+  font-size: 80%;
+}
+
+.message-error {
+  color: #dc3545;
+}
+
+.message-success {
+  color: #28a745;
+}

@@ -1,0 +1,40 @@
+<div class="row">
+  <div class="col-md-8 offset-md-2">
+    <h2 class="page-header text-center">Edit</h2>
+
+    <div class="row show-hide-message">
+      <div class="w-100" [ngClass]="messageClass">
+        {{ message }}
+      </div>
+    </div>
+
+    <form [formGroup]="editForm" (submit)="onEditSubmit()">
+      <div class="form-group">
+        <label for="title">Title</label>
+        <div [ngClass]="{'has-error': editForm.controls.title.dirty && editForm.controls.title.errors}">
+          <input class="form-control" type="text" name="title" formControlName="title" autocomplete="off"/>
+          
+          <ul class="help-block validation-feedback">
+            <li *ngIf="editForm.controls.title.dirty && editForm.controls.title.errors?.required" class="message-error">This field is required.</li>
+            <li *ngIf="editForm.controls.title.dirty && (editForm.controls.title.errors?.minlength || editForm.controls.title.errors?.maxlength)" class="message-error">Minimum characters: 5, Maximum characters: 50</li>
+            <li *ngIf="editForm.controls.title.dirty && editForm.controls.title.errors?.validateTitle" class="message-error">Title must not have any special characters</li>
+          </ul>
+        </div>
+      </div>
+    
+      <div class="form-group">
+        <label for="body">Body</label>
+        <div [ngClass]="{'has-error': editForm.controls.body.dirty && editForm.controls.body.errors}">
+          <textarea rows="15" class="form-control" type="text" name="body" formControlName="body"></textarea>
+          
+          <ul class="help-block validation-feedback">
+            <li *ngIf="editForm.controls.body.dirty && editForm.controls.body.errors?.required" class="message-error">This field is required.</li>
+            <li *ngIf="editForm.controls.body.dirty && (editForm.controls.body.errors?.minlength || editForm.controls.body.errors?.maxlength)" class="message-error">Minimum characters: 5, Maximum characters: 500</li>
+          </ul>
+        </div>
+      </div>
+      
+      <input [disabled]="!editForm.valid || processing" class="btn btn-primary btn-block" type="submit" value="Save" />
+    </form>
+  </div>
+</div>
