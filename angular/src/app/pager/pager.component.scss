@@ -1,5 +1,37 @@
+@import "../ui";
+
 .pagination {
-  margin-top: 1rem;
-  margin-bottom: 2rem;
+  margin: 1rem 0;
   justify-content: center;
+}
+
+:host-context(.theme-light) .pagination {
+  .page-item:not(.active ) .page-link {
+    border-color: $color-light-primary;
+    background-color: $color-light-secondary;
+
+    &:hover {
+      background-color: $color-light-secondary-active;
+    }
+  }
+
+  .page-item.disabled .page-link {
+    color: $color-light-text-muted;
+  }
+}
+
+:host-context(.theme-dark) .pagination {
+  .page-item:not(.active ) .page-link {
+    border-color: $color-dark-primary;
+    background-color: $color-dark-secondary;
+    color: $color-dark-text;
+
+    &:hover {
+      background-color: $color-dark-secondary-active;
+    }
+  }
+
+  .page-item.disabled .page-link {
+    color: $color-dark-text-muted;
+  }
 }

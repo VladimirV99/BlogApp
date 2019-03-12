@@ -10,7 +10,7 @@
     <h3 *ngIf="loading" class="text-center">Loading...</h3>
 
     <div *ngIf="!loading" >
-      <article class="conatiner post bg-color-light">
+      <article class="conatiner post">
         <header class="post-header">
             <h2 class="post-title">{{post.title}}</h2>
           <span class="post-meta"><small>by <strong>{{post.createdBy.first_name}} {{post.createdBy.last_name}} </strong> on {{ post.createdAt | date:'MMM dd, yyyy' }}</small></span>

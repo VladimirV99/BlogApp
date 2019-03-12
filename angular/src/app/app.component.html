@@ -1,4 +1,4 @@
-<div id="window" [ngClass]="{'dark': uiService.darkMode}" (click)="closeDropdowns($event)">
+<div id="window" [ngClass]="{'theme-light': !uiService.darkMode, 'theme-dark': uiService.darkMode}" (click)="closeDropdowns($event)">
     <app-navbar></app-navbar>
     <div class="container-fluid">
         <router-outlet></router-outlet>

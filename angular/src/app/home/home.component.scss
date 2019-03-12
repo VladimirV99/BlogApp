@@ -1,3 +1,5 @@
+@import "../ui";
+
 .popular{
   list-style: none;
   padding: 0px;
@@ -8,14 +10,21 @@
 }
 
 .popular .popular-link{
-  display: block;
+  display: inline-block;
+  width: 100%;
   padding: 0.5rem;
-  text-decoration: none;
-  color: black;
 }
 
 .popular .popular-link:hover{
-  background-color: lightgrey;
   text-decoration: none;
-  color: black;
+}
+
+:host-context(.theme-light) .popular .popular-link:hover {
+  @include background-light-secondary;
+  background-color: $color-light-secondary-active;
+}
+
+:host-context(.theme-dark) .popular .popular-link:hover {
+  @include background-dark-secondary;
+  background-color: $color-dark-secondary-active;
 }

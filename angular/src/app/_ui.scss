@@ -1,0 +1,33 @@
+$color-dark-primary: #212529;
+$color-dark-primary-active: lighten($color-dark-primary, 5%);
+$color-dark-secondary: #404040;
+$color-dark-secondary-active: lighten($color-dark-secondary, 5%);
+$color-dark-text: #ffffff;
+$color-dark-text-muted: #6c757d;
+
+$color-light-primary: #f0f0f0;
+$color-light-primary-active: darken($color-light-primary, 5%);
+$color-light-secondary: #ffffff;
+$color-light-secondary-active: darken($color-light-secondary, 5%);
+$color-light-text: #000000;
+$color-light-text-muted: #6c757d;
+
+@mixin background-dark-primary {
+  background-color: $color-dark-primary;
+  color: white;
+}
+
+@mixin background-dark-secondary {
+  background-color: $color-dark-secondary;
+  color: white;
+}
+
+@mixin background-light-primary {
+  background-color: $color-light-primary;
+  color: black;
+}
+
+@mixin background-light-secondary {
+  background-color: $color-light-secondary;
+  color: black;
+}

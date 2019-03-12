@@ -30,10 +30,10 @@
 
     <h3 *ngIf="loading && posts.length==0" class="text-center">Loading...</h3>
 
-    <article class="conatiner post bg-color-light" *ngFor="let post of posts">
+    <article class="container post" *ngFor="let post of posts">
       <header class="post-header">
-          <h2 class="post-title"><a class="post-title-link" [routerLink]="['/post/', post._id]">{{post.title}}</a></h2>
-        <span class="post-meta"><small>by <strong><a [routerLink]="['/user/', post.createdBy.username]">{{post.createdBy.first_name}} {{post.createdBy.last_name}}</a></strong> on {{ post.createdAt | date:'MMM dd, yyyy' }}</small></span>
+          <h2 class="post-title"><a class="post-link" [routerLink]="['/post/', post._id]">{{post.title}}</a></h2>
+        <span class="post-meta"><small>by <strong><a class="post-link" [routerLink]="['/user/', post.createdBy.username]">{{post.createdBy.first_name}} {{post.createdBy.last_name}}</a></strong> on {{ post.createdAt | date:'MMM dd, yyyy' }}</small></span>
       </header>
       <div class="post-body">
         <p>{{post.body}}</p>
@@ -68,14 +68,14 @@
   </div>
 
   <div class="col-md-3">
-    <div *ngIf="popularPosts" class="container post bg-color-light">
+    <div *ngIf="popularPosts" class="container post">
       <div class="post-header text-center p-1">
         <h3>Popular</h3>
       </div>
       <div class="post-body p-0">
         <ul class="popular my-0">
           <li *ngFor="let popularPost of popularPosts" class="popular-item">
-            <a class="popular-link" [routerLink]="['/post/', popularPost._id]">
+            <a class="post-link popular-link" [routerLink]="['/post/', popularPost._id]">
               <h5 class=my-0>{{popularPost.title}}</h5>
               <small>by <strong>{{popularPost.createdBy.username}} </strong></small>
             </a>

@@ -9,7 +9,7 @@ import { UiService } from '../services/ui.service';
 @Component({
   selector: 'app-post',
   templateUrl: './post.component.html',
-  styleUrls: ['./post.component.scss', '../post.scss', '../ui.scss']
+  styleUrls: ['./post.component.scss', '../post.scss']
 })
 export class PostComponent implements OnInit {
 

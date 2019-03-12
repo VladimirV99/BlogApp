@@ -8,7 +8,7 @@ import { ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'app-user',
   templateUrl: './user.component.html',
-  styleUrls: ['./user.component.scss', '../post.scss', '../ui.scss']
+  styleUrls: ['./user.component.scss', '../post.scss']
 })
 export class UserComponent implements OnInit {
 

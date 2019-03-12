@@ -1,15 +1,17 @@
-.navbar-bg-light {
-  background-color: #F0F0F0;
-}
-
-.navbar-bg-dark {
-  background-color: #212529;
-}
+@import "../ui";
 
 .navbar {
   padding-top: 0rem;
   padding-bottom: 0rem;
   margin-bottom: 20px;
+}
+
+.navbar-bg-light {
+  @include background-light-primary;
+}
+
+.navbar-bg-dark {
+  @include background-dark-primary;
 }
 
 .navbar .navbar-brand{
@@ -28,14 +30,38 @@
   height: 50px;
 }
 
-.navbar-light .navbar-nav .nav-item:not(.active) .nav-link:hover,
-.navbar-light .active {
-  background-color: rgba(0, 0, 0, 0.1);
+.navbar-light {
+  .navbar-nav .nav-item:not(.active) .nav-link:hover,
+  .dropdown-item:hover,
+  .active {
+    background-color: $color-light-primary-active;
+  }
+
+  .non-link-dropdown-item,
+  .dropdown-item {
+    color: $color-light-text;
+  }
+
+  .dropdown-divider {
+    border-top-color: $color-light-primary-active;
+  }
 }
 
-.navbar-dark .navbar-nav .nav-item:not(.active) .nav-link:hover,
-.navbar-dark .active {
-  background-color: rgba(255, 255, 255, 0.1);
+.navbar-dark {
+  .navbar-nav .nav-item:not(.active) .nav-link:hover,
+  .dropdown-item:hover,
+  .active {
+    background-color: $color-dark-primary-active;
+  }
+
+  .non-link-dropdown-item,
+  .dropdown-item {
+    color: $color-dark-text;
+  }
+
+  .dropdown-divider {
+    border-top-color: $color-dark-primary-active;
+  }
 }
 
 .nav-link {
@@ -46,32 +72,17 @@
   min-width: 180px;
 }
 
+#dropdownMenuUser {
+  margin: 0;
+  margin-top: -1px;
+  border-radius: 0rem 0rem .25rem .25rem;
+}
+
 .non-link-dropdown-item {
   display: block;
   width: 100%;
   padding: .25rem 1.5rem;
-  clear: both;
-  font-weight: 400;
-  color: #212529;
-  text-align: inherit;
-  white-space: nowrap;
-  background-color: transparent;
-  border: 0;
   cursor: default;
-}
-
-.navbar-dark .non-link-dropdown-item,
-.navbar-dark .dropdown-item {
-  color: rgba(255, 255, 255, 0.5);
-}
-
-.navbar-dark .dropdown-item:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: white;
-}
-
-.navbar-dark .dropdown-divider {
-  border-top-color: #282c30;
 }
 
 /* Switch */
