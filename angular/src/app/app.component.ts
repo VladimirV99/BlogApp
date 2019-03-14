@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import * as $ from 'jquery';
 import { UiService } from './services/ui.service';
 
 @Component({
@@ -13,9 +12,18 @@ export class AppComponent {
 
   }
 
+  hasParentWithId(element, id) {
+    while(element != null) {
+      if(element.id == id)
+        return true;
+      element = element.parentElement;
+    }
+    return false;
+  }
+
   closeDropdowns(event) {
     this.uiService.getDropdowns().forEach(element => {
-      if(element.open && (($(event.target)[0].id != element.toggle && $(event.target)[0].tagName == 'A') ||  $(event.target).parents('#'+element.id).length==0)){
+      if(element.open && ((event.target.id != element.toggle && event.target.tagName == 'A') || !this.hasParentWithId(event.target, element.id))) {
         element.open = false;
         element.callback();
       }
