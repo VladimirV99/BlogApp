@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import {AuthService} from '../services/auth.service';
+import { AuthService } from '../services/auth.service';
 import { ValidateService } from '../services/validate.service';
 
 @Component({
@@ -12,15 +12,14 @@ import { ValidateService } from '../services/validate.service';
 })
 export class RegisterComponent implements OnInit {
 
-  message;
-  messageClass;
+  message: string = '';
 
-  registerForm;
-  processing = false;
-  usernameChecked = false;
+  registerForm: FormGroup;
+  processing: boolean = false;
+  usernameChecked: boolean = false;
   usernameValid: boolean;
   usernameMessage: string;
-  emailChecked = false;
+  emailChecked: boolean = false;
   emailValid: boolean;
   emailMessage: string;
 
@@ -99,16 +98,11 @@ export class RegisterComponent implements OnInit {
 
     this.authService.registerUser(user).subscribe(data => {
       if (!data.success) {
-        this.messageClass = 'alert alert-danger';
         this.message = data.message;
         this.processing = false;
         this.enableForm();
       } else {
-        this.messageClass = 'alert alert-success';
-        this.message = data.message;
-        setTimeout(() => {
-          this.router.navigate(['/login']);
-        }, 2000);
+        this.router.navigate(['/login']);
       }
     });
   }
@@ -130,7 +124,7 @@ export class RegisterComponent implements OnInit {
     });
   }
 
-  clearEmail(){
+  clearEmail() {
     this.emailChecked = false;
     this.emailValid = false;
     this.emailMessage = '';
@@ -138,9 +132,7 @@ export class RegisterComponent implements OnInit {
 
   checkUsername() {
     if(this.registerForm.get('username').value=='' || this.registerForm.get('username').errors){
-      this.usernameChecked = false;
-      this.usernameValid = false;
-      this.usernameMessage = '';
+      this.clearUsername();
       return;
     }
     this.authService.checkUsername(this.registerForm.get('username').value).subscribe(data => {
@@ -155,10 +147,14 @@ export class RegisterComponent implements OnInit {
     });
   }
 
-  clearUsername(){
+  clearUsername() {
     this.usernameChecked = false;
     this.usernameValid = false;
     this.usernameMessage = '';
+  }
+
+  dismissAlert() {
+    this.message = '';
   }
 
   ngOnInit() {
