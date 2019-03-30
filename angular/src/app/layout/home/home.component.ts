@@ -4,6 +4,7 @@ import Post from '../../models/post';
 import { AuthService } from '../../services/auth.service'
 import { UiService } from '../../services/ui.service';
 import { PostService } from '../../services/post.service';
+import { User } from 'src/app/models/user';
 
 @Component({
   selector: 'app-home',
@@ -12,17 +13,17 @@ import { PostService } from '../../services/post.service';
 })
 export class HomeComponent implements OnInit {
 
-  message: string;
-  messageClass: string;
+  message: string = '';
+  messageClass: string = '';
 
-  user;
+  user: User;
   posts: Post[] = [];
   popularPosts: Post[] = [];
   postToDelete: string;
-  loading = true;
+  loading: boolean = true;
 
-  totalPosts = 0;
-  page = 1;
+  totalPosts: number = 0;
+  page: number = 1;
 
   constructor(
     private authService: AuthService,
@@ -30,11 +31,11 @@ export class HomeComponent implements OnInit {
     private postService: PostService
   ) { }
 
-  getPosts() {
+  getPosts(): void {
     this.loading = true;
     this.postService.getPostCount().subscribe(data => {
       if(!data.success) {
-        this.messageClass = 'alert alert-danger';
+        this.messageClass = 'alert-danger';
         this.message = data.message;
       } else {
         this.totalPosts = data.count;
@@ -46,10 +47,10 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  getPopularPosts() {
+  getPopularPosts(): void {
     this.postService.getPopular().subscribe(data => {
       if(!data.success) {
-        this.messageClass = 'alert alert-danger';
+        this.messageClass = 'alert-danger';
         this.message = data.message;
       } else {
         this.popularPosts = data.posts;
@@ -57,23 +58,7 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  likePost(id) {
-    this.postService.likePost(id).subscribe(data => {
-      this.getPosts();
-    });
-  }
-
-  dislikePost(id) {
-    this.postService.dislikePost(id).subscribe(data => {
-      this.getPosts();
-    });
-  }
-
-  prepareToDelete(id) {
-    this.postToDelete = id;
-  }
-
-  deletePost() {
+  deletePost(): void {
     if(this.postToDelete){
       this.postService.deletePost(this.postToDelete).subscribe(data => {
         this.postToDelete = null;
@@ -103,7 +88,7 @@ export class HomeComponent implements OnInit {
     this.getPosts();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if(this.authService.loggedIn()){
       this.authService.getProfile().subscribe(profileData => {
         if (!profileData.success) {

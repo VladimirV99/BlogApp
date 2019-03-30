@@ -22,17 +22,18 @@
   <div class="col-md-9">
     <h2 class="page-header text-center">Post Feed</h2>
 
-    <div class="container show-hide-message">
-      <div [ngClass]="messageClass">
-        {{ message }}
-      </div>
+    <div class="alert show" [ngClass]="messageClass" [class.d-none]="!message">
+      {{ message }}
+      <button type="button" class="close" aria-label="Close" (click)="dismissAlert()">
+        <span aria-hidden="true">&times;</span>
+      </button>
     </div>
 
     <h3 *ngIf="loading && posts.length==0" class="text-center">Loading...</h3>
 
     <div *ngIf="!loading">
       <div *ngFor="let post of posts">
-        <app-article [post]="post" [user]="user"></app-article>
+        <app-article [post]="post" [user]="user" (reload)="getPosts()" (delete)="deletePost($event)"></app-article>
       </div>
     </div>
 
