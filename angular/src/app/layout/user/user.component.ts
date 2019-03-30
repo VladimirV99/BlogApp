@@ -14,8 +14,8 @@ import { User } from '../../models/user';
 })
 export class UserComponent implements OnInit {
 
-  message: string = 'test';
-  messageClass: string = 'alert-danger';
+  message: string = '';
+  messageClass: string = '';
 
   noPhoto: string = this.authService.domain + 'uploads/no-user.png';
 

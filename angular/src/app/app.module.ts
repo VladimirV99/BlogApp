@@ -24,6 +24,7 @@ import { RepliesComponent } from './components/replies/replies.component';
 import { PagerComponent } from './components/pager/pager.component';
 import { UserComponent } from './layout/user/user.component';
 import { PostsComponent } from './layout/posts/posts.component';
+import { ArticleComponent } from './components/article/article.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { PostsComponent } from './layout/posts/posts.component';
     RepliesComponent,
     PagerComponent,
     UserComponent,
-    PostsComponent
+    PostsComponent,
+    ArticleComponent
   ],
   imports: [
     BrowserModule,
