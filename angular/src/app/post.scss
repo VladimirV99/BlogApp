@@ -97,14 +97,14 @@
 .profilePhoto {
   max-width: 70px;
   width: 100%;
-}
 
-.profilePhoto.large {
-  max-width: unset;
-}
+  &.large {
+    max-width: unset;
+  }
 
-.profilePhoto.round {
-  border-radius: 50%;
+  &.round {
+    border-radius: 50%;
+  }
 }
 
 .indent {

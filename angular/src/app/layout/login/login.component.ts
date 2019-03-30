@@ -2,13 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { AuthService } from '../services/auth.service';
-import { AuthGuard } from '../guards/auth.guard';
+import { AuthService } from '../../services/auth.service';
+import { AuthGuard } from '../../guards/auth.guard';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss', '../form-validation.scss']
+  styleUrls: ['./login.component.scss', '../../form-validation.scss']
 })
 export class LoginComponent implements OnInit {
 

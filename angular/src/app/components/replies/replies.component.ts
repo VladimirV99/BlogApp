@@ -1,14 +1,14 @@
 import { Component, OnInit, Input } from '@angular/core';
 
-import { PostService } from '../services/post.service';
-import { AuthService } from '../services/auth.service';
-import { UiService } from '../services/ui.service';
+import { PostService } from '../../services/post.service';
+import { AuthService } from '../../services/auth.service';
+import { UiService } from '../../services/ui.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-replies',
   templateUrl: './replies.component.html',
-  styleUrls: ['./replies.component.scss', '../post.scss']
+  styleUrls: ['./replies.component.scss', '../../post.scss']
 })
 export class RepliesComponent implements OnInit {
 

@@ -2,27 +2,40 @@
 
   <div class="col-md-10 offset-md-1">
 
-      <div class="container show-hide-message">
-        <div [ngClass]="messageClass">
-          {{ message }}
-        </div>
+      <div class="alert show" [ngClass]="messageClass" [class.d-none]="!message">
+        {{ message }}
+        <button type="button" class="close" aria-label="Close" (click)="dismissAlert()">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
 
       <div *ngIf="profile" class="row p-2 mb-4">
-        <div class="col-sm-3 col-8 offset-2 offset-sm-0">
-            <img class="profilePhoto large w-100" [ngClass]="{'round': uiService.roundIcons}" [src]="profile.photo || noPhoto" alt="">
+        <div class="col-10 col-sm-3 offset-1 offset-sm-0">
+            <img class="profilePhoto large" [ngClass]="{'round': uiService.roundIcons}" [src]="profile.photo || noPhoto" alt="Profile Photo">
         </div>
-        <div class="col-sm-9">
-          <h3>{{profile.first_name}} {{profile.last_name}}</h3>
-          <div>{{profile.username}}</div>
-          <div>{{profile.email}}</div>
+        <div id="userinfo" class="col-12 col-sm-9 offset-sm-0">
+          <table>
+            <tr colspan="2">
+              <td><h3>{{profile.first_name}} {{profile.last_name}}</h3></td>
+            </tr>
+            <tr>
+              <th>username:</th>
+              <td>{{profile.username}}</td>
+            </tr>
+            <tr>
+              <th>email:</th>
+              <td>{{profile.email}}</td>
+            </tr>
+          </table>
         </div>
       </div>
 
       <div *ngIf="posts">
-        <h2>Posts: {{totalPosts}}</h2>
+        <h2 class="page-header text-center">Posts: {{totalPosts}}</h2>
 
-        <article class="conatiner post bg-color-light" *ngFor="let post of posts">
+        <h3 *ngIf="loadingPosts && posts.length==0" class="text-center">Loading...</h3>
+
+        <article class="container post bg-color-light" *ngFor="let post of posts">
           <header class="post-header">
               <h2 class="post-title"><a class="post-title-link" [routerLink]="['/post/', post._id]">{{post.title}}</a></h2>
             <span class="post-meta"><small>by <strong>{{post.createdBy.first_name}} {{post.createdBy.last_name}}</strong> on {{ post.createdAt | date:'MMM dd, yyyy' }}</small></span>

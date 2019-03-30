@@ -1,28 +1,30 @@
 import { Component, OnInit } from '@angular/core';
-
-import { AuthService } from '../services/auth.service';
-import { PostService } from '../services/post.service';
-import { UiService } from '../services/ui.service';
 import { ActivatedRoute } from '@angular/router';
+
+import Post from '../../models/post';
+import { AuthService } from '../../services/auth.service';
+import { PostService } from '../../services/post.service';
+import { UiService } from '../../services/ui.service';
+import { User } from '../../models/user';
 
 @Component({
   selector: 'app-user',
   templateUrl: './user.component.html',
-  styleUrls: ['./user.component.scss', '../post.scss']
+  styleUrls: ['./user.component.scss', '../../post.scss']
 })
 export class UserComponent implements OnInit {
 
-  message: string;
-  messageClass: string;
+  message: string = 'test';
+  messageClass: string = 'alert-danger';
 
-  noPhoto = this.authService.domain + 'uploads/no-user.png';
+  noPhoto: string = this.authService.domain + 'uploads/no-user.png';
 
-  user;
-  totalPosts = 0;
+  user: User;
 
-  page = 1;
-  profile;
-  posts = [];
+  page: number = 1;
+  profile: User;
+  totalPosts: number = 0;
+  posts: Post[] = [];
 
   loadingPosts = true;
 
@@ -80,6 +82,11 @@ export class UserComponent implements OnInit {
         }
       });
     }
+  }
+
+  dismissAlert() {
+    this.message = '';
+    this.messageClass = '';
   }
 
 }

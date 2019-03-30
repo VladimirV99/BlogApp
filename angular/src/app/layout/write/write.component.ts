@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 
-import { PostService } from '../services/post.service';
-import { ValidateService } from '../services/validate.service';
+import { PostService } from '../../services/post.service';
+import { ValidateService } from '../../services/validate.service';
 
 @Component({
   selector: 'app-write',
   templateUrl: './write.component.html',
-  styleUrls: ['./write.component.scss', '../form-validation.scss']
+  styleUrls: ['./write.component.scss', '../../form-validation.scss']
 })
 export class WriteComponent implements OnInit {
 

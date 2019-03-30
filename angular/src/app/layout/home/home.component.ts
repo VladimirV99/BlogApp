@@ -1,28 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 
-import { AuthService } from '../services/auth.service'
-import { UiService } from '../services/ui.service';
-import { PostService } from '../services/post.service';
-
-export interface Post{
-  title: string;
-  body: string;
-  createdBy: {
-    username: string;
-    first_name: string;
-    last_name: string;
-  };
-  createdAt: string;
-  likes: number;
-  likedByUser: boolean;
-  dislikes: number;
-  dislikedByUser: boolean;
-}
+import Post from '../../models/post';
+import { AuthService } from '../../services/auth.service'
+import { UiService } from '../../services/ui.service';
+import { PostService } from '../../services/post.service';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss', '../post.scss']
+  styleUrls: ['./home.component.scss', '../../post.scss']
 })
 export class HomeComponent implements OnInit {
 

@@ -1,18 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { User } from '../models/user';
 
 export interface AuthMessage {
   success: boolean;
   message: string;
   token?: string;
-  user?: {
-    id: string;
-    first_name: string;
-    last_name: string;
-    username: string;
-    email: string;
-  }
+  user?: User;
 }
 
 @Injectable({
@@ -118,7 +113,7 @@ export class AuthService {
     return this.http.post<AuthMessage>(this.domain + 'users/uploadPhoto', formData, options);
   }
 
-  getUserProfile(username) {
+  getUserProfile(username: string) {
     let headers = this.createHeaders();
     return this.http.get<AuthMessage>(this.domain + 'users/get/' + username, {headers: headers});
   }

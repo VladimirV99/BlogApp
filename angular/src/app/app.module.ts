@@ -12,18 +12,18 @@ import { AuthGuard } from './guards/auth.guard';
 import { NotAuthGuard } from './guards/notAuth.guard';
 
 import { AppComponent } from './app.component';
-import { NavbarComponent } from './navbar/navbar.component';
-import { RegisterComponent } from './register/register.component';
-import { LoginComponent } from './login/login.component';
-import { HomeComponent } from './home/home.component';
-import { WriteComponent } from './write/write.component';
-import { EditComponent } from './edit/edit.component';
-import { EditProfileComponent } from './edit-profile/edit-profile.component';
-import { PostComponent } from './post/post.component';
-import { RepliesComponent } from './replies/replies.component';
-import { PagerComponent } from './pager/pager.component';
-import { UserComponent } from './user/user.component';
-import { PostsComponent } from './posts/posts.component';
+import { NavbarComponent } from './layout/navbar/navbar.component';
+import { RegisterComponent } from './layout/register/register.component';
+import { LoginComponent } from './layout/login/login.component';
+import { HomeComponent } from './layout/home/home.component';
+import { WriteComponent } from './layout/write/write.component';
+import { EditComponent } from './layout/edit/edit.component';
+import { EditProfileComponent } from './layout/edit-profile/edit-profile.component';
+import { PostComponent } from './layout/post/post.component';
+import { RepliesComponent } from './components/replies/replies.component';
+import { PagerComponent } from './components/pager/pager.component';
+import { UserComponent } from './layout/user/user.component';
+import { PostsComponent } from './layout/posts/posts.component';
 
 @NgModule({
   declarations: [

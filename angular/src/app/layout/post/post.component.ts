@@ -2,14 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
-import { PostService } from '../services/post.service';
-import { AuthService } from '../services/auth.service';
-import { UiService } from '../services/ui.service';
+import { PostService } from '../../services/post.service';
+import { AuthService } from '../../services/auth.service';
+import { UiService } from '../../services/ui.service';
 
 @Component({
   selector: 'app-post',
   templateUrl: './post.component.html',
-  styleUrls: ['./post.component.scss', '../post.scss']
+  styleUrls: ['./post.component.scss', '../../post.scss']
 })
 export class PostComponent implements OnInit {
 
