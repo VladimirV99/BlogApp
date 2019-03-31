@@ -15,20 +15,20 @@ import Post from 'src/app/models/post';
 })
 export class PostComponent implements OnInit {
 
-  message: string;
-  messageClass: string;
+  message: string = '';
+  messageClass: string = '';
 
-  noPhoto = this.authService.domain + 'uploads/no-user.png';
+  noPhoto: string = this.authService.domain + 'uploads/no-user.png';
 
   user: User;
   post: Post;
-  loading = true;
+  loading: boolean = true;
   postToDelete: string;
 
   commentForm: FormGroup;
-  processingComment = false;
+  processingComment: boolean = false;
 
-  loadedComments = 0;
+  loadedComments: number = 0;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -140,7 +140,7 @@ export class PostComponent implements OnInit {
     this.getPost();
   }
 
-  dismissAlert() {
+  dismissAlert(): void {
     this.message = '';
     this.messageClass = '';
   }

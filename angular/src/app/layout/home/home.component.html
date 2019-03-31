@@ -22,7 +22,7 @@
   <div class="col-md-9">
     <h2 class="page-header text-center">Post Feed</h2>
 
-    <div class="alert show" [ngClass]="messageClass" [class.d-none]="!message">
+    <div class="alert show" [ngClass]="messageClass" [class.d-none]="!message" role="alert">
       {{ message }}
       <button type="button" class="close" aria-label="Close" (click)="dismissAlert()">
         <span aria-hidden="true">&times;</span>

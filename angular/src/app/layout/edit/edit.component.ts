@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Params } from '@angular/router';
 import { PostService } from '../../services/post.service';
 
 @Component({
@@ -11,13 +11,13 @@ import { PostService } from '../../services/post.service';
 })
 export class EditComponent implements OnInit {
 
-  message: string;
-  messageClass: string;
+  message: string = '';
+  messageClass: string = '';
 
   editForm: FormGroup;
-  processing = false;
-  currentUrl;
-  loading = true;
+  processing: boolean = false;
+  currentUrl: Params;
+  loading: boolean = true;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -93,6 +93,11 @@ export class EditComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  dismissAlert(): void {
+    this.message = '';
+    this.messageClass = '';
   }
 
 }

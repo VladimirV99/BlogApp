@@ -26,7 +26,7 @@ export class UserComponent implements OnInit {
   totalPosts: number = 0;
   posts: Post[] = [];
 
-  loadingPosts = true;
+  loadingPosts: boolean = true;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -84,7 +84,7 @@ export class UserComponent implements OnInit {
     }
   }
 
-  dismissAlert() {
+  dismissAlert(): void {
     this.message = '';
     this.messageClass = '';
   }

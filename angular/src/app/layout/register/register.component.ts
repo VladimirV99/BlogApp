@@ -153,11 +153,11 @@ export class RegisterComponent implements OnInit {
     this.usernameMessage = '';
   }
 
-  dismissAlert() {
-    this.message = '';
+  ngOnInit() {
   }
 
-  ngOnInit() {
+  dismissAlert(): void {
+    this.message = '';
   }
 
 }

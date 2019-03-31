@@ -13,7 +13,6 @@ import { AuthGuard } from '../../guards/auth.guard';
 export class LoginComponent implements OnInit {
 
   message: string;
-  messageClass: string;
 
   loginForm: FormGroup;
   processing: boolean = false;
@@ -56,12 +55,12 @@ export class LoginComponent implements OnInit {
 
     this.authService.loginUser(user).subscribe(data => {
       if (!data.success) {
-        this.messageClass = 'alert-danger';
         this.message = data.message;
         this.loginForm.controls['password'].reset();
         this.processing = false;
         this.enableForm();
       } else {
+        this.authService.storeUserData(data.token, data.user);
         if (this.previousUrl) {
           this.router.navigate([this.previousUrl]);
         } else {
@@ -73,16 +72,14 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     if (this.authGuard.redirectUrl) {
-      this.messageClass = 'alert-danger';
       this.message = 'You must be logged in to view that page.';
       this.previousUrl = this.authGuard.redirectUrl;
       this.authGuard.redirectUrl = undefined;
     }
   }
 
-  dismissAlert() {
+  dismissAlert(): void {
     this.message = '';
-    this.messageClass = '';
   }
 
 }

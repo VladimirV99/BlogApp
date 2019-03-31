@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { AuthService } from '../../services/auth.service';
 import { ValidateService } from '../../services/validate.service';
+import User from 'src/app/models/user';
 
 @Component({
   selector: 'app-edit-profile',
@@ -13,25 +14,25 @@ export class EditProfileComponent implements OnInit {
 
   newPhotoFile: File;
   newPhoto: string;
-  noPhoto = this.authService.domain + 'uploads/no-user.png';
+  noPhoto: string = this.authService.domain + 'uploads/no-user.png';
 
-  message: string;
-  messageClass: string;
+  message: string = '';
+  messageClass: string = '';
 
-  user;
+  user: User;
 
-  processingProfileUpdate = false;
-  processingPasswordChange = false;
+  processingProfileUpdate: boolean = false;
+  processingPasswordChange: boolean = false;
 
   photoUpdateForm: FormGroup;
   profileUpdateForm: FormGroup;
   passwordChangeForm: FormGroup;
 
-  emailChecked = false;
+  emailChecked: boolean = false;
   emailValid: boolean;
   emailMessage: string;
 
-  loading = true;
+  loading: boolean = true;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -225,6 +226,11 @@ export class EditProfileComponent implements OnInit {
       reader.onload = e => this.newPhoto = reader.result.toString();
       reader.readAsDataURL(this.newPhotoFile);
     }
+  }
+
+  dismissAlert(): void {
+    this.message = '';
+    this.messageClass = '';
   }
 
 }

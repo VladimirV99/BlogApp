@@ -21,10 +21,11 @@
 <div class="row">
   <div class="col-md-10 offset-md-1">
 
-    <div class="row show-hide-message">
-      <div class="w-100" [ngClass]="messageClass">
-        {{ message }}
-      </div>
+    <div class="alert show" [ngClass]="messageClass" [class.d-none]="!message" role="alert">
+      {{ message }}
+      <button type="button" class="close" aria-label="Close" (click)="dismissAlert()">
+        <span aria-hidden="true">&times;</span>
+      </button>
     </div>
 
     <h3 *ngIf="loading" class="text-center">Loading...</h3>

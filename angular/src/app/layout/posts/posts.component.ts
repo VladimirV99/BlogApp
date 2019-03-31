@@ -3,6 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { PostService } from '../../services/post.service';
 import { UiService } from '../../services/ui.service';
+import User from 'src/app/models/user';
+import Post from 'src/app/models/post';
 
 @Component({
   selector: 'app-posts',
@@ -11,17 +13,17 @@ import { UiService } from '../../services/ui.service';
 })
 export class PostsComponent implements OnInit {
 
-  message: string;
-  messageClass: string;
+  message: string = '';
+  messageClass: string = '';
 
-  user;
-  totalPosts = 0;
+  user: User;
+  totalPosts: number = 0;
 
-  page = 1;
-  posts = [];
+  page: number = 1;
+  posts: Post[] = [];
 
   postToDelete: string;
-  loadingPosts = true;
+  loadingPosts: boolean = true;
 
   constructor(
     private authService: AuthService,
@@ -87,6 +89,11 @@ export class PostsComponent implements OnInit {
         }
       });
     }
+  }
+
+  dismissAlert(): void {
+    this.message = '';
+    this.messageClass = '';
   }
 
 }

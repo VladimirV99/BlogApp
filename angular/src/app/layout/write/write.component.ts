@@ -11,11 +11,11 @@ import { ValidateService } from '../../services/validate.service';
 })
 export class WriteComponent implements OnInit {
 
-  message: string;
-  messageClass: string;
+  message: string = '';
+  messageClass: string = '';
 
   writeForm : FormGroup;
-  processing = false;
+  processing: boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -72,6 +72,11 @@ export class WriteComponent implements OnInit {
   }
 
   ngOnInit() {
+  }
+
+  dismissAlert(): void {
+    this.message = '';
+    this.messageClass = '';
   }
 
 }

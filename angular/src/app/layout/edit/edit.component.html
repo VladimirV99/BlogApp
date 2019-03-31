@@ -2,10 +2,11 @@
   <div class="col-md-8 offset-md-2">
     <h2 class="page-header text-center">Edit</h2>
 
-    <div class="row show-hide-message">
-      <div class="w-100" [ngClass]="messageClass">
-        {{ message }}
-      </div>
+    <div class="alert show" [ngClass]="messageClass" [class.d-none]="!message" role="alert">
+      {{ message }}
+      <button type="button" class="close" aria-label="Close" (click)="dismissAlert()">
+        <span aria-hidden="true">&times;</span>
+      </button>
     </div>
 
     <form [formGroup]="editForm" (submit)="onEditSubmit()">
