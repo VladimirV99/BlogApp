@@ -18,7 +18,7 @@ import { LoginComponent } from './layout/login/login.component';
 import { HomeComponent } from './layout/home/home.component';
 import { WriteComponent } from './layout/write/write.component';
 import { EditComponent } from './layout/edit/edit.component';
-import { EditProfileComponent } from './layout/edit-profile/edit-profile.component';
+import { ProfileComponent } from './layout/profile/profile.component';
 import { PostComponent } from './layout/post/post.component';
 import { RepliesComponent } from './components/replies/replies.component';
 import { PagerComponent } from './components/pager/pager.component';
@@ -35,7 +35,7 @@ import { ArticleComponent } from './components/article/article.component';
     LoginComponent,
     WriteComponent,
     EditComponent,
-    EditProfileComponent,
+    ProfileComponent,
     PostComponent,
     RepliesComponent,
     PagerComponent,

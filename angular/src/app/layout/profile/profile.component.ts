@@ -6,11 +6,11 @@ import { ValidateService } from '../../services/validate.service';
 import User from 'src/app/models/user';
 
 @Component({
-  selector: 'app-edit-profile',
-  templateUrl: './edit-profile.component.html',
-  styleUrls: ['./edit-profile.component.scss']
+  selector: 'app-profile',
+  templateUrl: './profile.component.html',
+  styleUrls: ['./profile.component.scss', '../../post.scss']
 })
-export class EditProfileComponent implements OnInit {
+export class ProfileComponent implements OnInit {
 
   newPhotoFile: File;
   newPhoto: string;

@@ -9,7 +9,7 @@ import { UserComponent } from './layout/user/user.component';
 import { PostComponent } from './layout/post/post.component';
 import { PostsComponent } from './layout/posts/posts.component';
 import { EditComponent } from './layout/edit/edit.component';
-import { EditProfileComponent } from './layout/edit-profile/edit-profile.component';
+import { ProfileComponent } from './layout/profile/profile.component';
 
 import { AuthGuard } from './guards/auth.guard';
 import { NotAuthGuard } from './guards/notAuth.guard';
@@ -35,7 +35,7 @@ const routes: Routes = [
   },
   {
     path: 'profile',
-    component: EditProfileComponent,
+    component: ProfileComponent,
     canActivate: [AuthGuard]
   },
   {

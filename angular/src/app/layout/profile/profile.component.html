@@ -11,9 +11,9 @@
 
 <div class="row">
 
-    <div class="col-12 col-md-3 offset-md-1">
+    <div class="col-12 col-sm-3 offset-sm-1">
       <form [formGroup]="photoUpdateForm" (submit)="onPhotoSubmit()" enctype="multipart/form-data">
-        <img [src]="newPhoto || (user && user.photo) || noPhoto" class="user-photo">
+        <img [src]="newPhoto || (user && user.photo) || noPhoto" class="profilePhoto mb-2">
         <label class="btn btn-secondary w-100">
           Select photo<input type="file" style="display: none" name="userPhoto" formControlName="userPhoto" (change)="onPhotoSelect($event)"/>
         </label>
@@ -22,7 +22,7 @@
       <hr class="d-block d-md-none my-3">
     </div>
 
-    <div class="col-md-7 mb-3">
+    <div class="col-sm-7 mb-3">
       <h3 class="text-center">Update Profile</h3>
       <form [formGroup]="profileUpdateForm" (submit)="onProfileUpdateSubmit()">
         <div class="form-row">
