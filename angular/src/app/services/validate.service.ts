@@ -55,7 +55,7 @@ export class ValidateService {
   }
 
   validateTitle(controls: FormControl) {
-    const titleRegExp = new RegExp(/^[a-zA-Z0-9\-\s]+$/);
+    const titleRegExp = new RegExp(/^[a-zA-Z0-9\-\s]*$/);
     if (titleRegExp.test(controls.value)) {
       return null;
     } else {

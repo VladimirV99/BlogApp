@@ -2,12 +2,13 @@ import { Component, OnInit } from '@angular/core';
 
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params } from '@angular/router';
+import { ValidateService } from '../../services/validate.service';
 import { PostService } from '../../services/post.service';
 
 @Component({
   selector: 'app-edit',
   templateUrl: './edit.component.html',
-  styleUrls: ['./edit.component.scss']
+  styleUrls: ['./edit.component.scss', '../../form-validation.scss']
 })
 export class EditComponent implements OnInit {
 
@@ -22,14 +23,15 @@ export class EditComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute,
-    private postService: PostService
+    private postService: PostService,
+    private validateService: ValidateService
   ) { 
     this.editForm = this.formBuilder.group({
       title: ['', Validators.compose([
         Validators.required,
         Validators.maxLength(50),
         Validators.minLength(5),
-        this.validateTitle
+        this.validateService.validateTitle
       ])],
       body: ['', Validators.compose([
         Validators.required,
