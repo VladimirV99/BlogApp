@@ -12,12 +12,12 @@ import { AuthGuard } from '../../guards/auth.guard';
 })
 export class LoginComponent implements OnInit {
 
-  message;
-  messageClass;
+  message: string;
+  messageClass: string;
 
   loginForm: FormGroup;
-  processing = false;
-  previousUrl;
+  processing: boolean = false;
+  previousUrl: string;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -55,35 +55,34 @@ export class LoginComponent implements OnInit {
     }
 
     this.authService.loginUser(user).subscribe(data => {
-      
       if (!data.success) {
-        this.messageClass = 'alert alert-danger';
+        this.messageClass = 'alert-danger';
         this.message = data.message;
         this.loginForm.controls['password'].reset();
         this.processing = false;
         this.enableForm();
       } else {
-        this.messageClass = 'alert alert-success';
-        this.message = data.message;
-        this.authService.storeUserData(data.token, data.user);
-        setTimeout(() => {
-          if (this.previousUrl) {
-            this.router.navigate([this.previousUrl]);
-          } else {
-            this.router.navigate(['/']);
-          }
-        }, 2000);
+        if (this.previousUrl) {
+          this.router.navigate([this.previousUrl]);
+        } else {
+          this.router.navigate(['/']);
+        }
       }
     });
   }
 
   ngOnInit() {
     if (this.authGuard.redirectUrl) {
-      this.messageClass = 'alert alert-danger';
+      this.messageClass = 'alert-danger';
       this.message = 'You must be logged in to view that page.';
       this.previousUrl = this.authGuard.redirectUrl;
       this.authGuard.redirectUrl = undefined;
     }
+  }
+
+  dismissAlert() {
+    this.message = '';
+    this.messageClass = '';
   }
 
 }

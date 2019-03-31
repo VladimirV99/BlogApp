@@ -2,10 +2,11 @@
 
 <div class="row">
   <div class="col-md-8 offset-md-2">
-    <div class="row show-hide-message">
-      <div class="w-100" [ngClass]="messageClass">
-        {{ message }}
-      </div>
+    <div class="alert show" [ngClass]="messageClass" [class.d-none]="!message">
+      {{ message }}
+      <button type="button" class="close" aria-label="Close" (click)="dismissAlert()">
+        <span aria-hidden="true">&times;</span>
+      </button>
     </div>
 
     <form [formGroup]="loginForm" (submit)="onLoginSubmit()">
@@ -14,8 +15,8 @@
         <div [ngClass]="{'has-error': loginForm.controls.username.dirty && loginForm.controls.username.errors, 'has-success': loginForm.controls.username.dirty && loginForm.controls.username.valid }">
           <input class="form-control" type="text" name="username" formControlName="username" />
           
-          <ul class="help-block">
-            <li *ngIf="loginForm.controls.username.dirty && loginForm.controls.username.errors?.required">This field is required.</li>
+          <ul class="help-block validation-feedback">
+            <li *ngIf="loginForm.controls.username.dirty && loginForm.controls.username.errors?.required" class="message-error">This field is required.</li>
           </ul>
         </div>
       </div>
@@ -25,8 +26,8 @@
         <div [ngClass]="{'has-error': loginForm.controls.password.dirty && loginForm.controls.password.errors , 'has-success': loginForm.controls.password.dirty && loginForm.controls.password.valid }">
           <input class="form-control" type="password" name="password" formControlName="password" />
           
-          <ul class="help-block">
-            <li *ngIf="loginForm.controls.password.dirty && loginForm.controls.password.errors?.required">This field is required.</li>
+          <ul class="help-block validation-feedback">
+            <li *ngIf="loginForm.controls.password.dirty && loginForm.controls.password.errors?.required" class="message-error">This field is required.</li>
           </ul>
         </div>
       </div>

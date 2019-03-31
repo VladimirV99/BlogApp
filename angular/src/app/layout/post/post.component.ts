@@ -140,4 +140,9 @@ export class PostComponent implements OnInit {
     this.getPost();
   }
 
+  dismissAlert() {
+    this.message = '';
+    this.messageClass = '';
+  }
+
 }

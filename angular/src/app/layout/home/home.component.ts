@@ -107,4 +107,9 @@ export class HomeComponent implements OnInit {
     this.getPopularPosts();
   }
 
+  dismissAlert() {
+    this.message = '';
+    this.messageClass = '';
+  }
+
 }
