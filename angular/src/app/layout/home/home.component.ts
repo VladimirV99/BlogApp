@@ -4,7 +4,7 @@ import Post from '../../models/post';
 import { AuthService } from '../../services/auth.service'
 import { UiService } from '../../services/ui.service';
 import { PostService } from '../../services/post.service';
-import { User } from 'src/app/models/user';
+import User from 'src/app/models/user';
 
 @Component({
   selector: 'app-home',
@@ -56,6 +56,10 @@ export class HomeComponent implements OnInit {
         this.popularPosts = data.posts;
       }
     });
+  }
+
+  onDelete(post: string): void {
+    this.postToDelete = post;
   }
 
   deletePost(): void {

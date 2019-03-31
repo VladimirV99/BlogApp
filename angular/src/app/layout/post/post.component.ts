@@ -5,6 +5,8 @@ import { ActivatedRoute } from '@angular/router';
 import { PostService } from '../../services/post.service';
 import { AuthService } from '../../services/auth.service';
 import { UiService } from '../../services/ui.service';
+import User from 'src/app/models/user';
+import Post from 'src/app/models/post';
 
 @Component({
   selector: 'app-post',
@@ -18,14 +20,14 @@ export class PostComponent implements OnInit {
 
   noPhoto = this.authService.domain + 'uploads/no-user.png';
 
-  user;
-  post;
+  user: User;
+  post: Post;
   loading = true;
+  postToDelete: string;
 
   commentForm: FormGroup;
   processingComment = false;
 
-  totalComments = 0;
   loadedComments = 0;
 
   constructor(
@@ -51,7 +53,7 @@ export class PostComponent implements OnInit {
         this.message = data.message;
       } else {
         if(data.comments.length == 0){
-          this.totalComments = this.loadedComments;
+          this.post.totalComments = this.loadedComments;
         } else {
           this.post.comments = this.post.comments.concat(data.comments);
           this.loadedComments += data.comments.length;
@@ -93,38 +95,49 @@ export class PostComponent implements OnInit {
     });
   }
 
+  onDelete(post: string): void {
+    this.postToDelete = post;
+  }
+
+  deletePost(): void {
+    if(this.postToDelete){
+      this.postService.deletePost(this.postToDelete).subscribe(data => {
+        this.postToDelete = null;
+        this.messageClass = "alert alert-danger";
+        this.message = data.message;
+        this.getPost();
+      });
+    }
+  }
+
+  getPost(): void {
+    this.postService.getPost(this.activatedRoute.snapshot.params.id).subscribe(postData => {
+      if (!postData.success) {
+        this.messageClass = 'alert alert-danger';
+        this.message = postData.message;
+      } else {
+        this.post = postData.post;
+        this.post.comments = [];
+        if(this.post.totalComments > 0){
+          this.loadComments();
+        }
+        this.loading = false;
+      }
+    });
+  }
+
   ngOnInit() {
     if(this.authService.loggedIn()){
       this.authService.getProfile().subscribe(profileData => {
-        if(!profileData.success) {
+        if (!profileData.success) {
           this.messageClass = 'alert alert-danger';
           this.message = profileData.message;
         } else {
           this.user = profileData.user;
-          this.postService.getPost(this.activatedRoute.snapshot.params.id).subscribe(postData => {
-            if (!postData.success) {
-              this.messageClass = 'alert alert-danger';
-              this.message = postData.message;
-            } else {
-              this.post = postData.post;
-              this.post.comments = [];
-              this.postService.getCommentCount(this.post._id).subscribe(commentData => {
-                if (!commentData.success) {
-                  this.messageClass = 'alert alert-danger';
-                  this.message = commentData.message;
-                } else {
-                  this.totalComments = commentData.count;
-                  if(this.totalComments > 0){
-                    this.loadComments();
-                  }
-                }
-                this.loading = false;
-              });
-            }
-          });
         }
       });
     }
+    this.getPost();
   }
 
 }

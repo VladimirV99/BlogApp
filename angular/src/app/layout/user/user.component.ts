@@ -5,7 +5,7 @@ import Post from '../../models/post';
 import { AuthService } from '../../services/auth.service';
 import { PostService } from '../../services/post.service';
 import { UiService } from '../../services/ui.service';
-import { User } from '../../models/user';
+import User from '../../models/user';
 
 @Component({
   selector: 'app-user',

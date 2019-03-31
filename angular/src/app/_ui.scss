@@ -14,20 +14,20 @@ $color-light-text-muted: #6c757d;
 
 @mixin background-dark-primary {
   background-color: $color-dark-primary;
-  color: white;
+  color: $color-dark-text;
 }
 
 @mixin background-dark-secondary {
   background-color: $color-dark-secondary;
-  color: white;
+  color: $color-dark-text;
 }
 
 @mixin background-light-primary {
   background-color: $color-light-primary;
-  color: black;
+  color: $color-light-text;
 }
 
 @mixin background-light-secondary {
   background-color: $color-light-secondary;
-  color: black;
+  color: $color-light-text;
 }

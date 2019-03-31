@@ -69,7 +69,7 @@ router.get('/page/:page/:itemsPerPage', get_user, (req, res) => {
     let page = req.params.page;
     if(req.params.itemsPerPage && req.params.itemsPerPage<15)
       itemsPerPage = parseInt(req.params.itemsPerPage);
-    Post.find({}).populate('createdBy', 'username first_name last_name').select(selector).sort({ '_id': -1 }).skip((page-1)*itemsPerPage).limit(itemsPerPage).lean().exec((err, posts) => {
+    Post.find({}).populate('createdBy', '_id username first_name last_name').select(selector).sort({ '_id': -1 }).skip((page-1)*itemsPerPage).limit(itemsPerPage).lean().exec((err, posts) => {
       if(err) {
         res.json({ success: false, message: err });
       } else {
@@ -78,7 +78,7 @@ router.get('/page/:page/:itemsPerPage', get_user, (req, res) => {
         } else {
           if(req.user.authenticated){
             posts.forEach(post => {
-              post.comments = post.comments.length;
+              post.totalComments = post.comments.length;
               found = false;
               for(let i = 0; i < post.likedBy.length; i++) {
                 if(post.likedBy[i].equals(req.user._id)){
@@ -107,7 +107,7 @@ router.get('/page/:page/:itemsPerPage', get_user, (req, res) => {
             });
           } else {
             posts.forEach(post => {
-              post.comments = post.comments.length;
+              post.totalComments = post.comments.length;
             });
           }
           res.json({ success: true, posts: posts });
@@ -171,7 +171,7 @@ router.get('/user/:username/page/:page', get_user, (req, res) => {
                   });
                 } else {
                   posts.forEach(post => {
-                    post.comments = post.comments.length;
+                    post.totalComments = post.comments.length;
                   });
                 }
                 res.json({ success: true, posts: posts });
@@ -196,7 +196,7 @@ router.get('/get/:id', get_user, (req, res) => {
         if (!post) {
           res.json({ success: false, message: 'Post not found' });
         } else {
-          post.comments = post.comments.length;
+          post.totalComments = post.comments.length;
           if(req.user.authenticated){
             found = false;
             for(let i = 0; i < post.likedBy.length; i++) {

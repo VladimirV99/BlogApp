@@ -1,5 +1,37 @@
 @import "./ui";
 
+:host-context(.theme-light) .modal-content{
+  @include background-light-secondary;
+
+  .close {
+    color: $color-light-text;
+  }
+
+  .modal-header {
+    border-bottom-color: $color-light-primary;
+  }
+
+  .modal-footer {
+    border-top-color: $color-light-primary;
+  }
+}
+
+:host-context(.theme-dark) .modal-content{
+  @include background-dark-secondary;
+
+  .close {
+    color: $color-dark-text;
+  }
+
+  .modal-header {
+    border-bottom-color: $color-dark-primary;
+  }
+
+  .modal-footer {
+    border-top-color: $color-dark-primary;
+  }
+}
+
 .post {
   border-radius: .3rem;
   padding: .25rem;

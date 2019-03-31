@@ -33,11 +33,11 @@
 
     <div *ngIf="!loading">
       <div *ngFor="let post of posts">
-        <app-article [post]="post" [user]="user" (reload)="getPosts()" (delete)="deletePost($event)"></app-article>
+        <app-article [post]="post" [user]="user" (reload)="getPosts()" (delete)="onDelete($event)"></app-article>
       </div>
     </div>
 
-    <app-pager [totalItems]="2" [itemsPerPage]="postService.postsPerPage" [currentPage]="page" [pagesToShow]="uiService.pagesToShow" [loading]="false"
+    <app-pager [totalItems]="totalPosts" [itemsPerPage]="postService.postsPerPage" [currentPage]="page" [pagesToShow]="uiService.pagesToShow" [loading]="false"
     (goNext)="onNextPage()" (goPrev)="onPrevPage()" (goPage)="goToPage($event)"></app-pager>
   </div>
 

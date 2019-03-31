@@ -2,33 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 
 import { AuthService } from './auth.service';
-
-export interface Post{
-  title: string;
-  body: string;
-  createdBy: {
-    username: string;
-    first_name: string;
-    last_name: string;
-  };
-  createdAt: string;
-  likes: number;
-  likedByUser: boolean;
-  dislikes: number;
-  dislikedByUser: boolean;
-}
-
-export interface Comment {
-  comment: string;
-  createdBy: {
-    username: string;
-    first_name: string;
-    last_name: string;
-    photo: string;
-  };
-  createdAt: string;
-  replies: Comment[];
-}
+import Post from '../models/post';
+import Comment from '../models/comment';
 
 export interface PostMessage {
   success: boolean;
