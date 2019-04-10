@@ -88,15 +88,13 @@ export class RegisterComponent implements OnInit {
     this.processing = true;
     this.disableForm();
     
-    const user = {
-      first_name: this.registerForm.get('first_name').value,
-      last_name: this.registerForm.get('last_name').value,
-      username: this.registerForm.get('username').value,
-      email: this.registerForm.get('email').value,
-      password: this.registerForm.get('password').value
-    }
+    let first_name = this.registerForm.get('first_name').value;
+    let last_name = this.registerForm.get('last_name').value;
+    let username = this.registerForm.get('username').value;
+    let email = this.registerForm.get('email').value;
+    let password = this.registerForm.get('password').value;
 
-    this.authService.registerUser(user).subscribe(data => {
+    this.authService.registerUser(first_name, last_name, username, email, password).subscribe(data => {
       if (!data.success) {
         this.message = data.message;
         this.processing = false;

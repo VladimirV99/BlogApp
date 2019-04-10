@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,7 @@ export class UiService {
   pagesToShow = 8;
   dropdowns: {id: string, toggle: string, callback: Function, open: boolean}[] = [];
 
-  constructor() {
+  constructor(private authService: AuthService) {
     let darkModeStorage = localStorage.getItem('dark-mode');
     if(darkModeStorage=="true")
       this.darkMode = true;
@@ -21,6 +22,14 @@ export class UiService {
       this.roundIcons = true;
     else
       this.roundIcons = false;
+  }
+
+  noPhoto(): string {
+    return this.authService.getDomain() + 'uploads/no-user.png';
+  }
+
+  getPhoto(photo: string): string {
+    return this.authService.getDomain() + photo;
   }
 
   setDarkMode(flag: boolean) {

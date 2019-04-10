@@ -17,7 +17,7 @@ export class UserComponent implements OnInit {
   message: string = '';
   messageClass: string = '';
 
-  noPhoto: string = this.authService.domain + 'uploads/no-user.png';
+  noPhoto: string = this.uiService.noPhoto();
 
   user: User;
 
@@ -67,7 +67,7 @@ export class UserComponent implements OnInit {
         } else {
           this.user = profileData.user;
           if(this.user.photo)
-            this.user.photo = this.authService.domain + this.user.photo;
+            this.user.photo = this.uiService.getPhoto(this.profile.photo);
           this.authService.getUserProfile(this.activatedRoute.snapshot.params.username).subscribe(data => {
             if(!data.success) {
               this.messageClass = 'alert alert-danger';
@@ -75,7 +75,7 @@ export class UserComponent implements OnInit {
             } else {
               this.profile = data.user;
               if(this.profile.photo)
-                this.profile.photo = this.authService.domain + this.profile.photo;
+                this.profile.photo = this.uiService.getPhoto(this.profile.photo);
               this.getPosts();
             }
           });

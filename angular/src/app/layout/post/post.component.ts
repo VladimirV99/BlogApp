@@ -18,7 +18,7 @@ export class PostComponent implements OnInit {
   message: string = '';
   messageClass: string = '';
 
-  noPhoto: string = this.authService.domain + 'uploads/no-user.png';
+  noPhoto: string = this.uiService.noPhoto();
 
   user: User;
   post: Post;

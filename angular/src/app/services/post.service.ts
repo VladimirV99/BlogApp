@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { AuthService } from './auth.service';
 import Post from '../models/post';
 import Comment from '../models/comment';
+import { Observable } from 'rxjs';
 
 export interface PostMessage {
   success: boolean;
@@ -20,7 +21,7 @@ export interface PostMessage {
 })
 export class PostService {
 
-  domain = this.authService.domain;
+  domain = this.authService.getDomain();
   postsPerPage = 1;
   commentsPerPage = 1;
 
@@ -29,57 +30,57 @@ export class PostService {
     private authService: AuthService
   ) { }
 
-  newPost(post) {
+  newPost(post): Observable<PostMessage> {
     let headers = this.authService.createAuthenticationHeaders();
     return this.http.post<PostMessage>(this.domain + 'posts/newPost', post, {headers: headers});
   }
 
-  getPosts(page) {
+  getPosts(page: number): Observable<PostMessage> {
     let headers = this.authService.createAuthenticationHeaders();
     return this.http.get<PostMessage>(this.domain + 'posts/page/' + page + '/' + this.postsPerPage.toString(), {headers: headers});
   }
 
-  getPost(id) {
+  getPost(id: string): Observable<PostMessage> {
     let headers = this.authService.createAuthenticationHeaders();
     return this.http.get<PostMessage>(this.domain + 'posts/get/' + id, {headers: headers});
   }
 
-  getPostCount() {
+  getPostCount(): Observable<PostMessage> {
     let headers = this.authService.createHeaders();
     return this.http.get<PostMessage>(this.domain + 'posts/count', {headers: headers});
   }
 
-  getUserPosts(username, page) {
+  getUserPosts(username: string, page: number): Observable<PostMessage> {
     let headers = this.authService.createAuthenticationHeaders();
     return this.http.get<PostMessage>(this.domain + 'posts/user/' + username + '/page/' + page, {headers: headers});
   }
 
-  getUserPostCount(username) {
+  getUserPostCount(username: string): Observable<PostMessage> {
     let headers = this.authService.createHeaders();
     return this.http.get<PostMessage>(this.domain + 'posts/user/' + username + '/count', {headers: headers});
   }
 
-  getPopular() {
+  getPopular(): Observable<PostMessage> {
     let headers = this.authService.createHeaders();
     return this.http.get<PostMessage>(this.domain + 'posts/popular', {headers: headers});
   }
 
-  likePost(id) {
+  likePost(id: string): Observable<PostMessage> {
     let headers = this.authService.createAuthenticationHeaders();
     return this.http.put<PostMessage>(this.domain + 'posts/like', { id: id }, {headers: headers});
   }
 
-  dislikePost(id) {
+  dislikePost(id: string): Observable<PostMessage> {
     let headers = this.authService.createAuthenticationHeaders();
     return this.http.put<PostMessage>(this.domain + 'posts/dislike', { id: id }, {headers: headers});
   }
 
-  editPost(id) {
+  editPost(post): Observable<PostMessage> {
     let headers = this.authService.createAuthenticationHeaders();
-    return this.http.put<PostMessage>(this.domain + 'posts/update/', id, {headers: headers});
+    return this.http.put<PostMessage>(this.domain + 'posts/update/', post, {headers: headers});
   }
 
-  deletePost(id) {
+  deletePost(id: string): Observable<PostMessage> {
     let headers = this.authService.createAuthenticationHeaders();
     return this.http.delete<PostMessage>(this.domain + 'posts/delete/' + id, {headers: headers});
   }
@@ -94,22 +95,22 @@ export class PostService {
     return this.http.post<PostMessage>(this.domain + 'comments/newReply', reply,  {headers: headers});
   }
 
-  getComments(post_id, before=Date.now(), limit=this.commentsPerPage) {
+  getComments(post_id: string, before=Date.now(), limit=this.commentsPerPage): Observable<PostMessage> {
     let headers = this.authService.createHeaders();
     return this.http.post<PostMessage>(this.domain + 'comments/getComments/' + post_id, {before: before, limit: limit}, {headers: headers});
   }
 
-  getReplies(comment_id, before=Date.now(), limit=this.commentsPerPage) {
+  getReplies(comment_id: string, before=Date.now(), limit=this.commentsPerPage): Observable<PostMessage> {
     let headers = this.authService.createHeaders();
     return this.http.post<PostMessage>(this.domain + 'comments/getReplies/' + comment_id, {before: before, limit: limit}, {headers: headers});
   }
 
-  getCommentCount(id) {
+  getCommentCount(id: string): Observable<PostMessage> {
     let headers = this.authService.createHeaders();
     return this.http.get<PostMessage>(this.domain + 'comments/count/' + id, {headers: headers});
   }
 
-  deleteComment(id) {
+  deleteComment(id: string): Observable<PostMessage> {
     let headers = this.authService.createAuthenticationHeaders();
     return this.http.delete<PostMessage>(this.domain + 'comments/delete/' + id, {headers: headers});
   }

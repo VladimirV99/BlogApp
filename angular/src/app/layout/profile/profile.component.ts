@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { AuthService } from '../../services/auth.service';
 import { ValidateService } from '../../services/validate.service';
+import { UiService } from 'src/app/services/ui.service';
 import User from 'src/app/models/user';
 
 @Component({
@@ -14,7 +15,7 @@ export class ProfileComponent implements OnInit {
 
   newPhotoFile: File;
   newPhoto: string;
-  noPhoto: string = this.authService.domain + 'uploads/no-user.png';
+  noPhoto: string = this.uiService.noPhoto();
 
   message: string = '';
   messageClass: string = '';
@@ -37,7 +38,8 @@ export class ProfileComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
-    private validateService: ValidateService
+    private validateService: ValidateService,
+    private uiService: UiService
   ) {
     this.createPhotoUpdateForm();
     this.createProfileUpdateForm();
@@ -102,13 +104,11 @@ export class ProfileComponent implements OnInit {
     this.processingProfileUpdate = true;
     this.disableProfileUpdateForm();
     
-    const user = {
-      first_name: this.profileUpdateForm.get('first_name').value,
-      last_name: this.profileUpdateForm.get('last_name').value,
-      email: this.profileUpdateForm.get('email').value,
-    }
+    let first_name = this.profileUpdateForm.get('first_name').value;
+    let last_name = this.profileUpdateForm.get('last_name').value;
+    let email = this.profileUpdateForm.get('email').value;
 
-    this.authService.updateProfile(user).subscribe(data => {
+    this.authService.updateProfile(first_name, last_name, email).subscribe(data => {
       if (!data.success) {
         this.messageClass = 'alert alert-danger';
         this.message = data.message;
@@ -137,12 +137,10 @@ export class ProfileComponent implements OnInit {
     this.processingPasswordChange = true;
     this.disablePasswordChangeForm();
     
-    const user = {
-      old_password: this.passwordChangeForm.get('old_password').value,
-      new_password: this.passwordChangeForm.get('new_password').value
-    }
+    let old_password = this.passwordChangeForm.get('old_password').value;
+    let new_password = this.passwordChangeForm.get('new_password').value;
 
-    this.authService.changePassword(user).subscribe(data => {
+    this.authService.changePassword(old_password, new_password).subscribe(data => {
       if(!data.success) {
         this.messageClass = 'alert alert-danger';
         this.message = data.message;
@@ -194,7 +192,7 @@ export class ProfileComponent implements OnInit {
         this.message = data.message;
       } else {
         this.user = data.user;
-        this.user.photo = this.user.photo ? this.authService.domain + this.user.photo : this.noPhoto;
+        this.user.photo = this.user.photo ? this.uiService.getPhoto(this.user.photo) : this.noPhoto;
         this.profileUpdateForm.controls['first_name'].setValue(data.user.first_name);
         this.profileUpdateForm.controls['last_name'].setValue(data.user.last_name);
         this.profileUpdateForm.controls['email'].setValue(data.user.email);

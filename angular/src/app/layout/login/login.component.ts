@@ -48,12 +48,10 @@ export class LoginComponent implements OnInit {
     this.processing = true;
     this.disableForm();
     
-    const user = {
-      username: this.loginForm.get('username').value,
-      password: this.loginForm.get('password').value
-    }
+    let username = this.loginForm.get('username').value;
+    let password = this.loginForm.get('password').value;
 
-    this.authService.loginUser(user).subscribe(data => {
+    this.authService.loginUser(username, password).subscribe(data => {
       if (!data.success) {
         this.message = data.message;
         this.loginForm.controls['password'].reset();

@@ -79,7 +79,7 @@ router.post('/register', (req, res) => {
       first_name: req.body.first_name,
       last_name: req.body.last_name,
       name: req.body.name,
-      photo: 'public/uploads/no-user.png',
+      photo: 'uploads/no-user.png',
       email: req.body.email,
       username: req.body.username,
       password: req.body.password
@@ -134,7 +134,8 @@ router.post('/login', (req, res) => {
               first_name: user.first_name,
               last_name: user.last_name,
               username: user.username,
-              email: user.email
+              email: user.email,
+              photo: user.photo
             }
           });
         } else {

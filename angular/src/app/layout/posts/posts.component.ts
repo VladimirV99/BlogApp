@@ -84,7 +84,7 @@ export class PostsComponent implements OnInit {
         } else {
           this.user = profileData.user;
           if(this.user.photo)
-            this.user.photo = this.authService.domain + this.user.photo;
+            this.user.photo = this.uiService.getPhoto(this.user.photo);
           this.getPosts();
         }
       });
