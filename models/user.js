@@ -188,10 +188,8 @@ module.exports.login = function(username, password, callback) {
   User.findByUsername(username, (err, user) => {
     if(err) throw err;
     if(!user){
-      console.log("test");
       callback({message:'Username not found'});
     }
-    console.log(user);
     User.comparePassword(password, user.password, (err, isMatch) => {
       if(err) throw err;
       if(isMatch){

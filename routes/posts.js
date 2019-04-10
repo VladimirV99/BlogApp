@@ -142,7 +142,7 @@ router.get('/user/:username/page/:page', get_user, (req, res) => {
               } else {
                 if(req.user.authenticated){
                   posts.forEach(post => {
-                    post.comments = post.comments.length;
+                    post.totalComments = post.comments.length;
                     found = false;
                     for(let i = 0; i < post.likedBy.length; i++) {
                       if(post.likedBy[i].equals(req.user._id)){
