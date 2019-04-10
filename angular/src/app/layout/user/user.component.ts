@@ -62,7 +62,7 @@ export class UserComponent implements OnInit {
     if(this.authService.loggedIn()){
       this.user = this.authService.getUser();
       if(this.user.photo)
-        this.user.photo = this.uiService.getPhoto(this.profile.photo);
+        this.user.photo = this.uiService.getPhoto(this.user.photo);
       this.authService.getUserProfile(this.activatedRoute.snapshot.params.username).subscribe(data => {
         if(!data.success) {
           this.messageClass = 'alert alert-danger';
