@@ -41,26 +41,17 @@ export class EditComponent implements OnInit {
     });
   }
 
-  disableForm() {
+  disableForm(): void {
     this.editForm.controls['title'].disable();
     this.editForm.controls['body'].disable();
   }
 
-  enableForm() {
+  enableForm(): void {
     this.editForm.controls['title'].enable();
     this.editForm.controls['body'].enable();
   }
 
-  validateTitle(controls) {
-    const titleRegExp = new RegExp(/^[a-zA-Z0-9\-\s]+$/);
-    if (titleRegExp.test(controls.value)) {
-      return null;
-    } else {
-      return { 'validateTitle': true }
-    }
-  }
-
-  onEditSubmit() {
+  onEditSubmit(): void {
     this.processing = true;
     this.disableForm();
     
