@@ -218,11 +218,26 @@ export class ProfileComponent implements OnInit {
 
   onPhotoSelect(event): void {
     if (event.target.files && event.target.files[0]) {
-      this.newPhotoFile = event.target.files[0];
-
-      const reader = new FileReader();
-      reader.onload = e => this.newPhoto = reader.result.toString();
-      reader.readAsDataURL(this.newPhotoFile);
+      if(event.target.files[0].size >= 1000000){
+        this.messageClass = 'alert-danger';
+        this.message = 'Image must be less than 1Mb';
+      } else {
+        this.newPhotoFile = event.target.files[0];
+        const reader = new FileReader();
+        reader.onload = e => {
+          let img = new Image();
+          img.onload = () => {
+            if(img.width == img.height) {
+              this.newPhoto = reader.result.toString();
+            } else {
+              this.messageClass = 'alert-danger';
+              this.message = 'Image must have same height and width';
+            }
+          };
+          img.src = reader.result.toString();
+        };
+        reader.readAsDataURL(this.newPhotoFile);
+      }
     }
   }
 
