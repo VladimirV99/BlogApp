@@ -27,24 +27,24 @@ export class LoginComponent implements OnInit {
     this.createForm();
   }
 
-  createForm() {
+  createForm(): void {
     this.loginForm = this.formBuilder.group({
       username: ['', Validators.required],
       password: ['', Validators.required]
     });
   }
 
-  disableForm() {
+  disableForm(): void {
     this.loginForm.controls['username'].disable();
     this.loginForm.controls['password'].disable();
   }
 
-  enableForm() {
+  enableForm(): void {
     this.loginForm.controls['username'].enable();
     this.loginForm.controls['password'].enable();
   }
 
-  onLoginSubmit() {
+  onLoginSubmit(): void {
     this.processing = true;
     this.disableForm();
     

@@ -128,14 +128,7 @@ export class PostComponent implements OnInit {
 
   ngOnInit() {
     if(this.authService.loggedIn()){
-      this.authService.getProfile().subscribe(profileData => {
-        if (!profileData.success) {
-          this.messageClass = 'alert alert-danger';
-          this.message = profileData.message;
-        } else {
-          this.user = profileData.user;
-        }
-      });
+      this.user = this.authService.getUser();
     }
     this.getPost();
   }

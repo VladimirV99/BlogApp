@@ -12,7 +12,7 @@ export class AppComponent {
 
   }
 
-  hasParentWithId(element, id) {
+  hasParentWithId(element: Element, id: string): boolean {
     while(element != null) {
       if(element.id == id)
         return true;
@@ -21,7 +21,7 @@ export class AppComponent {
     return false;
   }
 
-  closeDropdowns(event) {
+  closeDropdowns(event): boolean {
     this.uiService.getDropdowns().forEach(element => {
       if(element.open && ((event.target.id != element.toggle && event.target.tagName == 'A') || !this.hasParentWithId(event.target, element.id))) {
         element.open = false;

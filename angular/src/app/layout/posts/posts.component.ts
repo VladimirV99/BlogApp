@@ -31,14 +31,14 @@ export class PostsComponent implements OnInit {
     private uiService: UiService
   ) { }
 
-  loadMorePosts() {
+  loadMorePosts(): void {
     if(this.posts.length<this.totalPosts) {
       this.page++
       this.getPosts();
     }
   }
 
-  getPosts() {
+  getPosts(): void {
     this.loadingPosts = true;
     this.postService.getUserPostCount(this.user.username).subscribe(data => {
       if(!data.success) {
@@ -54,11 +54,11 @@ export class PostsComponent implements OnInit {
     });
   }
 
-  prepareToDelete(id) {
+  prepareToDelete(id: string): void {
     this.postToDelete = id;
   }
 
-  deletePost() {
+  deletePost(): void {
     if(this.postToDelete){
       this.postService.deletePost(this.postToDelete).subscribe(data => {
         for(let i=0; i<this.posts.length; i++) {
@@ -77,17 +77,10 @@ export class PostsComponent implements OnInit {
 
   ngOnInit() {
     if(this.authService.loggedIn()){
-      this.authService.getProfile().subscribe(profileData => {
-        if (!profileData.success) {
-          this.messageClass = 'alert alert-danger';
-          this.message = profileData.message;
-        } else {
-          this.user = profileData.user;
-          if(this.user.photo)
-            this.user.photo = this.uiService.getPhoto(this.user.photo);
-          this.getPosts();
-        }
-      });
+      this.user = this.authService.getUser();
+      if(this.user.photo)
+        this.user.photo = this.uiService.getPhoto(this.user.photo);
+      this.getPosts();
     }
   }
 

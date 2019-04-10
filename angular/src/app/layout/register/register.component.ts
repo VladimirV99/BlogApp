@@ -32,7 +32,7 @@ export class RegisterComponent implements OnInit {
     this.createForm();
   }
 
-  createForm() {
+  createForm(): void {
     this.registerForm = this.formBuilder.group({
       first_name: ['', Validators.compose([
         Validators.required,
@@ -66,7 +66,7 @@ export class RegisterComponent implements OnInit {
     }, { validator: this.validateService.matchingPasswords('password', 'confirmPassword') });
   }
 
-  disableForm() {
+  disableForm(): void {
     this.registerForm.controls['first_name'].disable();
     this.registerForm.controls['last_name'].disable();
     this.registerForm.controls['email'].disable();
@@ -75,7 +75,7 @@ export class RegisterComponent implements OnInit {
     this.registerForm.controls['confirmPassword'].disable();
   }
 
-  enableForm() {
+  enableForm(): void {
     this.registerForm.controls['first_name'].enable();
     this.registerForm.controls['last_name'].enable();
     this.registerForm.controls['email'].enable();
@@ -84,7 +84,7 @@ export class RegisterComponent implements OnInit {
     this.registerForm.controls['confirmPassword'].enable();
   }
 
-  onRegisterSubmit() {
+  onRegisterSubmit(): void {
     this.processing = true;
     this.disableForm();
     
@@ -105,7 +105,7 @@ export class RegisterComponent implements OnInit {
     });
   }
 
-  checkEmail() {
+  checkEmail(): void {
     if(this.registerForm.get('email').value=='' || this.registerForm.get('email').errors){
       this.clearEmail();
       return;
@@ -122,13 +122,13 @@ export class RegisterComponent implements OnInit {
     });
   }
 
-  clearEmail() {
+  clearEmail(): void {
     this.emailChecked = false;
     this.emailValid = false;
     this.emailMessage = '';
   }
 
-  checkUsername() {
+  checkUsername(): void {
     if(this.registerForm.get('username').value=='' || this.registerForm.get('username').errors){
       this.clearUsername();
       return;
@@ -145,7 +145,7 @@ export class RegisterComponent implements OnInit {
     });
   }
 
-  clearUsername() {
+  clearUsername(): void {
     this.usernameChecked = false;
     this.usernameValid = false;
     this.usernameMessage = '';

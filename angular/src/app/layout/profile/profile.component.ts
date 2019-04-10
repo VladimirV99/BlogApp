@@ -46,13 +46,13 @@ export class ProfileComponent implements OnInit {
     this.createPasswordChangeForm();
   }
 
-  createPhotoUpdateForm() {
+  createPhotoUpdateForm(): void {
     this.photoUpdateForm = this.formBuilder.group({
       userPhoto: ['', Validators.required]
     });
   }
 
-  createProfileUpdateForm() {
+  createProfileUpdateForm(): void {
     this.profileUpdateForm = this.formBuilder.group({
       first_name: ['', Validators.compose([
         Validators.required,
@@ -73,7 +73,7 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  createPasswordChangeForm() {
+  createPasswordChangeForm(): void {
     this.passwordChangeForm = this.formBuilder.group({
       old_password: ['', 
         Validators.required
@@ -88,19 +88,19 @@ export class ProfileComponent implements OnInit {
     }, { validator: this.validateService.matchingPasswords('new_password', 'new_password_confirm') });
   }
 
-  disableProfileUpdateForm() {
+  disableProfileUpdateForm(): void {
     this.profileUpdateForm.controls['first_name'].disable();
     this.profileUpdateForm.controls['last_name'].disable();
     this.profileUpdateForm.controls['email'].disable();
   }
 
-  enableProfileUpdateForm() {
+  enableProfileUpdateForm(): void {
     this.profileUpdateForm.controls['first_name'].enable();
     this.profileUpdateForm.controls['last_name'].enable();
     this.profileUpdateForm.controls['email'].enable();
   }
 
-  onProfileUpdateSubmit() {
+  onProfileUpdateSubmit(): void {
     this.processingProfileUpdate = true;
     this.disableProfileUpdateForm();
     
@@ -121,19 +121,19 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  disablePasswordChangeForm() {
+  disablePasswordChangeForm(): void {
     this.passwordChangeForm.controls['old_password'].disable();
     this.passwordChangeForm.controls['new_password'].disable();
     this.passwordChangeForm.controls['new_password_confirm'].disable();
   }
 
-  enablePasswordChangeForm() {
+  enablePasswordChangeForm(): void {
     this.passwordChangeForm.controls['old_password'].enable();
     this.passwordChangeForm.controls['new_password'].enable();
     this.passwordChangeForm.controls['new_password_confirm'].enable();
   }
 
-  onPasswordChangeSubmit() {
+  onPasswordChangeSubmit(): void {
     this.processingPasswordChange = true;
     this.disablePasswordChangeForm();
     
@@ -156,7 +156,7 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  checkEmail() {
+  checkEmail(): void {
     if(this.profileUpdateForm.get('email').value=='' || this.profileUpdateForm.get('email').errors){
       this.clearEmail();
       return;
@@ -179,7 +179,7 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  clearEmail(){
+  clearEmail(): void {
     this.emailChecked = false;
     this.emailValid = false;
     this.emailMessage = '';
@@ -204,7 +204,7 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  onPhotoSubmit() {
+  onPhotoSubmit(): void {
     this.authService.uploadPhoto(this.newPhotoFile).subscribe(data => {
       if (!data.success) {
         this.messageClass = 'alert alert-danger';
@@ -216,7 +216,7 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  onPhotoSelect(event) {
+  onPhotoSelect(event): void {
     if (event.target.files && event.target.files[0]) {
       this.newPhotoFile = event.target.files[0];
 

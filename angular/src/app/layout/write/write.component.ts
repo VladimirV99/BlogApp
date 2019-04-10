@@ -37,17 +37,17 @@ export class WriteComponent implements OnInit {
     });
   }
 
-  disableForm() {
+  disableForm(): void {
     this.writeForm.controls['title'].disable();
     this.writeForm.controls['body'].disable();
   }
 
-  enableForm() {
+  enableForm(): void {
     this.writeForm.controls['title'].enable();
     this.writeForm.controls['body'].enable();
   }
 
-  onWriteSubmit() {
+  onWriteSubmit(): void {
     this.processing = true;
     this.disableForm();
     

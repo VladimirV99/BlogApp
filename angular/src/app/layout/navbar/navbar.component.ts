@@ -19,20 +19,20 @@ export class NavbarComponent implements OnInit {
     private router: Router
   ) { }
 
-  onLogoutClick() {
+  onLogoutClick(): void {
     this.authService.logout();
     this.router.navigate(['/']);
   }
 
-  toggleDarkMode(event) {
+  toggleDarkMode(event): void {
     this.uiService.setDarkMode(event.target.checked);
   }
 
-  toggleRoundIcons(event) {
+  toggleRoundIcons(event): void {
     this.uiService.setRoundIcons(event.target.checked);
   }
 
-  toggleUserMenu() {
+  toggleUserMenu(): void {
     if(!this.userMenuVisible)
       this.uiService.openDropdown('navbarUser');
     this.userMenuVisible = !this.userMenuVisible;

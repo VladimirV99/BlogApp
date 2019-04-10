@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 
-import Post from '../../models/post';
 import { AuthService } from '../../services/auth.service'
 import { UiService } from '../../services/ui.service';
 import { PostService } from '../../services/post.service';
-import User from 'src/app/models/user';
+import User from '../../models/user';
+import Post from '../../models/post';
 
 @Component({
   selector: 'app-home',
@@ -93,15 +93,8 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if(this.authService.loggedIn()){
-      this.authService.getProfile().subscribe(profileData => {
-        if (!profileData.success) {
-          this.messageClass = 'alert alert-danger';
-          this.message = profileData.message;
-        } else {
-          this.user = profileData.user;
-        }
-      });
+    if(this.authService.loggedIn()) {
+      this.user = this.authService.getUser();
     }
     this.getPosts();
     this.getPopularPosts();

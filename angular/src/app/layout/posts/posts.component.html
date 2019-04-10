@@ -61,33 +61,7 @@
         </tbody>
       </table>
 
-      <!-- <article class="conatiner post bg-color-light" *ngFor="let post of posts">
-        <header class="post-header">
-            <h2 class="post-title"><a class="post-title-link" [routerLink]="['/post/', post._id]">{{post.title}}</a></h2>
-          <span class="post-meta"><small>by <strong>{{post.createdBy.first_name}} {{post.createdBy.last_name}}</strong> on {{ post.createdAt | date:'MMM dd, yyyy' }}</small></span>
-        </header>
-        <div class="post-body">
-          <p>{{post.body}}</p>
-        </div>
-        <footer class="post-footer">
-          <div *ngIf="authService.loggedIn() && user && user._id!=post.createdBy._id">
-            <button type="button" class="btn btn-sm" [ngClass]="{'btn-info': !post.likedByUser, 'btn-primary': post.likedByUser}" (click)="likePost(post._id)">Like{{post.likedByUser?'d':''}}: {{post.likes}}</button>
-            <button type="button" class="btn btn-sm" [ngClass]="{'btn-info': !post.dislikedByUser, 'btn-primary': post.dislikedByUser}" (click)="dislikePost(post._id)">Dislike: {{post.dislikes}}</button>
-            <button type="button" class="btn btn-sm btn-warning" [routerLink]="['/post/', post._id]">Comments: {{post.comments}}</button>
-          </div>
-          <div *ngIf="authService.loggedIn() && user && user.username==post.createdBy.username">
-            <button type="button" class="btn btn-sm btn-success" [routerLink]="['/edit/', post._id]">Edit</button>
-            <button type="button" class="btn btn-sm btn-danger" (click)="prepareToDelete(post._id)" data-toggle="modal" data-target="#deleteModal">Delete</button>
-            <small><strong>Likes:</strong> {{post.likes}} <strong>Dislikes:</strong> {{post.dislikes}}</small>
-          </div>
-          <div *ngIf="!user || !authService.loggedIn()">
-            <small><strong>Likes:</strong> {{post.likes}} <strong>Dislikes:</strong> {{post.dislikes}}</small>
-          </div>
-  
-        </footer>
-      </article> -->
-
       <button *ngIf="posts.length<totalPosts" class="btn btn-primary btn-block" (click)="loadMorePosts()">Load More Posts</button>
   
-      
   </div>
+</div>

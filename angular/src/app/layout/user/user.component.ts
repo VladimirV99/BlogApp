@@ -35,14 +35,14 @@ export class UserComponent implements OnInit {
     private uiService: UiService
   ) { }
 
-  loadMorePosts() {
+  loadMorePosts(): void {
     if(this.posts.length<this.totalPosts) {
       this.page++
       this.getPosts();
     }
   }
 
-  getPosts() {
+  getPosts(): void {
     this.loadingPosts = true;
     this.postService.getUserPostCount(this.profile.username).subscribe(data => {
       if(!data.success) {
@@ -60,25 +60,18 @@ export class UserComponent implements OnInit {
 
   ngOnInit() {
     if(this.authService.loggedIn()){
-      this.authService.getProfile().subscribe(profileData => {
-        if (!profileData.success) {
+      this.user = this.authService.getUser();
+      if(this.user.photo)
+        this.user.photo = this.uiService.getPhoto(this.profile.photo);
+      this.authService.getUserProfile(this.activatedRoute.snapshot.params.username).subscribe(data => {
+        if(!data.success) {
           this.messageClass = 'alert alert-danger';
-          this.message = profileData.message;
+          this.message = data.message;
         } else {
-          this.user = profileData.user;
-          if(this.user.photo)
-            this.user.photo = this.uiService.getPhoto(this.profile.photo);
-          this.authService.getUserProfile(this.activatedRoute.snapshot.params.username).subscribe(data => {
-            if(!data.success) {
-              this.messageClass = 'alert alert-danger';
-              this.message = data.message;
-            } else {
-              this.profile = data.user;
-              if(this.profile.photo)
-                this.profile.photo = this.uiService.getPhoto(this.profile.photo);
-              this.getPosts();
-            }
-          });
+          this.profile = data.user;
+          if(this.profile.photo)
+            this.profile.photo = this.uiService.getPhoto(this.profile.photo);
+          this.getPosts();
         }
       });
     }

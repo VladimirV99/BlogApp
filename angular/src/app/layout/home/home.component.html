@@ -41,8 +41,8 @@
     (goNext)="onNextPage()" (goPrev)="onPrevPage()" (goPage)="goToPage($event)"></app-pager>
   </div>
 
-  <div class="col-md-3">
-    <div *ngIf="popularPosts" class="container post">
+  <div *ngIf="popularPosts" class="col-md-3">
+    <div class="container-fluid post">
       <div class="post-header text-center p-1">
         <h3>Popular</h3>
       </div>
