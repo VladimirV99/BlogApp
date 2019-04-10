@@ -100,7 +100,8 @@ export class RegisterComponent implements OnInit {
         this.processing = false;
         this.enableForm();
       } else {
-        this.router.navigate(['/login']);
+        this.authService.storeUserData(data.token, data.user);
+        this.router.navigate(['/']);
       }
     });
   }

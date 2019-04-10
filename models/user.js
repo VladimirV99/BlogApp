@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
+const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const config = require('../config/database');
 
@@ -154,10 +155,17 @@ module.exports.encryptPassword = function(password, callback) {
   });
 }
 
-module.exports.addUser = function(newUser, callback){
+module.exports.comparePassword = function(candidatePassword, hash, callback){
+  bcrypt.compare(candidatePassword, hash, (err, isMatch) => {
+    if(err) throw err;
+    callback(null, isMatch);
+  });
+}
+
+module.exports.register = function(newUser, callback){
   for(let i = 0; i < passwordValidators.length; i++){
     if(!passwordValidators[i].validator(newUser.password)){
-      callback({errors:{password:{message:passwordValidators[i].message}}});
+      callback({password:{message:passwordValidators[i].message}});
       return;
     }
   }
@@ -170,9 +178,40 @@ module.exports.addUser = function(newUser, callback){
   });
 }
 
-module.exports.comparePassword = function(candidatePassword, hash, callback){
-  bcrypt.compare(candidatePassword, hash, (err, isMatch) => {
+module.exports.login = function(username, password, callback) {
+  if(username == null) {
+    callback({message:'You must provide a username'})
+  }
+  if(password == null) {
+    callback({message:'You must provide a password'});
+  }
+  User.findByUsername(username, (err, user) => {
     if(err) throw err;
-    callback(null, isMatch);
+    if(!user){
+      console.log("test");
+      callback({message:'Username not found'});
+    }
+    console.log(user);
+    User.comparePassword(password, user.password, (err, isMatch) => {
+      if(err) throw err;
+      if(isMatch){
+        const token = jwt.sign({user_id: user._id}, config.secret, {
+          expiresIn: 604800 // 1 week
+        });
+        callback(null, {
+          token: 'bearer ' + token,
+          user: {
+            id: user._id,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            username: user.username,
+            email: user.email,
+            photo: user.photo
+          }
+        });
+      } else {
+        callback({message: 'Wrong password'});
+      }
+    });
   });
 }

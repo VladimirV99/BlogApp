@@ -32,7 +32,6 @@ export class HomeComponent implements OnInit {
   ) { }
 
   getPosts(): void {
-    this.loading = true;
     this.postService.getPostCount().subscribe(data => {
       if(!data.success) {
         this.messageClass = 'alert-danger';

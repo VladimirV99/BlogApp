@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
-const jwt = require('jsonwebtoken');
 const path = require('path');
 const multer = require('multer');
 
@@ -84,23 +83,27 @@ router.post('/register', (req, res) => {
       username: req.body.username,
       password: req.body.password
     });
-    User.addUser(newUser, (err, user) => {
+    User.register(newUser, (err, user) => {
       if(err){
-        if(err.errors) {
-          if(err.errors.email) {
-            res.json({ success: false, message: err.errors.email.message });
-          } else if(err.errors.username) {
-            res.json({ success: false, message: err.errors.username.message})
-          } else if(err.errors.password) {
-            res.json({ success: false, message: err.errors.password.message});
-          } else {
-            res.json({ success: false, message: err });
-          }
-        } else {
-          res.json({success: false, message: 'Failed to register user'});
+        if(err.email) {
+          return res.json({ success: false, message: err.email.message });
+        } else if(err.username) {
+          return res.json({ success: false, message: err.username.message})
+        } else if(err.password) {
+          return res.json({ success: false, message: err.password.message});
         }
+        return res.json({success: false, message: 'Failed to register user'});
       }else{
-        res.json({success: true, message: 'User registered'})
+        User.login(req.body.username, req.body.password, (err, login) => {
+          if(err)
+            return res.json({success: false, message: err.message});
+          return res.json({
+            success: true,
+            message: "Sucess!",
+            token: login.token,
+            user: login.user
+          });
+        });
       }
     });
   }
@@ -114,33 +117,14 @@ router.post('/login', (req, res) => {
   } else {
     const username = req.body.username;
     const password = req.body.password;
-    User.findByUsername(username, (err, user) => {
-      if(err) throw err;
-      if(!user){
-        return res.json({success: false, message: 'Username not found'});
-      }
-      User.comparePassword(password, user.password, (err, isMatch) => {
-        if(err) throw err;
-        if(isMatch){
-          const token = jwt.sign({user_id: user._id}, config.secret, {
-            expiresIn: 604800 // 1 week
-          });
-          res.json({
-            success: true,
-            message: 'Success!',
-            token: 'bearer ' + token,
-            user: {
-              id: user._id,
-              first_name: user.first_name,
-              last_name: user.last_name,
-              username: user.username,
-              email: user.email,
-              photo: user.photo
-            }
-          });
-        } else {
-          return res.json({success: false, message: 'Wrong password'});
-        }
+    User.login(username, password, (err, login) => {
+      if(err)
+        return res.json({success: false, message: err.message});
+      return res.json({
+        success: true,
+        message: "Sucess!",
+        token: login.token,
+        user: login.user
       });
     });
   }
