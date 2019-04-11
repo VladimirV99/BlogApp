@@ -11,7 +11,7 @@
 
       <div *ngIf="profile" class="row p-2 mb-4">
         <div class="col-10 col-sm-3 offset-1 offset-sm-0">
-            <img class="profilePhoto large" [ngClass]="{'round': uiService.roundIcons}" [src]="profile.photo || noPhoto" alt="Profile Photo">
+            <img class="profilePhoto large" [ngClass]="{'round': uiService.getRoundIcons()}" [src]="profile.photo || noPhoto" alt="Profile Photo">
         </div>
         <div id="userinfo" class="col-12 col-sm-9 offset-sm-0">
           <table>

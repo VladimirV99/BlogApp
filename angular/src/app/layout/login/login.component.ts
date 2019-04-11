@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 
 import { AuthService } from '../../services/auth.service';
 import { AuthGuard } from '../../guards/auth.guard';
+import { UiService } from 'src/app/services/ui.service';
 
 @Component({
   selector: 'app-login',
@@ -22,7 +23,8 @@ export class LoginComponent implements OnInit {
     private formBuilder: FormBuilder,
     private router: Router,
     private authService: AuthService,
-    private authGuard: AuthGuard
+    private authGuard: AuthGuard,
+    private uiService: UiService
   ) { 
     this.createForm();
   }
@@ -58,7 +60,8 @@ export class LoginComponent implements OnInit {
         this.processing = false;
         this.enableForm();
       } else {
-        this.authService.storeUserData(data.token, data.user);
+        this.authService.setUserData(data.token, data.user);
+        this.uiService.loadSettings();
         if (this.previousUrl) {
           this.router.navigate([this.previousUrl]);
         } else {

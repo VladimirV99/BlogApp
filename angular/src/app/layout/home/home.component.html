@@ -37,7 +37,7 @@
       </div>
     </div>
 
-    <app-pager [totalItems]="totalPosts" [itemsPerPage]="postService.postsPerPage" [currentPage]="page" [pagesToShow]="uiService.pagesToShow" [loading]="false"
+    <app-pager [totalItems]="totalPosts" [itemsPerPage]="postService.getPostsPerPage()" [currentPage]="page" [pagesToShow]="uiService.getPagesToShow()" [loading]="false"
     (goNext)="onNextPage()" (goPrev)="onPrevPage()" (goPage)="goToPage($event)"></app-pager>
   </div>
 

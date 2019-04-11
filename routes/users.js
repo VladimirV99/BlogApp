@@ -78,7 +78,6 @@ router.post('/register', (req, res) => {
       first_name: req.body.first_name,
       last_name: req.body.last_name,
       name: req.body.name,
-      photo: 'uploads/no-user.png',
       email: req.body.email,
       username: req.body.username,
       password: req.body.password
@@ -255,6 +254,48 @@ router.post('/uploadPhoto', passport.authenticate('jwt', {session: false}), (req
                 }
               });
             }
+          }
+        });
+      }
+    }
+  });
+});
+
+router.post('/darkMode', passport.authenticate('jwt', {session: false}), (req, res) => {
+  User.findById(req.user._id, (err, user) => {
+    if(err) {
+      res.json({ success: false, message: 'Something went wrong' });
+    } else {
+      if(!user) {
+        res.json({ success: false, message: 'User not found' });
+      } else {
+        user.dark_mode = req.body.status;
+        user.save((err) => {
+          if(err) {
+            res.json({ success: false, message: 'Something went wrong' });
+          } else {
+            res.json({ success: true, message: 'Dark Mode Activated' });
+          }
+        });
+      }
+    }
+  });
+});
+
+router.post('/roundIcons', passport.authenticate('jwt', {session: false}), (req, res) => {
+  User.findById(req.user._id, (err, user) => {
+    if(err) {
+      res.json({ success: false, message: 'Something went wrong' });
+    } else {
+      if(!user) {
+        res.json({ success: false, message: 'User not found' });
+      } else {
+        user.round_icons = req.body.status;
+        user.save((err) => {
+          if(err) {
+            res.json({ success: false, message: 'Something went wrong' });
+          } else {
+            res.json({ success: true, message: 'Round Icons Activated' });
           }
         });
       }

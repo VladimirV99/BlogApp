@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 
 import { AuthService } from '../../services/auth.service';
 import { ValidateService } from '../../services/validate.service';
+import { UiService } from 'src/app/services/ui.service';
 
 @Component({
   selector: 'app-register',
@@ -27,7 +28,8 @@ export class RegisterComponent implements OnInit {
     private formBuilder: FormBuilder,
     private router: Router,
     private authService: AuthService,
-    private validateService: ValidateService
+    private validateService: ValidateService,
+    private uiService: UiService
   ) { 
     this.createForm();
   }
@@ -100,7 +102,8 @@ export class RegisterComponent implements OnInit {
         this.processing = false;
         this.enableForm();
       } else {
-        this.authService.storeUserData(data.token, data.user);
+        this.authService.setUserData(data.token, data.user);
+        this.uiService.loadSettings();
         this.router.navigate(['/']);
       }
     });

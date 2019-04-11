@@ -77,9 +77,17 @@ export class AuthService {
     return this.http.post<AuthMessage>(this.domain + 'users/login', {username, password}, {headers: headers});
   }
 
-  storeUserData(token: string, user: User): void {
+  storeToken(token: string): void {
     localStorage.setItem('token', token);
+  }
+
+  storeUser(user: User): void {
     localStorage.setItem('user', JSON.stringify(user));
+  }
+
+  setUserData(token: string, user: User): void {
+    this.storeToken(token);
+    this.storeUser(user);
     this.authToken = token;
     this.user = user;
   }
@@ -94,7 +102,18 @@ export class AuthService {
   logout(): void {
     this.authToken = null;
     this.user = null;
-    localStorage.clear();
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+  }
+
+  setDarkMode(status: boolean): Observable<AuthMessage> {
+    let headers = this.createAuthenticationHeaders();
+    return this.http.post<AuthMessage>(this.domain + 'users/darkMode', {status}, {headers: headers});
+  }
+
+  setRoundIcons(status: boolean): Observable<AuthMessage> {
+    let headers = this.createAuthenticationHeaders();
+    return this.http.post<AuthMessage>(this.domain + 'users/roundIcons', {status}, {headers: headers});
   }
 
   getProfile(): Observable<AuthMessage> {

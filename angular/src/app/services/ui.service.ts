@@ -1,27 +1,58 @@
 import { Injectable } from '@angular/core';
 import { AuthService } from './auth.service';
 
+export interface Dropdown {
+  id: string;
+  toggle: string;
+  callback: Function;
+  open: boolean;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class UiService {
 
-  darkMode: boolean;
-  roundIcons: boolean;
-  pagesToShow = 8;
-  dropdowns: {id: string, toggle: string, callback: Function, open: boolean}[] = [];
+  private darkMode: boolean;
+  private roundIcons: boolean;
+  private pagesToShow = 8;
+  private dropdowns: Dropdown[] = [];
 
   constructor(private authService: AuthService) {
-    let darkModeStorage = localStorage.getItem('dark-mode');
-    if(darkModeStorage=="true")
-      this.darkMode = true;
-    else
-      this.darkMode = false;
-    let roundIconsStorage = localStorage.getItem('round-icons');
-    if(roundIconsStorage=="true")
-      this.roundIcons = true;
-    else
-      this.roundIcons = false;
+    this.loadSettings();
+  }
+
+  loadSettings(): void {
+    if(this.authService.loggedIn()) {
+      if(this.authService.getUser().dark_mode)
+        this.darkMode = this.authService.getUser().dark_mode;
+      else
+        this.darkMode = false;
+    } else {
+      if(localStorage.getItem('dark-mode')=="true")
+        this.darkMode = true;
+      else
+        this.darkMode = false;
+    }
+    if(this.authService.loggedIn()) {
+      if(this.authService.getUser().round_icons)
+        this.roundIcons = this.authService.getUser().round_icons;
+      else
+        this.roundIcons = false;
+    } else {
+      if(localStorage.getItem('round-icons')=="true")
+        this.roundIcons = true;
+      else
+        this.roundIcons = false;
+    }
+  }
+
+  getDarkMode(): boolean {
+    return this.darkMode;
+  }
+
+  getRoundIcons(): boolean {
+    return this.roundIcons;
   }
 
   noPhoto(): string {
@@ -32,25 +63,41 @@ export class UiService {
     return this.authService.getDomain() + photo;
   }
 
-  setDarkMode(flag: boolean) {
+  getPagesToShow(): number {
+    return this.pagesToShow;
+  }
+
+  setDarkMode(flag: boolean): void {
     this.darkMode = flag;
-    localStorage.setItem('dark-mode', this.darkMode ? "true" : "false");
+    this.authService.setDarkMode(flag).subscribe(data => {
+      if(data.success){
+        this.authService.getUser().dark_mode = flag;
+        this.authService.storeUser(this.authService.getUser());
+        localStorage.setItem('dark-mode', this.darkMode ? "true" : "false");
+      }
+    });
   }
 
-  setRoundIcons(flag: boolean) {
+  setRoundIcons(flag: boolean): void {
     this.roundIcons = flag;
-    localStorage.setItem('round-icons', this.roundIcons ? "true" : "false");
+    this.authService.setRoundIcons(flag).subscribe(data => {
+      if(data.success){
+        this.authService.getUser().round_icons = flag;
+        this.authService.storeUser(this.authService.getUser());
+        localStorage.setItem('round-icons', this.roundIcons ? "true" : "false");
+      }
+    });
   }
 
-  getDropdowns() {
+  getDropdowns(): Dropdown[] {
     return this.dropdowns;
   }
 
-  registerDropdown(id: string, toggle: string, callback: Function, open: boolean) {
-    this.dropdowns.push({id: id, toggle: toggle, callback: callback, open: open});
+  registerDropdown(id: string, toggle: string, callback: Function, open: boolean): void {
+    this.dropdowns.push({id, toggle, callback, open});
   }
 
-  openDropdown(id) {
+  openDropdown(id: string): void {
     for(let i = 0; i < this.dropdowns.length; i++){
       if(this.dropdowns[i].id == id){
         this.dropdowns[i].open = true;

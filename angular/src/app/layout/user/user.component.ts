@@ -63,18 +63,18 @@ export class UserComponent implements OnInit {
       this.user = this.authService.getUser();
       if(this.user.photo)
         this.user.photo = this.uiService.getPhoto(this.user.photo);
-      this.authService.getUserProfile(this.activatedRoute.snapshot.params.username).subscribe(data => {
-        if(!data.success) {
-          this.messageClass = 'alert alert-danger';
-          this.message = data.message;
-        } else {
-          this.profile = data.user;
-          if(this.profile.photo)
-            this.profile.photo = this.uiService.getPhoto(this.profile.photo);
-          this.getPosts();
-        }
-      });
     }
+    this.authService.getUserProfile(this.activatedRoute.snapshot.params.username).subscribe(data => {
+      if(!data.success) {
+        this.messageClass = 'alert alert-danger';
+        this.message = data.message;
+      } else {
+        this.profile = data.user;
+        if(this.profile.photo)
+          this.profile.photo = this.uiService.getPhoto(this.profile.photo);
+        this.getPosts();
+      }
+    });
   }
 
   dismissAlert(): void {

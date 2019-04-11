@@ -5,4 +5,6 @@ export default interface User {
   username: string;
   email: string;
   photo: string;
+  dark_mode?: boolean;
+  round_icons?: boolean;
 }

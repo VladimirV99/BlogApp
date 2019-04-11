@@ -73,7 +73,7 @@ export class HomeComponent implements OnInit {
   }
 
   onNextPage(): void {
-    if(this.page<Math.ceil(this.totalPosts/this.postService.postsPerPage)){
+    if(this.page<Math.ceil(this.totalPosts/this.postService.getPostsPerPage())){
       this.page++;
       this.getPosts();
     }

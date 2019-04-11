@@ -112,7 +112,8 @@ const UserSchema = mongoose.Schema({
     validate: nameValidators
   },
   photo: {
-    type: String
+    type: String,
+    default: 'uploads/no-user.png'
   },
   email: {
     type: String,
@@ -129,6 +130,14 @@ const UserSchema = mongoose.Schema({
   password: {
     type: String,
     required: true
+  },
+  dark_mode: {
+    type: Boolean,
+    default: false
+  },
+  round_icons: {
+    type: Boolean,
+    default: false
   }
 });
 
@@ -204,7 +213,9 @@ module.exports.login = function(username, password, callback) {
             last_name: user.last_name,
             username: user.username,
             email: user.email,
-            photo: user.photo
+            photo: user.photo,
+            dark_mode: user.dark_mode,
+            round_icons: user.round_icons
           }
         });
       } else {

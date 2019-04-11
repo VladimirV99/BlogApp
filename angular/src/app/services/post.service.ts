@@ -21,14 +21,22 @@ export interface PostMessage {
 })
 export class PostService {
 
-  domain = this.authService.getDomain();
-  postsPerPage = 1;
-  commentsPerPage = 1;
+  private domain: string = this.authService.getDomain();
+  private postsPerPage: number = 1;
+  private commentsPerPage: number = 1;
 
   constructor(
     private http: HttpClient,
     private authService: AuthService
   ) { }
+
+  getPostsPerPage(): number {
+    return this.postsPerPage;
+  }
+
+  getCommentsPerPage(): number {
+    return this.commentsPerPage;
+  }
 
   newPost(post): Observable<PostMessage> {
     let headers = this.authService.createAuthenticationHeaders();
