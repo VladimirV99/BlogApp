@@ -86,23 +86,26 @@ router.post('/register', (req, res) => {
     User.register(newUser, (err, user) => {
       if(err){
         if(err.email) {
-          return res.status(400).json({ success: false, message: err.email.message });
+          res.status(400).json({ success: false, message: err.email.message });
         } else if(err.username) {
-          return res.status(400).json({ success: false, message: err.username.message})
+          res.status(400).json({ success: false, message: err.username.message})
         } else if(err.password) {
-          return res.status(400).json({ success: false, message: err.password.message});
+          res.status(400).json({ success: false, message: err.password.message});
+        } else {
+          res.status(500).json({success: false, message: 'Failed to register user'});
         }
-        return res.status(500).json({success: false, message: 'Failed to register user'});
       }else{
         User.login(req.body.username, req.body.password, (err, login) => {
-          if(err)
-            return res.status(500).json({success: false, message: err.message});
-          return res.status(201).json({
-            success: true,
-            message: "Sucess!",
-            token: login.token,
-            user: login.user
-          });
+          if(err) {
+            res.status(500).json({success: false, message: err.message});
+          } else {
+            res.status(201).json({
+              success: true,
+              message: "Sucess!",
+              token: login.token,
+              user: login.user
+            });
+          }
         });
       }
     });
@@ -118,14 +121,16 @@ router.post('/login', (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
     User.login(username, password, (err, login) => {
-      if(err)
-        return res.status(500).json({success: false, message: err.message});
-      return res.status(200).json({
-        success: true,
-        message: "Sucess!",
-        token: login.token,
-        user: login.user
-      });
+      if(err) {
+        res.status(500).json({success: false, message: err.message});
+      } else {
+        res.status(200).json({
+          success: true,
+          message: "Sucess!",
+          token: login.token,
+          user: login.user
+        });
+      }
     });
   }
 });
@@ -206,24 +211,27 @@ router.post('/changePassword', passport.authenticate('jwt', {session: false}), (
         res.status(404).json({ success: false, message: 'User not found' });
       } else {
         User.comparePassword(req.body.old_password, user.password, (err, isMatch) => {
-          if(err) throw err;
-          if(isMatch){
-            User.encryptPassword(req.body.new_password, (err, password) => {
-              if(err) {
-                res.status(500).json({ success: false, message: err });
-              } else {
-                user.password = password;
-                user.save((err) => {
-                  if(err) {
-                    res.status(500).json({ success: false, message: 'Something went wrong' });
-                  } else {
-                    res.status(200).json({ success: true, message: 'Password Changed'});
-                  }
-                });
-              }
-            });
+          if(err) {
+            res.status(500).json({ success: false, message: err });
           } else {
-            return res.status(401).json({success: false, message: 'Wrong password'});
+            if(isMatch){
+              User.encryptPassword(req.body.new_password, (err, password) => {
+                if(err) {
+                  res.status(500).json({ success: false, message: err.message });
+                } else {
+                  user.password = password;
+                  user.save((err) => {
+                    if(err) {
+                      res.status(500).json({ success: false, message: 'Something went wrong' });
+                    } else {
+                      res.status(200).json({ success: true, message: 'Password Changed'});
+                    }
+                  });
+                }
+              });
+            } else {
+              return res.status(401).json({success: false, message: 'Wrong password'});
+            }
           }
         });
       }

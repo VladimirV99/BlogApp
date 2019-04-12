@@ -155,23 +155,28 @@ module.exports.findByUsername = function(username, callback){
 module.exports.encryptPassword = function(password, callback) {
   for(let i = 0; i < passwordValidators.length; i++){
     if(!passwordValidators[i].validator(password)){
-      callback(passwordValidators[i].message, null);
+      callback({message: passwordValidators[i].message}, null);
       return;
     }
   }
   bcrypt.genSalt(10, (err, salt) => {
     bcrypt.hash(password, salt, (err, hash) => {
-      if(err) throw err;
-      callback(null, hash);
-      return;
+      if(err) {
+        callback({message: err});
+      } else {
+        callback(null, hash);
+      }
     });
   });
 }
 
 module.exports.comparePassword = function(candidatePassword, hash, callback){
   bcrypt.compare(candidatePassword, hash, (err, isMatch) => {
-    if(err) throw err;
-    callback(null, isMatch);
+    if(err) {
+      callback(err);
+    } else {
+      callback(null, isMatch);
+    }
   });
 }
 
@@ -184,9 +189,12 @@ module.exports.register = function(newUser, callback){
   }
   bcrypt.genSalt(10, (err, salt) => {
     bcrypt.hash(newUser.password, salt, (err, hash) => {
-      if(err) throw err;
-      newUser.password = hash;
-      newUser.save(callback);
+      if(err) {
+        callback(err);
+      } else {
+        newUser.password = hash;
+        newUser.save(callback);
+      }
     });
   });
 }
@@ -194,37 +202,44 @@ module.exports.register = function(newUser, callback){
 module.exports.login = function(username, password, callback) {
   if(username == null) {
     callback({message:'You must provide a username'})
-  }
-  if(password == null) {
+  } else if(password == null) {
     callback({message:'You must provide a password'});
-  }
-  User.findByUsername(username, (err, user) => {
-    if(err) throw err;
-    if(!user){
-      callback({message:'Username not found'});
-    }
-    User.comparePassword(password, user.password, (err, isMatch) => {
-      if(err) throw err;
-      if(isMatch){
-        const token = jwt.sign({user_id: user._id}, config.secret, {
-          expiresIn: 604800 // 1 week
-        });
-        callback(null, {
-          token: 'bearer ' + token,
-          user: {
-            id: user._id,
-            first_name: user.first_name,
-            last_name: user.last_name,
-            username: user.username,
-            email: user.email,
-            photo: user.photo,
-            dark_mode: user.dark_mode,
-            round_icons: user.round_icons
-          }
-        });
+  } else {
+    User.findByUsername(username, (err, user) => {
+      if(err) {
+        callback({message: err});
       } else {
-        callback({message: 'Wrong password'});
+        if(!user) {
+          callback({message:'Username not found'});
+        } else {
+          User.comparePassword(password, user.password, (err, isMatch) => {
+            if(err) {
+              callback({message: err});
+            } else{
+              if(isMatch){
+                const token = jwt.sign({user_id: user._id}, config.secret, {
+                  expiresIn: 604800 // 1 week
+                });
+                callback(null, {
+                  token: 'bearer ' + token,
+                  user: {
+                    id: user._id,
+                    first_name: user.first_name,
+                    last_name: user.last_name,
+                    username: user.username,
+                    email: user.email,
+                    photo: user.photo,
+                    dark_mode: user.dark_mode,
+                    round_icons: user.round_icons
+                  }
+                });
+              } else {
+                callback({message: 'Wrong password'});
+              }
+            }
+          });
+        }
       }
     });
-  });
+  }
 }
