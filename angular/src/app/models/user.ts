@@ -1,3 +1,5 @@
+import Post from './post';
+
 export default interface User {
   id: string;
   first_name: string;
@@ -5,6 +7,7 @@ export default interface User {
   username: string;
   email: string;
   photo: string;
+  bookmarks?: Post[];
   dark_mode?: boolean;
   round_icons?: boolean;
 }

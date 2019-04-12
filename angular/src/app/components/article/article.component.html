@@ -1,6 +1,9 @@
 <article class="container-fluid post">
   <header class="post-header">
-      <h2 class="post-title"><a class="post-link" [routerLink]="['/post/', post._id]">{{post.title}}</a></h2>
+    <h2 class="post-title"><a class="post-link" [routerLink]="['/post/', post._id]">{{post.title}}</a></h2>
+    <ul class="post-toolbar">
+      <li><i [ngClass]="{'far': !post.bookmarked, 'fas':post.bookmarked}" class="fa-bookmark fa-lg" (click)="bookmark()"></i></li>
+    </ul>
     <span class="post-meta"><small>by <strong><a class="post-link" [routerLink]="['/user/', post.createdBy.username]">{{post.createdBy.first_name}} {{post.createdBy.last_name}}</a></strong> on {{ post.createdAt | date:'MMM dd, yyyy' }}</small></span>
   </header>
   <div class="post-body">
@@ -8,13 +11,13 @@
   </div>
   <footer class="post-footer">
     <div *ngIf="authService.loggedIn() && user && user.id!=post.createdBy._id">
-      <button type="button" class="btn btn-sm" [ngClass]="{'btn-info': !post.likedByUser, 'btn-primary': post.likedByUser}" (click)="likePost(post._id)">Like{{post.likedByUser?'d':''}}: {{post.likes}}</button>
-      <button type="button" class="btn btn-sm" [ngClass]="{'btn-info': !post.dislikedByUser, 'btn-primary': post.dislikedByUser}" (click)="dislikePost(post._id)">Dislike: {{post.dislikes}}</button>
+      <button type="button" class="btn btn-sm" [ngClass]="{'btn-info': !post.likedByUser, 'btn-primary': post.likedByUser}" (click)="likePost()">Like{{post.likedByUser?'d':''}}: {{post.likes}}</button>
+      <button type="button" class="btn btn-sm" [ngClass]="{'btn-info': !post.dislikedByUser, 'btn-primary': post.dislikedByUser}" (click)="dislikePost()">Dislike: {{post.dislikes}}</button>
       <button type="button" class="btn btn-sm btn-warning" [routerLink]="['/post/', post._id]">Comments: {{post.totalComments}}</button>
     </div>
     <div *ngIf="authService.loggedIn() && user && user.id==post.createdBy._id">
       <button type="button" class="btn btn-sm btn-success" [routerLink]="['/edit/', post._id]">Edit</button>
-      <button type="button" class="btn btn-sm btn-danger" (click)="prepareToDelete(post._id)" data-toggle="modal" data-target="#deleteModal">Delete</button>
+      <button type="button" class="btn btn-sm btn-danger" (click)="prepareToDelete()" data-toggle="modal" data-target="#deleteModal">Delete</button>
       <small><strong>Likes:</strong> {{post.likes}} <strong>Dislikes:</strong> {{post.dislikes}}</small>
     </div>
     <div *ngIf="!user || !authService.loggedIn()">

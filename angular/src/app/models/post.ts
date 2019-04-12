@@ -11,6 +11,7 @@ export default interface Post {
   likedByUser: boolean;
   dislikes: number;
   dislikedByUser: boolean;
+  bookmarked: boolean;
   totalComments?: number;
   comments?: Comment[];
 }

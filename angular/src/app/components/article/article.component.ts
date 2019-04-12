@@ -1,9 +1,10 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
-import Post from 'src/app/models/post';
-import User from 'src/app/models/user';
+import Post from '../../models/post';
+import User from '../../models/user';
 import { AuthService } from 'src/app/services/auth.service';
 import { PostService } from 'src/app/services/post.service';
+import { post } from 'selenium-webdriver/http';
 
 @Component({
   selector: 'app-article',
@@ -23,20 +24,32 @@ export class ArticleComponent implements OnInit {
     private postService: PostService
   ) { }
 
-  likePost(id: string) {
-    this.postService.likePost(id).subscribe(data => {
+  bookmark(): void {
+    if(!this.post.bookmarked) {
+      this.authService.addBookmark(this.post._id).subscribe(data => {
+        this.reload.emit(true);
+      });
+    } else {
+      this.authService.removeBookmark(this.post._id).subscribe(data => {
+        this.reload.emit(true);
+      });
+    }
+  }
+
+  likePost(): void {
+    this.postService.likePost(this.post._id).subscribe(data => {
       this.reload.emit(true);
     });
   }
 
-  dislikePost(id: string) {
-    this.postService.dislikePost(id).subscribe(data => {
+  dislikePost(): void {
+    this.postService.dislikePost(this.post._id).subscribe(data => {
       this.reload.emit(true);
     });
   }
 
-  prepareToDelete(id: string) {
-    this.delete.emit(id);
+  prepareToDelete(): void {
+    this.delete.emit(this.post._id);
   }
 
   ngOnInit() {

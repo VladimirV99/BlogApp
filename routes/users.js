@@ -29,6 +29,7 @@ const upload = multer({
 
 const config = require('../config/database');
 const User = require('../models/user');
+const Post = require('../models/post');
 
 router.get('/checkEmail/:email', (req, res) => {
   if (!req.params.email) {
@@ -256,6 +257,51 @@ router.post('/uploadPhoto', passport.authenticate('jwt', {session: false}), (req
             }
           }
         });
+      }
+    }
+  });
+});
+
+router.put('/bookmark/add', passport.authenticate('jwt', {session: false}), (req, res, next) => {
+  User.findById(req.user._id, (err, user) => {
+    if(err) {
+      res.json({ success: false, message: err});
+    } else {
+      if(!user) {
+        res.json({ success: false, message: 'User not found' });
+      } else {
+        Post.findById(req.body.id, (err, post) => {
+          if(err) {
+            res.json({ success: false, message: 'Something went wrong' });
+          } else {
+            if(!post) {
+              res.json({ success: false, message: 'Post not found' });
+            } else {
+              user.bookmarks.push(post._id);
+              user.save((err) => {
+                if(err) {
+                  res.json({ success: false, message: 'Something went wrong' });
+                } else {
+                  res.json({ success: true, message: 'Bookmarked' });
+                }
+              });
+            }
+          }
+        });
+      }
+    }
+  });
+});
+
+router.put('/bookmark/remove', passport.authenticate('jwt', {session: false}), (req, res, next) => {
+  User.findByIdAndUpdate(req.user._id, {$pull: {bookmarks: req.body.id}}, (err, user) => {
+    if(err) {
+      res.json({ success: false, message: err});
+    } else {
+      if(!user) {
+        res.json({ success: false, message: 'User not found' });
+      } else {
+        res.json({ success: true, message: 'Bookmark Removed' });
       }
     }
   });

@@ -7,6 +7,16 @@ const Post = require('../models/post');
 const Comment = require('../models/comment');
 const User = require('../models/user');
 
+// Normal include method doesn't work on ObjectIds
+function includesId(array, id) {
+  for(let i = 0; i < array.length; i++) {
+    if(array[i].equals(id)){
+      return true;
+    }
+  }
+  return false;
+}
+
 router.post('/newPost', passport.authenticate('jwt', {session: false}), (req, res) => {
   if(!req.body.title) {
     res.json({ success: false, message: 'Post title is required' });
@@ -79,28 +89,13 @@ router.get('/page/:page/:itemsPerPage', get_user, (req, res) => {
           if(req.user.authenticated){
             posts.forEach(post => {
               post.totalComments = post.comments.length;
-              found = false;
-              for(let i = 0; i < post.likedBy.length; i++) {
-                if(post.likedBy[i].equals(req.user._id)){
-                  post.likedByUser = true;
-                  post.dislikedByUser = false;
-                  found = true;
-                  break;
-                }
-              }
-              if(!found) {
-                for(let i = 0; i < post.dislikedBy.length; i++) {
-                  if(post.dislikedBy[i].equals(req.user._id)){
-                    post.likedByUser = false;
-                    post.dislikedByUser = true;
-                    found = true;
-                    break;
-                  }
-                }
-              }
-              if(!found) {
-                post.likedByUser = false;
-                post.dislikedByUser = false;
+              post.bookmarked = includesId(req.user.bookmarks, post._id);
+              post.likedByUser = false;
+              post.dislikedByUser = false;
+              if(includesId(post.likedBy, req.user._id)) {
+                post.likedByUser = true;
+              }else if(includesId(post.dislikedBy, req.user._id)) {
+                post.dislikedByUser = true;
               }
               delete post.likedBy;
               delete post.dislikedBy;
@@ -143,28 +138,12 @@ router.get('/user/:username/page/:page', get_user, (req, res) => {
                 if(req.user.authenticated){
                   posts.forEach(post => {
                     post.totalComments = post.comments.length;
-                    found = false;
-                    for(let i = 0; i < post.likedBy.length; i++) {
-                      if(post.likedBy[i].equals(req.user._id)){
-                        post.likedByUser = true;
-                        post.dislikedByUser = false;
-                        found = true;
-                        break;
-                      }
-                    }
-                    if(!found) {
-                      for(let i = 0; i < post.dislikedBy.length; i++) {
-                        if(post.dislikedBy[i].equals(req.user._id)){
-                          post.likedByUser = false;
-                          post.dislikedByUser = true;
-                          found = true;
-                          break;
-                        }
-                      }
-                    }
-                    if(!found) {
-                      post.likedByUser = false;
-                      post.dislikedByUser = false;
+                    post.likedByUser = false;
+                    post.dislikedByUser = false;
+                    if(includesId(post.likedBy, req.user._id)) {
+                      post.likedByUser = true;
+                    } else if(includesId(post.dislikedBy, req.user._id)) {
+                      post.dislikedByUser = true;
                     }
                     delete post.likedBy;
                     delete post.dislikedBy;
@@ -198,28 +177,12 @@ router.get('/get/:id', get_user, (req, res) => {
         } else {
           post.totalComments = post.comments.length;
           if(req.user.authenticated){
-            found = false;
-            for(let i = 0; i < post.likedBy.length; i++) {
-              if(post.likedBy[i].equals(req.user._id)){
-                post.likedByUser = true;
-                post.dislikedByUser = false;
-                found = true;
-                break;
-              }
-            }
-            if(!found) {
-              for(let i = 0; i < post.dislikedBy.length; i++) {
-                if(post.dislikedBy[i].equals(req.user._id)){
-                  post.likedByUser = false;
-                  post.dislikedByUser = true;
-                  found = true;
-                  break;
-                }
-              }
-            }
-            if(!found) {
-              post.likedByUser = false;
-              post.dislikedByUser = false;
+            post.likedByUser = false;
+            post.dislikedByUser = false;
+            if(includesId(post.likedBy, req.user._id)) {
+              post.likedByUser = true;
+            } else if(includesId(post.dislikedBy, req.user._id)) {
+              post.dislikedByUser = true;
             }
             delete post.likedBy;
             delete post.dislikedBy;
@@ -268,7 +231,6 @@ router.get('/user/:username/count', (req, res) => {
         } else {
           Post.countDocuments({createdBy: user._id}, (err, count) => {
             if(err) {
-              console.log(err);
               res.json({ success: false, message: 'Something went wrong' });
             } else {
               res.json({ success: true, count: count });

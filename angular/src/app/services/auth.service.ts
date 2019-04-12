@@ -146,4 +146,14 @@ export class AuthService {
     return this.http.get<AuthMessage>(this.domain + 'users/get/' + username, {headers: headers});
   }
 
+  addBookmark(id: string): Observable<AuthMessage> {
+    let headers = this.createAuthenticationHeaders();
+    return this.http.put<AuthMessage>(this.domain + 'users/bookmark/add', { id }, {headers: headers});
+  }
+
+  removeBookmark(id: string): Observable<AuthMessage> {
+    let headers = this.createAuthenticationHeaders();
+    return this.http.put<AuthMessage>(this.domain + 'users/bookmark/remove', { id }, {headers: headers});
+  }
+
 }

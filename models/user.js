@@ -131,6 +131,10 @@ const UserSchema = mongoose.Schema({
     type: String,
     required: true
   },
+  bookmarks: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Post'
+  }],
   dark_mode: {
     type: Boolean,
     default: false
