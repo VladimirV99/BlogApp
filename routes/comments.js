@@ -9,16 +9,16 @@ const User = require('../models/user');
 
 router.post('/newComment', passport.authenticate('jwt', {session: false}), (req, res) => {
   if(!req.body.parent_post){
-    res.json({ success:false, message: 'No post id provided' });
+    res.status(400).json({ success:false, message: 'No post id provided' });
   } else if(!req.body.comment) {
-    res.json({ success: false, message: 'No comment provided' });
+    res.status(400).json({ success: false, message: 'No comment provided' });
   } else {
     Post.findById(req.body.parent_post, (err, post) => {
       if(err) {
-        res.json({ success: false, message: 'Something went wrong' });
+        res.status(500).json({ success: false, message: 'Something went wrong' });
       } else {
         if(!post) {
-          res.json({ success: false, message: 'Post not found' });
+          res.status(404).json({ success: false, message: 'Post not found' });
         } else {
           let newComment = new Comment({
             comment: req.body.comment,
@@ -27,14 +27,14 @@ router.post('/newComment', passport.authenticate('jwt', {session: false}), (req,
           });
           newComment.save((err) => {
             if(err) {
-              res.json({ success: false, message: 'Something went wrong' });
+              res.status(500).json({ success: false, message: 'Something went wrong' });
             } else {
               post.comments.push(newComment._id);
               post.save((err) => {
                 if(err) {
-                  res.json({ success: false, message: 'Something went wrong' });
+                  res.status(500).json({ success: false, message: 'Something went wrong' });
                 } else {
-                  res.json({ success: true, message: 'Comment Added', comment: newComment });
+                  res.status(201).json({ success: true, message: 'Comment Added', comment: newComment });
                 }
               });
             }
@@ -47,16 +47,16 @@ router.post('/newComment', passport.authenticate('jwt', {session: false}), (req,
 
 router.post('/newReply', passport.authenticate('jwt', {session: false}), (req, res) => {
   if(!req.body.parent_comment){
-    res.json({ success:false, message: 'No comment id provided' });
+    res.status(400).json({ success:false, message: 'No comment id provided' });
   } else if(!req.body.comment) {
-    res.json({ success: false, message: 'No comment provided' });
+    res.status(400).json({ success: false, message: 'No comment provided' });
   } else {
     Comment.findById(req.body.parent_comment, (err, comment) => {
       if(err) {
-        res.json({ success: false, message: 'Something went wrong' });
+        res.status(500).json({ success: false, message: 'Something went wrong' });
       } else {
         if(!comment) {
-          res.json({ success: false, message: 'Comment not found' });
+          res.status(404).json({ success: false, message: 'Comment not found' });
         } else {
           let newComment = new Comment({
             comment: req.body.comment,
@@ -65,14 +65,14 @@ router.post('/newReply', passport.authenticate('jwt', {session: false}), (req, r
           });
           newComment.save((err) => {
             if(err) {
-              res.json({ success: false, message: 'Something went wrong' });
+              res.status(500).json({ success: false, message: 'Something went wrong' });
             } else {
               comment.replies.push(newComment._id);
               comment.save((err) => {
                 if(err) {
-                  res.json({ success: false, message: 'Something went wrong' });
+                  res.status(500).json({ success: false, message: 'Something went wrong' });
                 } else {
-                  res.json({ success: true, message: 'Comment Added', comment: newComment });
+                  res.status(201).json({ success: true, message: 'Comment Added', comment: newComment });
                 }
               });
             }
@@ -85,7 +85,7 @@ router.post('/newReply', passport.authenticate('jwt', {session: false}), (req, r
 
 router.post('/getComments/:id', (req, res) => {
   if(!req.params.id){
-    res.json({ success: false, message: 'No post id provided' });
+    res.status(400).json({ success: false, message: 'No post id provided' });
   } else {
     let before = req.body.before? req.body.before : Date.now();
     let limit = req.body.limit? req.body.limit: 5;
@@ -105,16 +105,16 @@ router.post('/getComments/:id', (req, res) => {
       }
     }).lean().exec((err, post) => {
       if(err) {
-        res.json({ success: false, message: 'Something went wrong' });
+        res.status(500).json({ success: false, message: 'Something went wrong' });
       } else {
         if(!post) {
-          res.json({ success: false, message: 'Post not found' });
+          res.status(404).json({ success: false, message: 'Post not found' });
         } else {
           let comments = post.comments.map(comment => {
             comment.replies = comment.replies.length;
             return comment;
           });
-          res.json({ success: true, comments: comments });
+          res.status(200).json({ success: true, comments: comments });
         }
       }
     });
@@ -123,7 +123,7 @@ router.post('/getComments/:id', (req, res) => {
 
 router.post('/getReplies/:id', (req, res) => {
   if(!req.params.id){
-    res.json({ success: false, message: 'No comment id provided' });
+    res.status(400).json({ success: false, message: 'No comment id provided' });
   } else {
     let before = req.body.before? req.body.before : Date.now();
     let limit = req.body.limit? req.body.limit: 5;
@@ -142,16 +142,16 @@ router.post('/getReplies/:id', (req, res) => {
       }
     }).lean().exec((err, comment) => {
       if(err) {
-        res.json({ success: false, message: 'Something went wrong' });
+        res.status(500).json({ success: false, message: 'Something went wrong' });
       } else {
         if(!comment) {
-          res.json({ success: false, message: 'Comment not found' });
+          res.status(404).json({ success: false, message: 'Comment not found' });
         } else {
           let replies = comment.replies.map(reply => {
             reply.replies = reply.replies.length;
             return reply;
           });
-          res.json({ success: true, comments: replies });
+          res.status(200).json({ success: true, comments: replies });
         }
       }
     });
@@ -160,16 +160,16 @@ router.post('/getReplies/:id', (req, res) => {
 
 router.get('/count/:id', (req, res) => {
   if(!req.params.id) {
-    res.json({ success: false, message: 'No post id provided' });
+    res.status(400).json({ success: false, message: 'No post id provided' });
   } else {
     Post.getCommentCount(req.params.id, (err, count) => {
       if(err) {
-        res.json({ success: false, message: 'Something went wrong' });
+        res.status(500).json({ success: false, message: 'Something went wrong' });
       } else {
         if(count===false) {
-          res.json({ success: false, message: 'Post not found' });
+          res.status(404).json({ success: false, message: 'Post not found' });
         } else {
-          res.json({ success: true, count: count });
+          res.status(200).json({ success: true, count: count });
         }
       }
     });
@@ -178,25 +178,25 @@ router.get('/count/:id', (req, res) => {
 
 router.delete('/delete/:id', passport.authenticate('jwt', {session: false}), (req, res) => {
   if(!req.params.id) {
-    res.json({ success: false, message: 'No comment id provided' });
+    res.status(400).json({ success: false, message: 'No comment id provided' });
   } else {
     Comment.findById(req.params.id, (err, comment) => {
       if(err) {
-        res.json({ success: false, message: 'Something went wrong' });
+        res.status(500).json({ success: false, message: 'Something went wrong' });
       } else {
         if(!comment) {
-          res.json({ success: false, message: 'Comment not found' })
+          res.status(404).json({ success: false, message: 'Comment not found' })
         } else {
           if(comment.parentPost) {
             Post.findByIdAndUpdate(comment.parentPost, {$pull: {comments: req.params.id}}, (err, post) => {
               if(err) {
-                res.json({ success: false, message: 'Something went wrong' });
+                res.status(500).json({ success: false, message: 'Something went wrong' });
               } else {
                 comment.remove((err) => {
                   if(err) {
-                    res.json({ success: false, message: 'Something went wrong' });
+                    res.status(500).json({ success: false, message: 'Something went wrong' });
                   } else {
-                    res.json({ success: true, message: 'Comment deleted' });
+                    res.status(200).json({ success: true, message: 'Comment deleted' });
                   }
                 });
               }
@@ -204,13 +204,13 @@ router.delete('/delete/:id', passport.authenticate('jwt', {session: false}), (re
           } else if(comment.parentComment) {
             Comment.findByIdAndUpdate(comment.parentComment, {$pull: {replies: req.params.id}}, (err, post) => {
               if(err) {
-                res.json({ success: false, message: 'Something went wrong' });
+                res.status(500).json({ success: false, message: 'Something went wrong' });
               } else {
                 comment.remove((err) => {
                   if(err) {
-                    res.json({ success: false, message: 'Something went wrong' });
+                    res.status(500).json({ success: false, message: 'Something went wrong' });
                   } else {
-                    res.json({ success: true, message: 'Comment deleted' });
+                    res.status(200).json({ success: true, message: 'Comment deleted' });
                   }
                 });
               }
@@ -218,9 +218,9 @@ router.delete('/delete/:id', passport.authenticate('jwt', {session: false}), (re
           } else {
             comment.remove((err) => {
               if(err) {
-                res.json({ success: false, message: 'Something went wrong' });
+                res.status(500).json({ success: false, message: 'Something went wrong' });
               } else {
-                res.json({ success: true, message: 'Comment deleted' });
+                res.status(200).json({ success: true, message: 'Comment deleted' });
               }
             });
           }

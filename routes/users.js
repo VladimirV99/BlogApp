@@ -33,16 +33,16 @@ const Post = require('../models/post');
 
 router.get('/checkEmail/:email', (req, res) => {
   if (!req.params.email) {
-    res.json({ success: false, message: 'E-mail was not provided' });
+    res.status(400).json({ success: false, message: 'E-mail was not provided' });
   } else {
     User.findOne({ email: req.params.email }, (err, user) => {
       if (err) {
-        res.json({ success: false, message: err });
+        res.status(500).json({ success: false, message: err });
       } else {
         if (user) {
-          res.json({ success: false, message: 'E-mail is already taken' });
+          res.status(200).json({ success: false, message: 'E-mail is already taken' });
         } else {
-          res.json({ success: true, message: 'E-mail is available' });
+          res.status(200).json({ success: true, message: 'E-mail is available' });
         }
       }
     });
@@ -51,16 +51,16 @@ router.get('/checkEmail/:email', (req, res) => {
 
 router.get('/checkUsername/:username', (req, res) => {
   if (!req.params.username) {
-    res.json({ success: false, message: 'Username was not provided' });
+    res.status(400).json({ success: false, message: 'Username was not provided' });
   } else {
     User.findByUsername(req.params.username, (err, user) => {
       if (err) {
-        res.json({ success: false, message: err });
+        res.status(500).json({ success: false, message: err });
       } else {
         if (user) {
-          res.json({ success: false, message: 'Username is already taken' });
+          res.status(200).json({ success: false, message: 'Username is already taken' });
         } else {
-          res.json({ success: true, message: 'Username is available' });
+          res.status(200).json({ success: true, message: 'Username is available' });
         }
       }
     });
@@ -69,11 +69,11 @@ router.get('/checkUsername/:username', (req, res) => {
 
 router.post('/register', (req, res) => {
   if(!req.body.email) {
-    res.json({ success: false, message: 'You must provide an email' });
+    res.status(400).json({ success: false, message: 'You must provide an email' });
   } else if(!req.body.username) {
-    res.json({ sccuess: false, message: 'You must provide a username' });
+    res.status(400).json({ sccuess: false, message: 'You must provide a username' });
   } else if(!req.body.password) {
-    res.json({ success: false, message: 'You must provide a password' });
+    res.status(400).json({ success: false, message: 'You must provide a password' });
   } else {
     let newUser = new User({
       first_name: req.body.first_name,
@@ -86,18 +86,18 @@ router.post('/register', (req, res) => {
     User.register(newUser, (err, user) => {
       if(err){
         if(err.email) {
-          return res.json({ success: false, message: err.email.message });
+          return res.status(400).json({ success: false, message: err.email.message });
         } else if(err.username) {
-          return res.json({ success: false, message: err.username.message})
+          return res.status(400).json({ success: false, message: err.username.message})
         } else if(err.password) {
-          return res.json({ success: false, message: err.password.message});
+          return res.status(400).json({ success: false, message: err.password.message});
         }
-        return res.json({success: false, message: 'Failed to register user'});
+        return res.status(500).json({success: false, message: 'Failed to register user'});
       }else{
         User.login(req.body.username, req.body.password, (err, login) => {
           if(err)
-            return res.json({success: false, message: err.message});
-          return res.json({
+            return res.status(500).json({success: false, message: err.message});
+          return res.status(201).json({
             success: true,
             message: "Sucess!",
             token: login.token,
@@ -111,16 +111,16 @@ router.post('/register', (req, res) => {
 
 router.post('/login', (req, res) => {
   if(!req.body.username) {
-    res.json({ sccuess: false, message: 'You must provide a username' });
+    res.status(400).json({ sccuess: false, message: 'You must provide a username' });
   } else if(!req.body.password) {
-    res.json({ success: false, message: 'You must provide a password' });
+    res.status(400).json({ success: false, message: 'You must provide a password' });
   } else {
     const username = req.body.username;
     const password = req.body.password;
     User.login(username, password, (err, login) => {
       if(err)
-        return res.json({success: false, message: err.message});
-      return res.json({
+        return res.status(500).json({success: false, message: err.message});
+      return res.status(200).json({
         success: true,
         message: "Sucess!",
         token: login.token,
@@ -133,12 +133,12 @@ router.post('/login', (req, res) => {
 router.get('/profile', passport.authenticate('jwt', {session: false}), (req, res) => {
   User.findById(req.user._id).select('first_name last_name username photo email').exec((err, user) => {
     if(err) {
-      res.json({ success: false, message: err });
+      res.status(500).json({ success: false, message: err });
     } else {
       if(!user) {
-        res.json({ success: false, message: 'User not found' });
+        res.status(404).json({ success: false, message: 'User not found' });
       } else {
-        res.json({ success: true, user: user });
+        res.status(200).json({ success: true, user: user });
       }
     }
   });
@@ -146,16 +146,16 @@ router.get('/profile', passport.authenticate('jwt', {session: false}), (req, res
 
 router.get('/get/:username', (req, res) => {
   if(!req.params.username) {
-    res.json({ success: false, message: 'No username provided' });
+    res.status(400).json({ success: false, message: 'No username provided' });
   } else {
     User.findOne({username: req.params.username}).select('first_name last_name username photo email').exec((err, user) => {
       if(err) {
-        res.json({ success: false, message: err });
+        res.status(500).json({ success: false, message: err });
       } else {
         if(!user) {
-          res.json({ success: false, message: 'User not found' });
+          res.status(404).json({ success: false, message: 'User not found' });
         } else {
-          res.json({ success: true, user: user });
+          res.status(200).json({ success: true, user: user });
         }
       }
     });
@@ -165,10 +165,10 @@ router.get('/get/:username', (req, res) => {
 router.put('/update', passport.authenticate('jwt', {session: false}), (req, res, next) => {
   User.findById(req.user._id, (err, user) => {
     if(err) {
-      res.json({ success: false, message: err});
+      res.status(500).json({ success: false, message: err});
     } else {
       if(!user) {
-        res.json({ success: false, message: 'User not found' });
+        res.status(404).json({ success: false, message: 'User not found' });
       } else {
         user.first_name = req.body.first_name;
         user.last_name = req.body.last_name;
@@ -177,19 +177,19 @@ router.put('/update', passport.authenticate('jwt', {session: false}), (req, res,
           if(err) {
             if(err.errors){
               if(err.errors.first_name) {
-                res.json({ success: false, message: err.errors.first_name.message });
+                res.status(400).json({ success: false, message: err.errors.first_name.message });
               } else if(err.errors.last_name) {
-                res.json({ success: false, message: err.errors.last_name.message });
+                res.status(400).json({ success: false, message: err.errors.last_name.message });
               } else if(err.errors.email) {
-                res.json({ success: false, message: err.errors.email.message });
+                res.status(400).json({ success: false, message: err.errors.email.message });
               } else {
-                res.json({ success: false, message: err });
+                res.status(500).json({ success: false, message: err });
               }
             } else {
-              res.json({ success: false, message: err });
+              res.status(500).json({ success: false, message: err });
             }
           } else {
-            res.json({ success: true, message: 'Profile Updated' });
+            res.status(200).json({ success: true, message: 'Profile Updated' });
           }
         });
       }
@@ -200,30 +200,30 @@ router.put('/update', passport.authenticate('jwt', {session: false}), (req, res,
 router.post('/changePassword', passport.authenticate('jwt', {session: false}), (req, res) => {
   User.findById(req.user._id, (err, user) => {
     if(err) {
-      res.json({ success: false, message: 'Something went wrong' });
+      res.status(500).json({ success: false, message: 'Something went wrong' });
     } else {
       if(!user) {
-        res.json({ success: false, message: 'User not found' });
+        res.status(404).json({ success: false, message: 'User not found' });
       } else {
         User.comparePassword(req.body.old_password, user.password, (err, isMatch) => {
           if(err) throw err;
           if(isMatch){
             User.encryptPassword(req.body.new_password, (err, password) => {
               if(err) {
-                res.json({ success: false, message: err });
+                res.status(500).json({ success: false, message: err });
               } else {
                 user.password = password;
                 user.save((err) => {
                   if(err) {
-                    res.json({ success: false, message: 'Something went wrong' });
+                    res.status(500).json({ success: false, message: 'Something went wrong' });
                   } else {
-                    res.json({ success: true, message: 'Password Changed'});
+                    res.status(200).json({ success: true, message: 'Password Changed'});
                   }
                 });
               }
             });
           } else {
-            return res.json({success: false, message: 'Wrong password'});
+            return res.status(401).json({success: false, message: 'Wrong password'});
           }
         });
       }
@@ -234,24 +234,24 @@ router.post('/changePassword', passport.authenticate('jwt', {session: false}), (
 router.post('/uploadPhoto', passport.authenticate('jwt', {session: false}), (req, res) => {
   User.findById(req.user._id, (err, user) => {
     if(err) {
-      res.json({ success: false, message: 'Something went wrong' });
+      res.status(500).json({ success: false, message: 'Something went wrong' });
     } else {
       if(!user) {
-        res.json({ success: false, message: 'User not found' });
+        res.status(404).json({ success: false, message: 'User not found' });
       } else {
         upload(req, res, (err) => {
           if(err) {
-            res.json({ success: false, message: err });
+            res.status(500).json({ success: false, message: err });
           } else {
             if(req.file == undefined){
-              res.json({ success: false, message: 'No file selected' });
+              res.status(400).json({ success: false, message: 'No file selected' });
             } else {
               user.photo = photo_path + req.file.filename;
               user.save((err) => {
                 if(err) {
-                  res.json({ success: false, message: 'Something went wrong' });
+                  res.status(500).json({ success: false, message: 'Something went wrong' });
                 } else {
-                  res.json({ success: true, message: 'Photo uploaded' });
+                  res.status(200).json({ success: true, message: 'Photo uploaded' });
                 }
               });
             }
@@ -265,24 +265,24 @@ router.post('/uploadPhoto', passport.authenticate('jwt', {session: false}), (req
 router.put('/bookmark/add', passport.authenticate('jwt', {session: false}), (req, res, next) => {
   User.findById(req.user._id, (err, user) => {
     if(err) {
-      res.json({ success: false, message: err});
+      res.status(500).json({ success: false, message: err});
     } else {
       if(!user) {
-        res.json({ success: false, message: 'User not found' });
+        res.status(404).json({ success: false, message: 'User not found' });
       } else {
         Post.findById(req.body.id, (err, post) => {
           if(err) {
-            res.json({ success: false, message: 'Something went wrong' });
+            res.status(500).json({ success: false, message: 'Something went wrong' });
           } else {
             if(!post) {
-              res.json({ success: false, message: 'Post not found' });
+              res.status(404).json({ success: false, message: 'Post not found' });
             } else {
               user.bookmarks.push(post._id);
               user.save((err) => {
                 if(err) {
-                  res.json({ success: false, message: 'Something went wrong' });
+                  res.status(500).json({ success: false, message: 'Something went wrong' });
                 } else {
-                  res.json({ success: true, message: 'Bookmarked' });
+                  res.status(200).json({ success: true, message: 'Bookmarked' });
                 }
               });
             }
@@ -296,12 +296,12 @@ router.put('/bookmark/add', passport.authenticate('jwt', {session: false}), (req
 router.put('/bookmark/remove', passport.authenticate('jwt', {session: false}), (req, res, next) => {
   User.findByIdAndUpdate(req.user._id, {$pull: {bookmarks: req.body.id}}, (err, user) => {
     if(err) {
-      res.json({ success: false, message: err});
+      res.status(500).json({ success: false, message: err});
     } else {
       if(!user) {
-        res.json({ success: false, message: 'User not found' });
+        res.status(404).json({ success: false, message: 'User not found' });
       } else {
-        res.json({ success: true, message: 'Bookmark Removed' });
+        res.status(200).json({ success: true, message: 'Bookmark Removed' });
       }
     }
   });
@@ -310,17 +310,17 @@ router.put('/bookmark/remove', passport.authenticate('jwt', {session: false}), (
 router.post('/darkMode', passport.authenticate('jwt', {session: false}), (req, res) => {
   User.findById(req.user._id, (err, user) => {
     if(err) {
-      res.json({ success: false, message: 'Something went wrong' });
+      res.status(500).json({ success: false, message: 'Something went wrong' });
     } else {
       if(!user) {
-        res.json({ success: false, message: 'User not found' });
+        res.status(404).json({ success: false, message: 'User not found' });
       } else {
         user.dark_mode = req.body.status;
         user.save((err) => {
           if(err) {
-            res.json({ success: false, message: 'Something went wrong' });
+            res.status(500).json({ success: false, message: 'Something went wrong' });
           } else {
-            res.json({ success: true, message: 'Dark Mode Activated' });
+            res.status(200).json({ success: true, message: 'Dark Mode Activated' });
           }
         });
       }
@@ -331,17 +331,17 @@ router.post('/darkMode', passport.authenticate('jwt', {session: false}), (req, r
 router.post('/roundIcons', passport.authenticate('jwt', {session: false}), (req, res) => {
   User.findById(req.user._id, (err, user) => {
     if(err) {
-      res.json({ success: false, message: 'Something went wrong' });
+      res.status(500).json({ success: false, message: 'Something went wrong' });
     } else {
       if(!user) {
-        res.json({ success: false, message: 'User not found' });
+        res.status(404).json({ success: false, message: 'User not found' });
       } else {
         user.round_icons = req.body.status;
         user.save((err) => {
           if(err) {
-            res.json({ success: false, message: 'Something went wrong' });
+            res.status(500).json({ success: false, message: 'Something went wrong' });
           } else {
-            res.json({ success: true, message: 'Round Icons Activated' });
+            res.status(200).json({ success: true, message: 'Round Icons Activated' });
           }
         });
       }

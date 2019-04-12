@@ -19,11 +19,11 @@ function includesId(array, id) {
 
 router.post('/newPost', passport.authenticate('jwt', {session: false}), (req, res) => {
   if(!req.body.title) {
-    res.json({ success: false, message: 'Post title is required' });
+    res.status(400).json({ success: false, message: 'Post title is required' });
   } else if(!req.body.body) {
-    res.json({ success: false, message: 'Post body is required' });
+    res.status(400).json({ success: false, message: 'Post body is required' });
   } else if(!req.user._id) {
-    res.json({ success: false, message: 'Post creator is required' });
+    res.status(400).json({ success: false, message: 'Post creator is required' });
   } else {
     let newPost = new Post({
       title: req.body.title,
@@ -34,17 +34,17 @@ router.post('/newPost', passport.authenticate('jwt', {session: false}), (req, re
       if(err){
         if(err.errors) {
           if(err.errors.title) {
-            res.json({ success: false, message: err.errors.title.message });
+            res.status(400).json({ success: false, message: err.errors.title.message });
           } else if(err.errors.body) {
-            res.json({ success: false, message: err.errors.body.message });
+            res.status(400).json({ success: false, message: err.errors.body.message });
           } else {
-            res.json({ success: false, message: err });
+            res.status(400).json({ success: false, message: err });
           }
         } else {
-          res.json({ success: false, message: err });
+          res.status(500).json({ success: false, message: err });
         }
       } else {
-        res.json({ success: true, message: 'Post saved!' });
+        res.status(201).json({ success: true, message: 'Post saved!' });
       }
     });
   }
@@ -54,7 +54,7 @@ let get_user = function(req, res, next) {
   if(req.headers.authorization) {
     passport.authenticate('jwt', {session: false}, (err, user, info) => {
       if(err) {
-        return res.json({success: false, message: err});
+        return res.status(500).json({success: false, message: err});
       }
       if(user){
         req.user = user;
@@ -73,7 +73,7 @@ let get_user = function(req, res, next) {
 router.get('/page/:page/:itemsPerPage', get_user, (req, res) => {
   let itemsPerPage = 5;
   if(!req.params.page) {
-    res.json({ success: false, message: 'No page provided' });
+    res.status(400).json({ success: false, message: 'No page provided' });
   } else {
     let selector = req.user.authenticated? 'title body createdBy createdAt likes likedBy dislikes dislikedBy comments' : 'title body createdBy createdAt likes dislikes comments';
     let page = req.params.page;
@@ -81,10 +81,10 @@ router.get('/page/:page/:itemsPerPage', get_user, (req, res) => {
       itemsPerPage = parseInt(req.params.itemsPerPage);
     Post.find({}).populate('createdBy', '_id username first_name last_name').select(selector).sort({ '_id': -1 }).skip((page-1)*itemsPerPage).limit(itemsPerPage).lean().exec((err, posts) => {
       if(err) {
-        res.json({ success: false, message: err });
+        res.status(500).json({ success: false, message: err });
       } else {
         if(!posts) {
-          res.json({ success: false, message: 'No posts found' });
+          res.status(404).json({ success: false, message: 'No posts found' });
         } else {
           if(req.user.authenticated){
             posts.forEach(post => {
@@ -105,7 +105,7 @@ router.get('/page/:page/:itemsPerPage', get_user, (req, res) => {
               post.totalComments = post.comments.length;
             });
           }
-          res.json({ success: true, posts: posts });
+          res.status(200).json({ success: true, posts: posts });
         }
       }
     });
@@ -115,25 +115,25 @@ router.get('/page/:page/:itemsPerPage', get_user, (req, res) => {
 router.get('/user/:username/page/:page', get_user, (req, res) => {
   let itemsPerPage = 5;
   if(!req.params.username) {
-    res.json({ success: false, message: 'No username provided' });
+    res.status(400).json({ success: false, message: 'No username provided' });
   } else if(!req.params.page) {
-    res.json({ success: false, message: 'No page provided' });
+    res.status(400).json({ success: false, message: 'No page provided' });
   } else {
     let selector = req.user.authenticated? 'title body createdBy createdAt likes likedBy dislikes dislikedBy comments' : 'title body createdBy createdAt likes dislikes comments';
     let page = req.params.page;
     User.findByUsername(req.params.username, (err, user) => {
       if(err) {
-        res.json({ success: false, message: 'Something went wrong' });
+        res.status(500).json({ success: false, message: 'Something went wrong' });
       } else {
         if(!user) {
-          res.json({ success: false, message: 'User not found' });
+          res.status(404).json({ success: false, message: 'User not found' });
         } else {
           Post.find({createdBy: user._id}).populate('createdBy', '_id username first_name last_name').select(selector).sort({ '_id': -1 }).skip((page-1)*itemsPerPage).limit(itemsPerPage).lean().exec((err, posts) => {
             if(err) {
-              res.json({ success: false, message: 'Something went wrong' });
+              res.status(500).json({ success: false, message: 'Something went wrong' });
             } else {
               if(!posts) {
-                res.json({ success: false, message: 'No posts found' });
+                res.status(404).json({ success: false, message: 'No posts found' });
               } else {
                 if(req.user.authenticated){
                   posts.forEach(post => {
@@ -153,7 +153,7 @@ router.get('/user/:username/page/:page', get_user, (req, res) => {
                     post.totalComments = post.comments.length;
                   });
                 }
-                res.json({ success: true, posts: posts });
+                res.status(200).json({ success: true, posts: posts });
               }
             }
           });
@@ -165,15 +165,15 @@ router.get('/user/:username/page/:page', get_user, (req, res) => {
 
 router.get('/get/:id', get_user, (req, res) => {
   if (!req.params.id) {
-    res.json({ success: false, message: 'No post id provided.' });
+    res.status(400).json({ success: false, message: 'No post id provided.' });
   } else {
     let selector = req.user.authenticated? 'title body createdBy createdAt likes likedBy dislikes dislikedBy comments' : 'title body createdBy createdAt likes dislikes comments';
     Post.findOne({ _id: req.params.id }).populate('createdBy', '_id username first_name last_name').select(selector).lean().exec((err, post) => {
       if (err) {
-        res.json({ success: false, message: 'Invalid post id' });
+        res.status(500).json({ success: false, message: 'Invalid post id' });
       } else {
         if (!post) {
-          res.json({ success: false, message: 'Post not found' });
+          res.status(404).json({ success: false, message: 'Post not found' });
         } else {
           post.totalComments = post.comments.length;
           if(req.user.authenticated){
@@ -187,7 +187,7 @@ router.get('/get/:id', get_user, (req, res) => {
             delete post.likedBy;
             delete post.dislikedBy;
           }
-          res.json({ success: true, post: post });
+          res.status(200).json({ success: true, post: post });
         }
       }
     });
@@ -197,12 +197,12 @@ router.get('/get/:id', get_user, (req, res) => {
 router.get('/popular', (req, res) => {
   Post.find().sort({likes: 'desc'}).populate('createdBy', '_id username first_name last_name').limit(5).exec((err, posts) => {
     if(err) {
-      res.json({ success: false, message: 'Something went wrong' });
+      res.status(500).json({ success: false, message: 'Something went wrong' });
     } else {
       if(!posts) {
-        res.json({ success: false, message: 'Posts not found' });
+        res.status(404).json({ success: false, message: 'Posts not found' });
       } else {
-        res.json({ success: true, posts: posts });
+        res.status(200).json({ success: true, posts: posts });
       }
     }
   });
@@ -211,29 +211,29 @@ router.get('/popular', (req, res) => {
 router.get('/count', (req, res) => {
   Post.count({}, (err, count) => {
     if(err) {
-      res.json({ success: false, message: 'Something went wrong' });
+      res.status(500).json({ success: false, message: 'Something went wrong' });
     } else {
-      res.json({ success: true, count: count });
+      res.status(200).json({ success: true, count: count });
     }
   });
 });
 
 router.get('/user/:username/count', (req, res) => {
   if(!req.params.username) {
-    res.json({ success: false, message: 'No username provided' });
+    res.status(400).json({ success: false, message: 'No username provided' });
   } else {
     User.findByUsername(req.params.username, (err, user) => {
       if(err) {
-        res.json({ success: false, message: 'Something went wrong' });
+        res.status(500).json({ success: false, message: 'Something went wrong' });
       } else {
         if(!user) {
-          res.json({ success: false, message: 'User not found' });
+          res.status(404).json({ success: false, message: 'User not found' });
         } else {
           Post.countDocuments({createdBy: user._id}, (err, count) => {
             if(err) {
-              res.json({ success: false, message: 'Something went wrong' });
+              res.status(500).json({ success: false, message: 'Something went wrong' });
             } else {
-              res.json({ success: true, count: count });
+              res.status(200).json({ success: true, count: count });
             }
           });
         }
@@ -244,24 +244,24 @@ router.get('/user/:username/count', (req, res) => {
 
 router.put('/update', passport.authenticate('jwt', {session: false}), (req, res) => {
   if(!req.body._id) {
-    res.json({ success: false, message: 'No post id provided' });
+    res.status(400).json({ success: false, message: 'No post id provided' });
   } else {
     Post.findOne({ _id: req.body._id }, (err, post) => {
       if(err) {
-        res.json({ success: false, message: 'Invalid post id' });
+        res.status(500).json({ success: false, message: 'Something went wrong' });
       } else {
         if(!post) {
-          res.json({ success: false, message: 'Post not found' });
+          res.status(404).json({ success: false, message: 'Post not found' });
         } else {
           User.findOne({ _id: req.user._id }, (err, user) => {
             if(err) {
-              res.json({ success: false, message: 'Something went wrong' });
+              res.status(500).json({ success: false, message: 'Something went wrong' });
             } else {
               if(!user) {
-                res.json({ success: false, message: 'User not found' });
+                res.status(404).json({ success: false, message: 'User not found' });
               } else {
                 if(!user._id.equals(post.createdBy)) {
-                  res.json({ success: false, message: 'You are not authorized to edit this post.' });
+                  res.status(401).json({ success: false, message: 'You are not authorized to edit this post.' });
                 } else {
                   post.title = req.body.title;
                   post.body = req.body.body;
@@ -269,17 +269,17 @@ router.put('/update', passport.authenticate('jwt', {session: false}), (req, res)
                     if(err) {
                       if(err.errors) {
                         if(err.errors.title) {
-                          res.json({ success: false, message: err.errors.title.message });
+                          res.status(400).json({ success: false, message: err.errors.title.message });
                         } else if(err.errors.body) {
-                          res.json({ success: false, message: err.errors.body.message });
+                          res.status(400).json({ success: false, message: err.errors.body.message });
                         } else {
-                          res.json({ success: false, message: err });
+                          res.status(400).json({ success: false, message: err });
                         }
                       } else {
-                        res.json({ success: false, message: err });
+                        res.status(500).json({ success: false, message: err });
                       }
                     } else {
-                      res.json({ success: true, message: 'Post Updated!' });
+                      res.status(200).json({ success: true, message: 'Post Updated!' });
                     }
                   });
                 }
@@ -294,30 +294,30 @@ router.put('/update', passport.authenticate('jwt', {session: false}), (req, res)
 
 router.delete('/delete/:id', passport.authenticate('jwt', {session: false}), (req, res) => {
   if(!req.params.id) {
-    res.json({ success: false, message: 'No post id provided' });
+    res.status(400).json({ success: false, message: 'No post id provided' });
   } else {
     Post.findOne({ _id: req.params.id }, (err, post) => {
       if(err) {
-        res.json({ success: false, message: 'Invalid post id' });
+        res.status(500).json({ success: false, message: 'Something went wrong' });
       } else {
         if(!post) {
-          res.json({ success: false, messasge: 'Post not found' });
+          res.status(404).json({ success: false, messasge: 'Post not found' });
         } else {
           User.findOne({ _id: req.user._id }, (err, user) => {
             if(err) {
-              res.json({ success: false, message: 'Something went wrong' });
+              res.status(500).json({ success: false, message: 'Something went wrong' });
             } else {
               if(!user) {
-                res.json({ success: false, message: 'User not found' });
+                res.status(404).json({ success: false, message: 'User not found' });
               } else {
                 if(!user._id.equals(post.createdBy)) {
-                  res.json({ success: false, message: 'You are not authorized to delete this post' });
+                  res.status(401).json({ success: false, message: 'You are not authorized to delete this post' });
                 } else {
                   post.remove((err) => {
                     if(err) {
-                      res.json({ success: false, message: 'Something went wrong' });
+                      res.status(500).json({ success: false, message: 'Something went wrong' });
                     } else {
-                      res.json({ success: true, message: 'Post deleted!' });
+                      res.status(200).json({ success: true, message: 'Post deleted!' });
                     }
                   });
                 }
@@ -332,24 +332,24 @@ router.delete('/delete/:id', passport.authenticate('jwt', {session: false}), (re
 
 router.put('/like', passport.authenticate('jwt', {session: false}), (req, res) => {
   if(!req.body.id) {
-    res.json({ success: false, message: 'No post id provided' });
+    res.status(400).json({ success: false, message: 'No post id provided' });
   } else {
     Post.findOne({ _id: req.body.id }).populate('createdBy', '_id').exec((err, post) => {
       if(err) {
-        res.json({ success: false, message: 'Invalid post id' });
+        res.status(500).json({ success: false, message: 'Something went wrong' });
       } else {
         if(!post) {
-          res.json({ success: false, message: 'Post not found' });
+          res.status(404).json({ success: false, message: 'Post not found' });
         } else {
           User.findOne({ _id: req.user._id }, (err, user) => {
             if(err) {
-              res.json({ success: false, message: 'Something went wrong' });
+              res.status(500).json({ success: false, message: 'Something went wrong' });
             } else {
               if(!user) {
-                res.json({ success: false, message: 'User not found' });
+                res.status(404).json({ success: false, message: 'User not found' });
               } else {
                 if(user._id.equals(post.createdBy._id)) {
-                  res.json({ success: false, messagse: 'Cannot like your own post' });
+                  res.status(401).json({ success: false, messagse: 'Cannot like your own post' });
                 } else {
                   let likeIndex = post.likedBy.indexOf(user._id);
                   if(likeIndex>-1) {
@@ -357,9 +357,9 @@ router.put('/like', passport.authenticate('jwt', {session: false}), (req, res) =
                     post.likedBy.splice(likeIndex, 1);
                     post.save((err) => {
                       if (err) {
-                        res.json({ success: false, message: 'Something went wrong' });
+                        res.status(500).json({ success: false, message: 'Something went wrong' });
                       } else {
-                        res.json({ success: true, message: 'Post unliked!' });
+                        res.status(200).json({ success: true, message: 'Post unliked!' });
                       }
                     });
                   } else {
@@ -372,9 +372,9 @@ router.put('/like', passport.authenticate('jwt', {session: false}), (req, res) =
                     post.likedBy.push(user._id);
                     post.save((err) => {
                       if (err) {
-                        res.json({ success: false, message: 'Something went wrong' });
+                        res.status(500).json({ success: false, message: 'Something went wrong' });
                       } else {
-                        res.json({ success: true, message: 'Post liked!' });
+                        res.status(200).json({ success: true, message: 'Post liked!' });
                       }
                     });
                   }
@@ -390,24 +390,24 @@ router.put('/like', passport.authenticate('jwt', {session: false}), (req, res) =
 
 router.put('/dislike', passport.authenticate('jwt', {session: false}), (req, res) => {
   if(!req.body.id) {
-    res.json({ success: false, message: 'No post id provided' });
+    res.status(400).json({ success: false, message: 'No post id provided' });
   } else {
     Post.findOne({ _id: req.body.id }).populate('createdBy', '_id').exec((err, post) => {
       if(err) {
-        res.json({ success: false, message: 'Invalid post id' });
+        res.status(500).json({ success: false, message: 'Something went wrong' });
       } else {
         if(!post) {
-          res.json({ success: false, message: 'Post not found' });
+          res.status(404).json({ success: false, message: 'Post not found' });
         } else {
           User.findOne({ _id: req.user._id }, (err, user) => {
             if(err) {
-              res.json({ success: false, message: 'Something went wrong' });
+              res.status(500).json({ success: false, message: 'Something went wrong' });
             } else {
               if(!user) {
-                res.json({ success: false, message: 'User not found' });
+                res.status(404).json({ success: false, message: 'User not found' });
               } else {
                 if(user._id.equals(post.createdBy._id)) {
-                  res.json({ success: false, messagse: 'Cannot dislike your own post' });
+                  res.status(401).json({ success: false, messagse: 'Cannot dislike your own post' });
                 } else {
                   let dislikeIndex = post.dislikedBy.indexOf(user._id);
                   if (dislikeIndex>-1) {
@@ -415,9 +415,9 @@ router.put('/dislike', passport.authenticate('jwt', {session: false}), (req, res
                     post.dislikedBy.splice(dislikeIndex, 1);
                     post.save((err) => {
                       if (err) {
-                        res.json({ success: false, message: 'Something went wrong' });
+                        res.status(500).json({ success: false, message: 'Something went wrong' });
                       } else {
-                        res.json({ success: true, message: 'Post undisliked!' });
+                        res.status(200).json({ success: true, message: 'Post undisliked!' });
                       }
                     });
                   } else {
@@ -430,9 +430,9 @@ router.put('/dislike', passport.authenticate('jwt', {session: false}), (req, res
                     post.dislikedBy.push(user._id);
                     post.save((err) => {
                       if (err) {
-                        res.json({ success: false, message: 'Something went wrong' });
+                        res.status(500).json({ success: false, message: 'Something went wrong' });
                       } else {
-                        res.json({ success: true, message: 'Post disliked!' });
+                        res.status(200).json({ success: true, message: 'Post disliked!' });
                       }
                     });
                   }
