@@ -33,6 +33,7 @@
         <div class="dropdown-menu mb-2" [ngClass]="{'show': userMenuVisible, 'navbar-bg-light': !uiService.getDarkMode(), 'navbar-bg-dark': uiService.getDarkMode()}" id="dropdownMenuUser" aria-labelledby="dropdownUser">
           <a class="dropdown-item" [routerLink]="['/profile']">Profile</a>
           <a class="dropdown-item" [routerLink]="['/posts']">Posts</a>
+          <a class="dropdown-item" [routerLink]="['/bookmarks']">Bookmarks</a>
           <span class="non-link-dropdown-item">
             Dark mode
             <label class="switch float-right">

@@ -69,11 +69,11 @@ router.get('/checkUsername/:username', (req, res) => {
 
 router.post('/register', (req, res) => {
   if(!req.body.email) {
-    res.status(400).json({ success: false, message: 'You must provide an email' });
+    res.status(200).json({ success: false, message: 'You must provide an email' });
   } else if(!req.body.username) {
-    res.status(400).json({ sccuess: false, message: 'You must provide a username' });
+    res.status(200).json({ sccuess: false, message: 'You must provide a username' });
   } else if(!req.body.password) {
-    res.status(400).json({ success: false, message: 'You must provide a password' });
+    res.status(200).json({ success: false, message: 'You must provide a password' });
   } else {
     let newUser = new User({
       first_name: req.body.first_name,
@@ -86,18 +86,18 @@ router.post('/register', (req, res) => {
     User.register(newUser, (err, user) => {
       if(err){
         if(err.email) {
-          res.status(400).json({ success: false, message: err.email.message });
+          res.status(200).json({ success: false, message: err.email.message });
         } else if(err.username) {
-          res.status(400).json({ success: false, message: err.username.message})
+          res.status(200).json({ success: false, message: err.username.message})
         } else if(err.password) {
-          res.status(400).json({ success: false, message: err.password.message});
+          res.status(200).json({ success: false, message: err.password.message});
         } else {
-          res.status(500).json({success: false, message: 'Failed to register user'});
+          res.status(err.status).json({success: false, message: 'Failed to register user'});
         }
       }else{
         User.login(req.body.username, req.body.password, (err, login) => {
           if(err) {
-            res.status(500).json({success: false, message: err.message});
+            res.status(err.status).json({success: false, message: err.message});
           } else {
             res.status(201).json({
               success: true,
@@ -114,15 +114,15 @@ router.post('/register', (req, res) => {
 
 router.post('/login', (req, res) => {
   if(!req.body.username) {
-    res.status(400).json({ sccuess: false, message: 'You must provide a username' });
+    res.status(200).json({ sccuess: false, message: 'You must provide a username' });
   } else if(!req.body.password) {
-    res.status(400).json({ success: false, message: 'You must provide a password' });
+    res.status(200).json({ success: false, message: 'You must provide a password' });
   } else {
     const username = req.body.username;
     const password = req.body.password;
     User.login(username, password, (err, login) => {
       if(err) {
-        res.status(500).json({success: false, message: err.message});
+        res.status(err.status).json({success: false, message: err.message});
       } else {
         res.status(200).json({
           success: true,
@@ -278,24 +278,28 @@ router.put('/bookmark/add', passport.authenticate('jwt', {session: false}), (req
       if(!user) {
         res.status(404).json({ success: false, message: 'User not found' });
       } else {
-        Post.findById(req.body.id, (err, post) => {
-          if(err) {
-            res.status(500).json({ success: false, message: 'Something went wrong' });
-          } else {
-            if(!post) {
-              res.status(404).json({ success: false, message: 'Post not found' });
+        if(user.bookmarks.indexOf(req.body.id)==-1) {
+          Post.findById(req.body.id, (err, post) => {
+            if(err) {
+              res.status(500).json({ success: false, message: 'Something went wrong' });
             } else {
-              user.bookmarks.push(post._id);
-              user.save((err) => {
-                if(err) {
-                  res.status(500).json({ success: false, message: 'Something went wrong' });
-                } else {
-                  res.status(200).json({ success: true, message: 'Bookmarked' });
-                }
-              });
+              if(!post) {
+                res.status(404).json({ success: false, message: 'Post not found' });
+              } else {
+                user.bookmarks.push(post._id);
+                user.save((err) => {
+                  if(err) {
+                    res.status(500).json({ success: false, message: 'Something went wrong' });
+                  } else {
+                    res.status(200).json({ success: true, message: 'Bookmarked' });
+                  }
+                });
+              }
             }
-          }
-        });
+          });
+        } else {
+          res.status(400).json({ success: true, message: 'Post already bookmarked' });
+        }
       }
     }
   });
@@ -313,6 +317,32 @@ router.put('/bookmark/remove', passport.authenticate('jwt', {session: false}), (
       }
     }
   });
+});
+
+router.get('/bookmark/count', passport.authenticate('jwt', {session: false}), (req, res, next) => {
+  res.status(200).json({ success: true, count: req.user.bookmarks.length });
+});
+
+router.get('/bookmark/page/:page/:itemsPerPage', passport.authenticate('jwt', {session: false}), (req, res, next) => {
+  let itemsPerPage = 5;
+  if(!req.params.page) {
+    res.status(400).json({ success: false, message: 'No page provided' });
+  } else {
+    let page = req.params.page;
+    if(req.params.itemsPerPage && req.params.itemsPerPage<15)
+      itemsPerPage = parseInt(req.params.itemsPerPage);
+    User.findById(req.user._id).select({'bookmarks': { $slice: [(page-1)*itemsPerPage, itemsPerPage]}}).populate({path: 'bookmarks', populate: {path: 'createdBy', select: '_id username first_name last_name'}}).lean().exec((err, user) => {
+      if(err) {
+        res.status(500).status.json({ success: false, message: 'Something went wrong' });
+      } else {
+        if(!user) {
+          res.status(404).json({ success: false, message: 'User not found' });
+        } else {
+          res.status(200).json({ success: true, posts: Post.populatePosts(user.bookmarks, req.user) });
+        }
+      }
+    });
+  }
 });
 
 router.post('/darkMode', passport.authenticate('jwt', {session: false}), (req, res) => {

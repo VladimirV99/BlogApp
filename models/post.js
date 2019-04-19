@@ -95,3 +95,55 @@ module.exports.getCommentCount = function(post_id, callback) {
     }
   });
 }
+
+// Normal include method doesn't work on ObjectIds
+function includesId(array, id) {
+  if(!array)
+    return false;
+  for(let i = 0; i < array.length; i++) {
+    if(array[i].equals(id)){
+      return true;
+    }
+  }
+  return false;
+}
+
+function addCommentInformation(post) {
+  post.totalComments = post.comments? post.comments.length : 0;
+  delete post.comments;
+}
+
+function addUserInformation(post, user) {
+  post.bookmarked = includesId(user.bookmarks, post._id);
+  post.likedByUser = false;
+  post.dislikedByUser = false;
+  if(includesId(post.likedBy, user._id)) {
+    post.likedByUser = true;
+  } else if(includesId(post.dislikedBy, user._id)) {
+    post.dislikedByUser = true;
+  }
+  delete post.likedBy;
+  delete post.dislikedBy;
+}
+
+module.exports.populatePosts = function(posts, user) {
+  if(user && user.authenticated) {
+    posts.forEach(post => {
+      addCommentInformation(post);
+      addUserInformation(post, user);
+    });
+  } else {
+    posts.forEach(post => {
+      addCommentInformation(post);
+    });
+  }
+  return posts;
+}
+
+module.exports.populatePost = function(post, user) {
+  addCommentInformation(post);
+  if(user && user.authenticated) {
+    addUserInformation(post, user);
+  }
+  return post;
+}

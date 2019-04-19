@@ -25,6 +25,7 @@ import { PagerComponent } from './components/pager/pager.component';
 import { UserComponent } from './layout/user/user.component';
 import { PostsComponent } from './layout/posts/posts.component';
 import { ArticleComponent } from './components/article/article.component';
+import { BookmarksComponent } from './layout/bookmarks/bookmarks.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import { ArticleComponent } from './components/article/article.component';
     PagerComponent,
     UserComponent,
     PostsComponent,
-    ArticleComponent
+    ArticleComponent,
+    BookmarksComponent
   ],
   imports: [
     BrowserModule,

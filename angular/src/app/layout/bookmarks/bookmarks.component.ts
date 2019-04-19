@@ -7,11 +7,11 @@ import User from '../../models/user';
 import Post from '../../models/post';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss', '../../post.scss']
+  selector: 'app-bookmarks',
+  templateUrl: './bookmarks.component.html',
+  styleUrls: ['./bookmarks.component.scss', '../../post.scss']
 })
-export class HomeComponent implements OnInit {
+export class BookmarksComponent implements OnInit {
 
   message: string = '';
   messageClass: string = '';
@@ -31,8 +31,8 @@ export class HomeComponent implements OnInit {
     private postService: PostService
   ) { }
 
-  getPosts(): void {
-    this.postService.getPostCount().subscribe(data => {
+  getBookmarks(): void {
+    this.postService.getBookmarkCount().subscribe(data => {
       if(!data.success) {
         this.messageClass = 'alert-danger';
         this.message = data.message;
@@ -40,7 +40,7 @@ export class HomeComponent implements OnInit {
         this.totalPosts = data.count;
         this.page = Math.min(this.page, Math.ceil(this.totalPosts/this.postService.getPostsPerPage()));
         if(this.totalPosts != 0) {
-          this.postService.getPosts(this.page).subscribe(data => {
+          this.postService.getBookmarks(this.page).subscribe(data => {
             this.posts = data.posts;
             this.loading = false;
           });
@@ -48,17 +48,6 @@ export class HomeComponent implements OnInit {
           this.posts = [];
           this.loading = false;
         }
-      }
-    });
-  }
-
-  getPopularPosts(): void {
-    this.postService.getPopular().subscribe(data => {
-      if(!data.success) {
-        this.messageClass = 'alert-danger';
-        this.message = data.message;
-      } else {
-        this.popularPosts = data.posts;
       }
     });
   }
@@ -73,7 +62,7 @@ export class HomeComponent implements OnInit {
         this.postToDelete = null;
         this.messageClass = "alert alert-danger";
         this.message = data.message;
-        this.getPosts();
+        this.getBookmarks();
       });
     }
   }
@@ -81,28 +70,27 @@ export class HomeComponent implements OnInit {
   onNextPage(): void {
     if(this.page<Math.ceil(this.totalPosts/this.postService.getPostsPerPage())){
       this.page++;
-      this.getPosts();
+      this.getBookmarks();
     }
   }
 
   onPrevPage(): void {
     if(this.page>0){
       this.page--;
-      this.getPosts();
+      this.getBookmarks();
     }
   }
 
   goToPage(page: number): void {
     this.page = page;
-    this.getPosts();
+    this.getBookmarks();
   }
 
   ngOnInit(): void {
     if(this.authService.loggedIn()) {
       this.user = this.authService.getUser();
     }
-    this.getPosts();
-    this.getPopularPosts();
+    this.getBookmarks();
   }
 
   dismissAlert(): void {

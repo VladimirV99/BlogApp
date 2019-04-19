@@ -183,14 +183,14 @@ module.exports.comparePassword = function(candidatePassword, hash, callback){
 module.exports.register = function(newUser, callback){
   for(let i = 0; i < passwordValidators.length; i++){
     if(!passwordValidators[i].validator(newUser.password)){
-      callback({password:{message:passwordValidators[i].message}});
+      callback({status: 200, password:{message:passwordValidators[i].message}});
       return;
     }
   }
   bcrypt.genSalt(10, (err, salt) => {
     bcrypt.hash(newUser.password, salt, (err, hash) => {
       if(err) {
-        callback(err);
+        callback({status: 500, ...err});
       } else {
         newUser.password = hash;
         newUser.save(callback);
@@ -201,20 +201,20 @@ module.exports.register = function(newUser, callback){
 
 module.exports.login = function(username, password, callback) {
   if(username == null) {
-    callback({message:'You must provide a username'})
+    callback({status: 200, message:'You must provide a username'})
   } else if(password == null) {
-    callback({message:'You must provide a password'});
+    callback({status: 200, message:'You must provide a password'});
   } else {
     User.findByUsername(username, (err, user) => {
       if(err) {
-        callback({message: err});
+        callback({status: 500, message: err});
       } else {
         if(!user) {
-          callback({message:'Username not found'});
+          callback({status: 200, message:'Username not found'});
         } else {
           User.comparePassword(password, user.password, (err, isMatch) => {
             if(err) {
-              callback({message: err});
+              callback({status: 500, message: err});
             } else{
               if(isMatch){
                 const token = jwt.sign({user_id: user._id}, config.secret, {
@@ -234,7 +234,7 @@ module.exports.login = function(username, password, callback) {
                   }
                 });
               } else {
-                callback({message: 'Wrong password'});
+                callback({status: 200, message: 'Wrong password'});
               }
             }
           });

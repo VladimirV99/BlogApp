@@ -19,8 +19,8 @@
 </div>
 
 <div class="row">
-  <div class="col-md-9">
-    <h2 class="page-header text-center">Post Feed</h2>
+  <div class="col-md-10 offset-md-1">
+    <h2 class="page-header text-center">Bookmarks</h2>
 
     <div class="alert show" [ngClass]="messageClass" [class.d-none]="!message" role="alert">
       {{ message }}
@@ -31,33 +31,15 @@
 
     <h3 *ngIf="loading" class="text-center">Loading...</h3>
 
-    <h5 *ngIf="!loading && posts.length==0" class="text-center mt-4">There are no posts</h5>
+    <h5 *ngIf="!loading && posts.length==0" class="text-center mt-4">You have no bookmarks</h5>
 
     <div *ngIf="!loading">
       <div *ngFor="let post of posts">
-        <app-article [post]="post" [user]="user" (reload)="getPosts()" (delete)="onDelete($event)"></app-article>
+        <app-article [post]="post" [user]="user" (reload)="getBookmarks()" (delete)="onDelete($event)"></app-article>
       </div>
 
       <app-pager [totalItems]="totalPosts" [itemsPerPage]="postService.getPostsPerPage()" [currentPage]="page" [pagesToShow]="uiService.getPagesToShow()" [loading]="false"
     (goNext)="onNextPage()" (goPrev)="onPrevPage()" (goPage)="goToPage($event)"></app-pager>
-    </div>
-  </div>
-
-  <div *ngIf="popularPosts" class="col-md-3">
-    <div class="container-fluid post">
-      <div class="post-header text-center p-1">
-        <h3>Popular</h3>
-      </div>
-      <div class="post-body p-0">
-        <ul class="popular my-0">
-          <li *ngFor="let popularPost of popularPosts" class="popular-item">
-            <a class="post-link popular-link" [routerLink]="['/post/', popularPost._id]">
-              <h5 class=my-0>{{popularPost.title}}</h5>
-              <small>by <strong>{{popularPost.createdBy.username}} </strong></small>
-            </a>
-          </li>
-        </ul>
-      </div>
     </div>
   </div>
 

@@ -10,6 +10,7 @@ import { PostComponent } from './layout/post/post.component';
 import { PostsComponent } from './layout/posts/posts.component';
 import { EditComponent } from './layout/edit/edit.component';
 import { ProfileComponent } from './layout/profile/profile.component';
+import { BookmarksComponent } from './layout/bookmarks/bookmarks.component';
 
 import { AuthGuard } from './guards/auth.guard';
 import { NotAuthGuard } from './guards/notAuth.guard';
@@ -55,6 +56,11 @@ const routes: Routes = [
     path: 'login',
     component: LoginComponent,
     canActivate: [NotAuthGuard]
+  },
+  {
+    path: 'bookmarks',
+    component: BookmarksComponent,
+    canActivate: [AuthGuard]
   },
   { path: '**', component: HomeComponent }
 ];

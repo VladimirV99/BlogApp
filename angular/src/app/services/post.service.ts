@@ -123,4 +123,14 @@ export class PostService {
     return this.http.delete<PostMessage>(this.domain + 'comments/delete/' + id, {headers: headers});
   }
 
+  getBookmarkCount(): Observable<PostMessage> {
+    let headers = this.authService.createAuthenticationHeaders();
+    return this.http.get<PostMessage>(this.domain + 'users/bookmark/count', {headers: headers});
+  }
+
+  getBookmarks(page: number): Observable<PostMessage> {
+    let headers = this.authService.createAuthenticationHeaders();
+    return this.http.get<PostMessage>(this.domain + 'users/bookmark/page/' + page + '/' + this.postsPerPage.toString(), {headers: headers});
+  }
+
 }
