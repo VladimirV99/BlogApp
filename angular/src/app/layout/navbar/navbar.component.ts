@@ -11,7 +11,7 @@ import { UiService } from '../../services/ui.service';
 })
 export class NavbarComponent implements OnInit {
 
-  userMenuVisible: boolean = false;
+  private userMenuVisible: boolean = false;
 
   constructor(
     public authService: AuthService,

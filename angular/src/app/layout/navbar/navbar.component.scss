@@ -85,6 +85,15 @@
   cursor: default;
 }
 
+.profileIcon {
+  height: 27px;
+  width: 27px;
+  margin-right: .4rem;
+  position: relative;
+  top: -4px;
+  float: left;
+}
+
 /* Switch */
 .switch {
   position: relative;
@@ -104,9 +113,16 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #ccc;
   -webkit-transition: .4s;
   transition: .4s;
+}
+
+:host-context(.theme-light) .slider {
+  background-color: #ccc;
+}
+
+:host-context(.theme-dark) .slider {
+  background-color: $color-dark-secondary;
 }
 
 .slider:before {
@@ -116,9 +132,16 @@
   width: 13px;
   left: 2px;
   bottom: 2px;
-  background-color: white;
   -webkit-transition: .4s;
   transition: .4s;
+}
+
+:host-context(.theme-light) .slider:before {
+  background-color: white;
+}
+
+:host-context(.theme-dark) .slider:before {
+  background-color: $color-dark-primary;
 }
 
 input:checked + .slider {
