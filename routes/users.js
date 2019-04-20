@@ -230,7 +230,7 @@ router.post('/changePassword', passport.authenticate('jwt', {session: false}), (
                 }
               });
             } else {
-              return res.status(401).json({success: false, message: 'Wrong password'});
+              return res.status(200).json({success: false, message: 'Wrong password'});
             }
           }
         });

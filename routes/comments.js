@@ -9,9 +9,9 @@ const User = require('../models/user');
 
 router.post('/newComment', passport.authenticate('jwt', {session: false}), (req, res) => {
   if(!req.body.parent_post){
-    res.status(400).json({ success:false, message: 'No post id provided' });
+    res.status(200).json({ success:false, message: 'No post id provided' });
   } else if(!req.body.comment) {
-    res.status(400).json({ success: false, message: 'No comment provided' });
+    res.status(200).json({ success: false, message: 'No comment provided' });
   } else {
     Post.findById(req.body.parent_post, (err, post) => {
       if(err) {
@@ -47,9 +47,9 @@ router.post('/newComment', passport.authenticate('jwt', {session: false}), (req,
 
 router.post('/newReply', passport.authenticate('jwt', {session: false}), (req, res) => {
   if(!req.body.parent_comment){
-    res.status(400).json({ success:false, message: 'No comment id provided' });
+    res.status(200).json({ success:false, message: 'No comment id provided' });
   } else if(!req.body.comment) {
-    res.status(400).json({ success: false, message: 'No comment provided' });
+    res.status(200).json({ success: false, message: 'No comment provided' });
   } else {
     Comment.findById(req.body.parent_comment, (err, comment) => {
       if(err) {
@@ -85,7 +85,7 @@ router.post('/newReply', passport.authenticate('jwt', {session: false}), (req, r
 
 router.post('/getComments/:id', (req, res) => {
   if(!req.params.id){
-    res.status(400).json({ success: false, message: 'No post id provided' });
+    res.status(200).json({ success: false, message: 'No post id provided' });
   } else {
     let before = req.body.before? req.body.before : Date.now();
     let limit = req.body.limit? req.body.limit: 5;
@@ -123,7 +123,7 @@ router.post('/getComments/:id', (req, res) => {
 
 router.post('/getReplies/:id', (req, res) => {
   if(!req.params.id){
-    res.status(400).json({ success: false, message: 'No comment id provided' });
+    res.status(200).json({ success: false, message: 'No comment id provided' });
   } else {
     let before = req.body.before? req.body.before : Date.now();
     let limit = req.body.limit? req.body.limit: 5;
@@ -160,7 +160,7 @@ router.post('/getReplies/:id', (req, res) => {
 
 router.get('/count/:id', (req, res) => {
   if(!req.params.id) {
-    res.status(400).json({ success: false, message: 'No post id provided' });
+    res.status(200).json({ success: false, message: 'No post id provided' });
   } else {
     Post.getCommentCount(req.params.id, (err, count) => {
       if(err) {
@@ -178,7 +178,7 @@ router.get('/count/:id', (req, res) => {
 
 router.delete('/delete/:id', passport.authenticate('jwt', {session: false}), (req, res) => {
   if(!req.params.id) {
-    res.status(400).json({ success: false, message: 'No comment id provided' });
+    res.status(200).json({ success: false, message: 'No comment id provided' });
   } else {
     Comment.findById(req.params.id, (err, comment) => {
       if(err) {
