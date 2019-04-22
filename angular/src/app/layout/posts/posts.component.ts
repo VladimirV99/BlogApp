@@ -78,8 +78,6 @@ export class PostsComponent implements OnInit {
   ngOnInit() {
     if(this.authService.loggedIn()){
       this.user = this.authService.getUser();
-      if(this.user.photo)
-        this.user.photo = this.uiService.getPhoto(this.user.photo);
       this.getPosts();
     }
   }
