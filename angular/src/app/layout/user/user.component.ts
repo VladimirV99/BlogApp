@@ -61,8 +61,6 @@ export class UserComponent implements OnInit {
   ngOnInit() {
     if(this.authService.loggedIn()){
       this.user = this.authService.getUser();
-      if(this.user.photo)
-        this.user.photo = this.uiService.getPhoto(this.user.photo);
     }
     this.authService.getUserProfile(this.activatedRoute.snapshot.params.username).subscribe(data => {
       if(!data.success) {
