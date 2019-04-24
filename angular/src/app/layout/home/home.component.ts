@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 
 import { AuthService } from '../../services/auth.service'
 import { UiService } from '../../services/ui.service';
@@ -12,6 +12,8 @@ import Post from '../../models/post';
   styleUrls: ['./home.component.scss', '../../post.scss']
 })
 export class HomeComponent implements OnInit {
+
+  @ViewChild('top') top: ElementRef;
 
   message: string = '';
   messageClass: string = '';
@@ -42,6 +44,8 @@ export class HomeComponent implements OnInit {
         if(this.totalPosts != 0) {
           this.postService.getPosts(this.page).subscribe(data => {
             this.posts = data.posts;
+            if(!this.loading)
+              this.top.nativeElement.scrollIntoView({ behavior: 'smooth' })
             this.loading = false;
           });
         } else {

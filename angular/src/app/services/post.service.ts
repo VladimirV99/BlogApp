@@ -22,7 +22,7 @@ export interface PostMessage {
 export class PostService {
 
   private domain: string = this.authService.getDomain();
-  private postsPerPage: number = 1;
+  private postsPerPage: number = 2;
   private commentsPerPage: number = 1;
 
   constructor(
