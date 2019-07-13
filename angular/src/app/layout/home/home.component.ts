@@ -13,7 +13,7 @@ import Post from '../../models/post';
 })
 export class HomeComponent implements OnInit {
 
-  @ViewChild('top') top: ElementRef;
+  @ViewChild('top', { static: true }) top: ElementRef;
 
   message: string = '';
   messageClass: string = '';
