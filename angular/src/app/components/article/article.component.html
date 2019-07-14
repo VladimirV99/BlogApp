@@ -6,9 +6,7 @@
     </ul>
     <span class="post-meta"><small>by <strong><a class="post-link" [routerLink]="['/user/', post.createdBy.username]">{{post.createdBy.first_name}} {{post.createdBy.last_name}}</a></strong> on {{ post.createdAt | date:'MMM dd, yyyy' }}</small></span>
   </header>
-  <div class="post-body">
-    <p>{{post.body}}</p>
-  </div>
+  <div [innerHTML]="post.body" class="post-body"></div>
   <footer class="post-footer">
     <div *ngIf="authService.loggedIn() && user && user.id!=post.createdBy._id">
       <button type="button" class="btn btn-sm" [ngClass]="{'btn-info': !post.likedByUser, 'btn-primary': post.likedByUser}" (click)="likePost()">Like{{post.likedByUser?'d':''}}: {{post.likes}}</button>
