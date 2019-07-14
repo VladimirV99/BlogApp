@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params } from '@angular/router';
 import { ValidateService } from '../../services/validate.service';
 import { PostService } from '../../services/post.service';
+import { EditorComponent } from 'src/app/components/editor/editor.component';
 
 @Component({
   selector: 'app-edit',

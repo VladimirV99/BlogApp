@@ -26,6 +26,7 @@ import { UserComponent } from './layout/user/user.component';
 import { PostsComponent } from './layout/posts/posts.component';
 import { ArticleComponent } from './components/article/article.component';
 import { BookmarksComponent } from './layout/bookmarks/bookmarks.component';
+import { EditorComponent } from './components/editor/editor.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,8 @@ import { BookmarksComponent } from './layout/bookmarks/bookmarks.component';
     UserComponent,
     PostsComponent,
     ArticleComponent,
-    BookmarksComponent
+    BookmarksComponent,
+    EditorComponent
   ],
   imports: [
     BrowserModule,

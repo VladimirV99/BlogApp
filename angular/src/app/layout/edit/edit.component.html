@@ -25,14 +25,16 @@
     
       <div class="form-group">
         <label for="body">Body</label>
-        <div [ngClass]="{'has-error': editForm.controls.body.dirty && editForm.controls.body.errors}">
-          <textarea rows="15" class="form-control" type="text" name="body" formControlName="body"></textarea>
-          
-          <ul class="help-block validation-feedback">
-            <li *ngIf="editForm.controls.body.dirty && editForm.controls.body.errors?.required" class="message-error">This field is required.</li>
-            <li *ngIf="editForm.controls.body.dirty && (editForm.controls.body.errors?.minlength || editForm.controls.body.errors?.maxlength)" class="message-error">Minimum characters: 5, Maximum characters: 500</li>
-          </ul>
-        </div>
+        <app-editor>
+          <div [ngClass]="{'has-error': editForm.controls.body.dirty && editForm.controls.body.errors}">
+            <textarea id="md-content" #mdContent rows="15" class="form-control" type="text" name="body" formControlName="body" spellcheck="false"></textarea>
+
+            <ul class="help-block validation-feedback">
+              <li *ngIf="editForm.controls.body.dirty && editForm.controls.body.errors?.required" class="message-error">This field is required.</li>
+              <li *ngIf="editForm.controls.body.dirty && (editForm.controls.body.errors?.minlength || editForm.controls.body.errors?.maxlength)" class="message-error">Minimum characters: 5, Maximum characters: 500</li>
+            </ul>
+          </div>
+        </app-editor>
       </div>
       
       <input [disabled]="!editForm.valid || processing" class="btn btn-primary btn-block" type="submit" value="Save" />
