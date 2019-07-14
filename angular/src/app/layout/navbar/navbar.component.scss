@@ -68,11 +68,11 @@
   cursor: pointer;
 }
 
-#dropdownUser, #dropdownMenuUser {
+#dropdown-user, #dropdown-menu-user {
   min-width: 180px;
 }
 
-#dropdownMenuUser {
+#dropdown-menu-user {
   margin: 0;
   margin-top: -1px;
   border-radius: 0rem 0rem .25rem .25rem;
@@ -85,14 +85,23 @@
   cursor: default;
 }
 
-.profileIcon {
+.profile-icon {
   height: 27px;
   width: 27px;
-  margin-right: .4rem;
   position: relative;
   top: -4px;
-  float: left;
+
+  &.profile-icon-left {
+    margin-right: .4rem;
+    float: left;
+  }
+  
+  &.profile-icon-right {
+    margin-left: .4rem;
+    float: right;
+  }
 }
+
 
 /* Switch */
 .switch {
