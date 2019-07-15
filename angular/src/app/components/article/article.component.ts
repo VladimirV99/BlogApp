@@ -4,7 +4,6 @@ import Post from '../../models/post';
 import User from '../../models/user';
 import { AuthService } from 'src/app/services/auth.service';
 import { PostService } from 'src/app/services/post.service';
-import { post } from 'selenium-webdriver/http';
 
 @Component({
   selector: 'app-article',

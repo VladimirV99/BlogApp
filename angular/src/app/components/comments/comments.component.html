@@ -1,0 +1,22 @@
+<div id="comments" class="comment-box">
+  
+  <div class="container-fluid comment pb-3">
+    <form [formGroup]="commentForm" (submit)="onCommentSubmit()" class="row no-gutters">
+      <div class="col-12 col-md-10">
+        <textarea class="form-control" name="comment" formControlName="comment" rows="2" placeholder="Join the conversation"></textarea>
+      </div>
+      <div class="col-12 col-md-2">
+        <input [disabled]="!commentForm.valid || processing" type="submit" class="btn btn-success w-100 h-100" value="Post">
+      </div>
+    </form>
+  </div>
+
+  <div *ngIf="post && post.comments">
+    <div *ngFor="let comment of post.comments">
+      <app-replies [user]="user" [comment]="comment" [postCreator]="post.createdBy"></app-replies>
+    </div>
+  </div>
+
+  <h4 *ngIf="totalComments==0" class="text-center">There are no comments</h4>
+  <button *ngIf="loadedComments<totalComments" class="btn btn-primary btn-block" (click)="loadComments()">Load More Comments</button>
+</div>

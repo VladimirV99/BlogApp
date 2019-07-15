@@ -23,24 +23,26 @@
       {{comment.comment}}
     </div>
   
-    <button *ngIf="authService.loggedIn() && user && user.id==postCreator._id" class=" btn btn-sm btn-danger comment-button" (click)="deleteComment()">Delete</button>
-    <button class="btn btn-sm btn-primary comment-button" (click)="toggleReplyForm()">Reply</button>
-    <button *ngIf="!showReplies && comment.replies>0" [disabled]="processingReplies" class="btn btn-sm btn-primary comment-button" (click)="showRepliesDiv()">Show Replies</button>
+    <div class="comment-footer">
+      <button *ngIf="authService.loggedIn() && user && user.id==postCreator._id" class=" btn btn-sm btn-danger comment-button" (click)="deleteComment()">Delete</button>
+      <button class="btn btn-sm btn-primary comment-button" (click)="toggleReplyForm()">Reply</button>
+      <button *ngIf="!showReplies && comment.replies>0" [disabled]="processingReplies" class="btn btn-sm btn-primary comment-button" (click)="showRepliesDiv()">Show Replies</button>
+    </div>
     
+  </div>
+
+  <div *ngIf="showReply" class="comment pb-3">
+    <form [formGroup]="replyForm" (submit)="onReplySubmit()" class="row no-gutters">
+      <div class="col-12 col-md-10">
+        <textarea class="form-control" name="reply" formControlName="reply" rows="2" placeholder="Join the conversation"></textarea>
+      </div>
+      <div class="col-12 col-md-2">
+        <input [disabled]="!replyForm.valid || processing" type="submit" class="btn btn-success w-100 h-100" value="Post">
+      </div>
+    </form>
   </div>
   
   <div class="indent">
-  
-    <div *ngIf="showReply" class="comment pb-3">
-      <form [formGroup]="replyForm" (submit)="onReplySubmit()" class="row no-gutters">
-        <div class="col-12 col-md-10">
-            <textarea class="form-control" name="reply" formControlName="reply" rows="2" placeholder="Join the conversation"></textarea>
-        </div>
-        <div class="col-12 col-md-2">
-          <input [disabled]="!replyForm.valid || processing" type="submit" class="btn btn-success w-100 h-100" value="Post">
-        </div>
-      </form>
-    </div>
   
     <div *ngIf="showReplies">
       <div *ngIf="replies.length>0">
