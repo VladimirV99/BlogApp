@@ -123,12 +123,45 @@ router.get('/get/:id', get_user, (req, res) => {
     let selector = req.user.authenticated? 'title body createdBy createdAt likes likedBy dislikes dislikedBy comments' : 'title body createdBy createdAt likes dislikes comments';
     Post.findOne({ _id: req.params.id }).select(selector).populate('createdBy', '_id username first_name last_name').lean().exec((err, post) => {
       if (err) {
-        res.status(500).json({ success: false, message: 'Invalid post id' });
+        res.status(500).json({ success: false, message: 'Something went wrong' });
       } else {
         if (!post) {
           res.status(404).json({ success: false, message: 'Post not found' });
         } else {
           res.status(200).json({ success: true, post: Post.populatePost(post, req.user) });
+        }
+      }
+    });
+  }
+});
+
+router.get('/edit/:id', passport.authenticate('jwt', {session: false}), (req, res) => {
+  if(!req.params.id) {
+    res.status(200).json({ success: false, message: 'No post id provided' });
+  } else {
+    let selector = 'title body createdBy createdAt likes dislikes';
+    Post.findOne({ _id: req.params.id }).select(selector).lean().exec((err, post) => {
+      if(err) {
+        res.status(500).json({ success: false, message: 'Something went wrong' });
+      } else {
+        if(!post) {
+          res.status(404).json({ success: false, message: 'Post not found' });
+        } else {
+          User.findOne({ _id: req.user._id }, (err, user) => {
+            if(err) {
+              res.status(500).json({ success: false, message: 'Something went wrong' });
+            } else {
+              if(!user) {
+                res.status(404).json({ success: false, message: 'User not found' });
+              } else {
+                if(!user._id.equals(post.createdBy)) {
+                  res.status(401).json({ success: false, message: 'You are not authorized to edit this post.' });
+                } else {
+                  res.status(200).json({ success: true, post: Post.populatePost(post, req.user, false) });
+                }
+              }
+            }
+          });
         }
       }
     });

@@ -58,6 +58,11 @@ export class PostService {
     return this.http.get<PostMessage>(this.domain + 'posts/count', {headers: headers});
   }
 
+  getEditPost(id: string): Observable<PostMessage> {
+    let headers = this.authService.createAuthenticationHeaders();
+    return this.http.get<PostMessage>(this.domain + 'posts/edit/' + id, {headers: headers});
+  }
+
   getUserPosts(username: string, page: number): Observable<PostMessage> {
     let headers = this.authService.createAuthenticationHeaders();
     return this.http.get<PostMessage>(this.domain + 'posts/user/' + username + '/page/' + page, {headers: headers});

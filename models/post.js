@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const markdown = require('../libs/markdown.node');
 mongoose.Promise = global.Promise;
 
 let titleLengthChecker = (title) => {
@@ -126,24 +127,34 @@ function addUserInformation(post, user) {
   delete post.dislikedBy;
 }
 
-module.exports.populatePosts = function(posts, user) {
+function translateMarkdown(post) {
+  post.body = markdown.makeHtml(post.body);
+}
+
+module.exports.populatePosts = function(posts, user, translate=true) {
   if(user && user.authenticated) {
     posts.forEach(post => {
       addCommentInformation(post);
       addUserInformation(post, user);
+      if(translate)
+        translateMarkdown(post);
     });
   } else {
     posts.forEach(post => {
       addCommentInformation(post);
+      if(translate)
+        translateMarkdown(post);
     });
   }
   return posts;
 }
 
-module.exports.populatePost = function(post, user) {
+module.exports.populatePost = function(post, user, translate=true) {
   addCommentInformation(post);
   if(user && user.authenticated) {
     addUserInformation(post, user);
+    if(translate)
+      translateMarkdown(post);
   }
   return post;
 }

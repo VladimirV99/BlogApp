@@ -77,7 +77,7 @@ export class EditComponent implements OnInit {
 
   ngOnInit() {
     this.currentUrl = this.activatedRoute.snapshot.params;
-    this.postService.getPost(this.currentUrl.id).subscribe(data => {
+    this.postService.getEditPost(this.currentUrl.id).subscribe(data => {
       if (!data.success) {
         this.messageClass = 'alert alert-danger';
         this.message = data.message;
