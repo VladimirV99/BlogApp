@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { PostService } from '../../services/post.service';
@@ -25,75 +24,12 @@ export class PostComponent implements OnInit {
   loading: boolean = true;
   postToDelete: string;
 
-  commentForm: FormGroup;
-  processingComment: boolean = false;
-
-  loadedComments: number = 0;
-
   constructor(
-    private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute,
     private authService: AuthService,
     private postService: PostService,
     private uiService: UiService
-  ) { 
-    this.commentForm = this.formBuilder.group({
-      comment: ['', Validators.compose([
-        Validators.required,
-        Validators.maxLength(500)
-      ])]
-    });
-  }
-
-  loadComments() {
-    let before = (this.post && this.post.comments && this.post.comments.length>0)? this.post.comments[this.post.comments.length-1].createdAt : Date.now();
-    this.postService.getComments(this.post._id, before).subscribe(data => {
-      if(!data.success) {
-        this.messageClass = 'alert alert-danger';
-        this.message = data.message;
-      } else {
-        if(data.comments.length == 0){
-          this.post.totalComments = this.loadedComments;
-        } else {
-          this.post.comments = this.post.comments.concat(data.comments);
-          this.loadedComments += data.comments.length;
-        }
-      }
-    });
-  }
-
-  disableCommentForm() {
-    this.commentForm.controls['comment'].disable();
-  }
-
-  enableCommentForm() {
-    this.commentForm.controls['comment'].enable();
-  }
-
-  onCommentSubmit() {
-    this.processingComment = true;
-    this.disableCommentForm();
-    
-    const comment = {
-      parent_post: this.post._id,
-      comment: this.commentForm.get('comment').value
-    }
-
-    this.postService.postComment(comment).subscribe(data => {
-      if (!data.success) {
-        this.messageClass = 'alert alert-danger';
-        this.message = data.message;
-      } else {
-        this.messageClass = 'alert alert-success';
-        this.message = data.message;
-        data.comment.createdBy = this.user;
-        this.post.comments.unshift(data.comment);
-      }
-      this.processingComment = false;
-      this.commentForm.get('reply').reset();
-      this.enableCommentForm();
-    });
-  }
+  ) { }
 
   onDelete(post: string): void {
     this.postToDelete = post;
@@ -118,9 +54,6 @@ export class PostComponent implements OnInit {
       } else {
         this.post = postData.post;
         this.post.comments = [];
-        if(this.post.totalComments > 0){
-          this.loadComments();
-        }
         this.loading = false;
       }
     });
@@ -136,6 +69,18 @@ export class PostComponent implements OnInit {
   dismissAlert(): void {
     this.message = '';
     this.messageClass = '';
+  }
+
+  refreshCommentCount(count: number): void {
+    this.post.totalComments = count;
+  }
+
+  onMessage(success: boolean, message: string) {
+    this.message = message;
+    if(success)
+      this.messageClass = 'alert alert-success';
+    else
+      this.messageClass = 'alert alert-danger';
   }
 
 }

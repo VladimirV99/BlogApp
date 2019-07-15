@@ -135,11 +135,10 @@
 }
 
 .comment {
-  padding: 1rem;
-  background-color:lightblue;
-  margin-bottom: .5rem;
-  // border-radius: .25rem;
+  padding: .75rem;
   padding-bottom: 2.5rem;
+  margin-bottom: .5rem;
+  border-radius: .3rem;
 
   hr {
     margin: .4rem;
@@ -154,6 +153,18 @@
     margin-left: .25rem;
   }
 
+  .comment-footer {
+    clear: right;
+  }
+
+}
+
+:host-context(.theme-light) .comment {
+  @include background-light-primary;
+}
+
+:host-context(.theme-dark) .comment {
+  @include background-dark-primary;
 }
 
 .profilePhotoContainer {
