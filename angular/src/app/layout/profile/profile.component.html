@@ -13,7 +13,7 @@
 
     <div class="col-12 col-sm-3 offset-sm-1">
       <form [formGroup]="photoUpdateForm" (submit)="onPhotoSubmit()" enctype="multipart/form-data">
-        <img [src]="newPhoto || (user && user.photo) || noPhoto" class="profilePhoto mb-3" [ngClass]="{'round': uiService.getRoundIcons()}">
+        <img [src]="newPhoto || (user && user.photo) || noPhoto" class="profile-photo mb-3" [ngClass]="{'round': uiService.getRoundIcons()}">
         <label class="btn btn-secondary w-100">
           Select photo<input type="file" style="display: none" name="userPhoto" formControlName="userPhoto" (change)="onPhotoSelect($event)"/>
         </label>

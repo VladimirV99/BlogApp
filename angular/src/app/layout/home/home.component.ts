@@ -67,19 +67,12 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  onDelete(post: string): void {
-    this.postToDelete = post;
-  }
-
-  deletePost(): void {
-    if(this.postToDelete){
-      this.postService.deletePost(this.postToDelete).subscribe(data => {
-        this.postToDelete = null;
-        this.messageClass = "alert alert-danger";
-        this.message = data.message;
-        this.getPosts();
-      });
-    }
+  deletePost(post: string): void {
+    this.postService.deletePost(post).subscribe(data => {
+      this.messageClass = "alert alert-danger";
+      this.message = data.message;
+      this.getPosts();
+    });
   }
 
   onNextPage(): void {

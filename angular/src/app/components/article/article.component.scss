@@ -1,0 +1,14 @@
+.user-list {
+  list-style-type: none;
+  padding: 0 3rem 0 3rem;
+  margin-bottom: 0;
+
+  .user-list-item {
+    img {
+      margin-right: 1rem;
+    }
+
+    text-align: left;
+    margin: .25rem 0 .25rem 0;
+  }
+}

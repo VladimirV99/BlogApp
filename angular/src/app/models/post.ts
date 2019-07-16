@@ -8,8 +8,10 @@ export default interface Post {
   createdBy: User;
   createdAt: number;
   likes: number;
+  likedBy?: User[];
   likedByUser: boolean;
   dislikes: number;
+  dislikedBy?: User[];
   dislikedByUser: boolean;
   bookmarked: boolean;
   totalComments?: number;

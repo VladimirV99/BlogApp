@@ -304,6 +304,58 @@ router.delete('/delete/:id', passport.authenticate('jwt', {session: false}), (re
   }
 });
 
+router.get('/likes/:id/page/:page/:itemsPerPage', (req, res) => {
+  let itemsPerPage = 5;
+  if(!req.params.id) {
+    res.status(200).json({ success: false, message: 'No post id provided' });
+  } else if(!req.params.page) {
+    res.status(200).json({ success: false, message: 'No page provided' });
+  } else if(req.params.page<=0) {
+    res.status(200).json({ success: false, message: 'Page has to be greater than 0' });
+  } else {
+    let page = req.params.page;
+    if(req.params.itemsPerPage && req.params.itemsPerPage>0 && req.params.itemsPerPage<15)
+      itemsPerPage = parseInt(req.params.itemsPerPage);
+    Post.findById(req.params.id).select({likes: 1, likedBy: { '$slice': [ (page-1)*itemsPerPage, itemsPerPage ] }}).populate({path: 'likedBy', select: '_id first_name last_name username photo'}).exec((err, post) => {
+      if(err) {
+        res.status(500).json({ success: false, message: 'Something went wrong' });
+      } else {
+        if(!post) {
+          res.status(404).json({ success: false, messasge: 'Post not found' });
+        } else {
+          res.status(200).json({ success: true, post });
+        }
+      }
+    });
+  }
+});
+
+router.get('/dislikes/:id/page/:page/:itemsPerPage', (req, res) => {
+  let itemsPerPage = 5;
+  if(!req.params.id) {
+    res.status(200).json({ success: false, message: 'No post id provided' });
+  } else if(!req.params.page) {
+    res.status(200).json({ success: false, message: 'No page provided' });
+  } else if(req.params.page<=0) {
+    res.status(200).json({ success: false, message: 'Page has to be greater than 0' });
+  } else {
+    let page = req.params.page;
+    if(req.params.itemsPerPage && req.params.itemsPerPage>0 && req.params.itemsPerPage<15)
+      itemsPerPage = parseInt(req.params.itemsPerPage);
+    Post.findById(req.params.id).select({dislikes: 1, dislikedBy: { '$slice': [ (page-1)*itemsPerPage, itemsPerPage ] }}).populate({path: 'dislikedBy', select: '_id first_name last_name username photo'}).exec((err, post) => {
+      if(err) {
+        res.status(500).json({ success: false, message: 'Something went wrong' });
+      } else {
+        if(!post) {
+          res.status(404).json({ success: false, messasge: 'Post not found' });
+        } else {
+          res.status(200).json({ success: true, post });
+        }
+      }
+    });
+  }
+});
+
 router.put('/like', passport.authenticate('jwt', {session: false}), (req, res) => {
   if(!req.body.id) {
     res.status(200).json({ success: false, message: 'No post id provided' });

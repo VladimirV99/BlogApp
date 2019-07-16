@@ -2,8 +2,8 @@
   <div class="comment">
 
     <div class="row mx-2">
-      <div class="profilePhotoContainer">
-        <img class="profilePhoto" [ngClass]="{'round': uiService.getRoundIcons()}" [src]="(authService.domain + comment.createdBy.photo) || noPhoto" alt="Profile Photo">
+      <div class="profile-photo-container">
+        <img class="profile-photo" [ngClass]="{'round': uiService.getRoundIcons()}" [src]="(authService.domain + comment.createdBy.photo) || noPhoto" alt="Profile Photo">
       </div>
       <div class="px-2">
         <strong>

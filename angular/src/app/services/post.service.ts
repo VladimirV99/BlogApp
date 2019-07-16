@@ -23,6 +23,7 @@ export class PostService {
 
   private domain: string = this.authService.getDomain();
   private postsPerPage: number = 2;
+  private likesPerPage: number = 1;
   private commentsPerPage: number = 1;
 
   constructor(
@@ -78,9 +79,19 @@ export class PostService {
     return this.http.get<PostMessage>(this.domain + 'posts/popular', {headers: headers});
   }
 
+  getLikes(id: string, page: number): Observable<PostMessage> {
+    let headers = this.authService.createAuthenticationHeaders();
+    return this.http.get<PostMessage>(this.domain + 'posts/likes/' + id + '/page/' + page + '/' + this.likesPerPage.toString(), {headers: headers});
+  }
+
   likePost(id: string): Observable<PostMessage> {
     let headers = this.authService.createAuthenticationHeaders();
     return this.http.put<PostMessage>(this.domain + 'posts/like', { id: id }, {headers: headers});
+  }
+
+  getDislikes(id: string, page: number): Observable<PostMessage> {
+    let headers = this.authService.createAuthenticationHeaders();
+    return this.http.get<PostMessage>(this.domain + 'posts/dislikes/' + id + '/page/' + page + '/' + this.likesPerPage.toString(), {headers: headers});
   }
 
   dislikePost(id: string): Observable<PostMessage> {
@@ -98,12 +109,12 @@ export class PostService {
     return this.http.delete<PostMessage>(this.domain + 'posts/delete/' + id, {headers: headers});
   }
 
-  postComment(comment) {
+  postComment(comment): Observable<PostMessage> {
     let headers = this.authService.createAuthenticationHeaders();
     return this.http.post<PostMessage>(this.domain + 'comments/newComment', comment,  {headers: headers});
   }
 
-  postReply(reply) {
+  postReply(reply): Observable<PostMessage> {
     let headers = this.authService.createAuthenticationHeaders();
     return this.http.post<PostMessage>(this.domain + 'comments/newReply', reply,  {headers: headers});
   }

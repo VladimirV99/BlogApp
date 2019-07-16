@@ -1,51 +1,49 @@
 <div class="row">
-
   <div class="col-md-10 offset-md-1">
+    <div class="alert show" [ngClass]="messageClass" [class.d-none]="!message">
+      {{ message }}
+      <button type="button" class="close" aria-label="Close" (click)="dismissAlert()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
 
-      <div class="alert show" [ngClass]="messageClass" [class.d-none]="!message">
-        {{ message }}
-        <button type="button" class="close" aria-label="Close" (click)="dismissAlert()">
-          <span aria-hidden="true">&times;</span>
-        </button>
+    <div *ngIf="profile" class="row p-2 mb-4">
+      <div class="col-10 col-sm-3 offset-1 offset-sm-0">
+          <img class="profile-photo large" [ngClass]="{'round': uiService.getRoundIcons()}" [src]="profile.photo || noPhoto" alt="Profile Photo">
       </div>
-
-      <div *ngIf="profile" class="row p-2 mb-4">
-        <div class="col-10 col-sm-3 offset-1 offset-sm-0">
-            <img class="profilePhoto large" [ngClass]="{'round': uiService.getRoundIcons()}" [src]="profile.photo || noPhoto" alt="Profile Photo">
-        </div>
-        <div id="userinfo" class="col-12 col-sm-9 offset-sm-0">
-          <table>
-            <tr colspan="2">
-              <td><h3>{{profile.first_name}} {{profile.last_name}}</h3></td>
-            </tr>
-            <tr>
-              <th>username:</th>
-              <td>{{profile.username}}</td>
-            </tr>
-            <tr>
-              <th>email:</th>
-              <td>{{profile.email}}</td>
-            </tr>
-          </table>
-        </div>
+      <div id="userinfo" class="col-12 col-sm-9 offset-sm-0">
+        <table>
+          <tr colspan="2">
+            <td><h3>{{profile.first_name}} {{profile.last_name}}</h3></td>
+          </tr>
+          <tr>
+            <th>username:</th>
+            <td>{{profile.username}}</td>
+          </tr>
+          <tr>
+            <th>email:</th>
+            <td>{{profile.email}}</td>
+          </tr>
+        </table>
       </div>
+    </div>
 
-      <h3 *ngIf="loadingPosts && posts.length==0" class="text-center">Loading...</h3>
+    <h3 *ngIf="loadingPosts && posts.length==0" class="text-center">Loading...</h3>
 
-      <div *ngIf="!loadingPosts">
-        <div *ngIf="posts">
-            <h2 class="page-header text-center">Posts: {{totalPosts}}</h2>
+    <div *ngIf="!loadingPosts">
+      <div *ngIf="posts">
+          <h2 class="page-header text-center">Posts: {{totalPosts}}</h2>
 
-            <div *ngFor="let post of posts">
-              <app-article [post]="post" [user]="user"></app-article>
-            </div>
-    
-            <button *ngIf="posts.length<totalPosts" class="btn btn-primary btn-block" (click)="loadMorePosts()">Load More Posts</button>
-        </div>
-        
-        <div *ngIf="!posts">
-            <h2 class="page-header text-center">This user has no posts</h2>
-        </div>
+          <div *ngFor="let post of posts">
+            <app-article [post]="post" [user]="user"></app-article>
+          </div>
+  
+          <button *ngIf="posts.length<totalPosts" class="btn btn-primary btn-block" (click)="loadMorePosts()">Load More Posts</button>
       </div>
       
+      <div *ngIf="!posts">
+          <h2 class="page-header text-center">This user has no posts</h2>
+      </div>
+    </div>
   </div>
+</div>
