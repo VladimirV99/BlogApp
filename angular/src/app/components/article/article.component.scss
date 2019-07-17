@@ -1,3 +1,17 @@
+@import "../../ui";
+
+:host-context(.theme-dark) {
+  .modal-header, .modal-footer {
+    @include background-dark-primary;
+  }
+}
+
+:host-context(.theme-light) {
+  .modal-header, .modal-footer {
+    @include background-light-primary;
+  }
+}
+
 .user-list {
   list-style-type: none;
   padding: 0 3rem 0 3rem;
