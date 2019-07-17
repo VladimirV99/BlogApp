@@ -8,6 +8,7 @@ const users = require('./routes/users');
 const posts = require('./routes/posts');
 const comments = require('./routes/comments');
 
+mongoose.set('useCreateIndex', true);
 mongoose.connect(config.database, { useNewUrlParser: true });
 mongoose.connection.on('connected', () => {
   console.log('Connected to database ' + config.database);
