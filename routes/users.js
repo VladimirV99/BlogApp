@@ -121,7 +121,7 @@ router.post('/login', (req, res) => {
 });
 
 router.get('/profile', passport.authenticate('jwt', {session: false}), (req, res) => {
-  User.findById(req.user._id).select('first_name last_name username photo email').exec((err, user) => {
+  User.findById(req.user._id).select('first_name last_name username photo email dark_mode round_icons').exec((err, user) => {
     if(err) {
       res.status(500).json({ success: false, message: err });
     } else {
@@ -155,7 +155,7 @@ router.get('/get/:username', (req, res) => {
 router.put('/update', passport.authenticate('jwt', {session: false}), (req, res, next) => {
   User.findById(req.user._id, (err, user) => {
     if(err) {
-      res.status(500).json({ success: false, message: err});
+      res.status(500).json({ success: false, message: err });
     } else {
       if(!user) {
         res.status(404).json({ success: false, message: 'User not found' });
@@ -179,7 +179,11 @@ router.put('/update', passport.authenticate('jwt', {session: false}), (req, res,
               res.status(500).json({ success: false, message: err });
             }
           } else {
-            res.status(200).json({ success: true, message: 'Profile Updated' });
+            res.status(200).json({ success: true, message: 'Profile Updated', user: { 
+              first_name: user.first_name,
+              last_name: user.last_name,
+              email: user.email
+            } });
           }
         });
       }

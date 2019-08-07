@@ -23,14 +23,26 @@ export class AuthService {
 
   constructor(private http: HttpClient) {
     this.jwtHelper = new JwtHelperService();
-    let storage = localStorage.getItem('user');
-    if(storage)
-      this.user = JSON.parse(storage);
+    this.loadToken();
+    this.loadUser();
   }
 
   loadToken(): void {
     const token = localStorage.getItem('token');
     this.authToken = token;
+  }
+
+  loadUser(): void {
+    if(this.authToken) {
+      let userData = localStorage.getItem('user');
+      if(userData)
+        this.user = JSON.parse(userData);
+      this.getProfile().subscribe(data => {
+        if (data.success) {
+          this.user = data.user;
+        }
+      });
+    }
   }
 
   createHeaders(): HttpHeaders {
@@ -40,7 +52,6 @@ export class AuthService {
   }
 
   createAuthenticationHeaders(): HttpHeaders {
-    this.loadToken();
     if(!this.authToken)
       return this.createHeaders();
     return new HttpHeaders({
@@ -79,24 +90,23 @@ export class AuthService {
 
   storeToken(token: string): void {
     localStorage.setItem('token', token);
+    this.authToken = token;
   }
 
   storeUser(user: User): void {
     localStorage.setItem('user', JSON.stringify(user));
+    this.user = user;
   }
 
   setUserData(token: string, user: User): void {
     this.storeToken(token);
     this.storeUser(user);
-    this.authToken = token;
-    this.user = user;
   }
 
   loggedIn(): boolean {
-    this.loadToken();
-    if(!this.authToken)
+    if(!this.authToken || this.jwtHelper.isTokenExpired(this.authToken))
       return false;
-    return !this.jwtHelper.isTokenExpired(this.authToken);
+    return this.user != null;
   }
 
   logout(): void {
@@ -134,7 +144,6 @@ export class AuthService {
   uploadPhoto(photo: File): Observable<AuthMessage> {
     const formData = new FormData();
     formData.append('userPhoto', photo, photo.name);
-    this.loadToken();
     let options = {headers: new HttpHeaders({
       'Authorization': this.authToken
     })};

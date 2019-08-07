@@ -9,7 +9,7 @@ import User from 'src/app/models/user';
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.scss', '../../post.scss']
+  styleUrls: ['./profile.component.scss', '../../post.scss', '../../form-validation.scss']
 })
 export class ProfileComponent implements OnInit {
 
@@ -115,6 +115,11 @@ export class ProfileComponent implements OnInit {
       } else {
         this.messageClass = 'alert alert-success';
         this.message = data.message;
+        let updatedUser = this.authService.getUser();
+        updatedUser.first_name = data.user.first_name;
+        updatedUser.last_name = data.user.last_name;
+        updatedUser.email = data.user.email;
+        this.authService.storeUser(updatedUser);
       }
       this.processingProfileUpdate = false;
       this.enableProfileUpdateForm();
