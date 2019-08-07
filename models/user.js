@@ -148,32 +148,36 @@ const UserSchema = mongoose.Schema({
 const User = module.exports = mongoose.model('User', UserSchema);
 
 module.exports.findByUsername = function(username, callback){
-  const query = {username: username};
+  const query = { username: username };
   User.findOne(query, callback);
 }
 
 module.exports.encryptPassword = function(password, callback) {
   for(let i = 0; i < passwordValidators.length; i++){
     if(!passwordValidators[i].validator(password)){
-      callback({message: passwordValidators[i].message}, null);
+      callback({ status: 200, message: passwordValidators[i].message });
       return;
     }
   }
   bcrypt.genSalt(10, (err, salt) => {
-    bcrypt.hash(password, salt, (err, hash) => {
-      if(err) {
-        callback({message: err});
-      } else {
-        callback(null, hash);
-      }
-    });
+    if(err) {
+      callback({ status: 500, message: 'Something went wrong' });
+    } else {
+      bcrypt.hash(password, salt, (err, hash) => {
+        if(err) {
+          callback({ status: 500, message: 'Something went wrong' });
+        } else {
+          callback(null, hash);
+        }
+      });
+    }
   });
 }
 
-module.exports.comparePassword = function(candidatePassword, hash, callback){
-  bcrypt.compare(candidatePassword, hash, (err, isMatch) => {
+module.exports.comparePassword = function(candidatePassword, currentHash, callback){
+  bcrypt.compare(candidatePassword, currentHash, (err, isMatch) => {
     if(err) {
-      callback(err);
+      callback({ status: 500, message: 'Something went wrong' });
     } else {
       callback(null, isMatch);
     }
@@ -181,43 +185,49 @@ module.exports.comparePassword = function(candidatePassword, hash, callback){
 }
 
 module.exports.register = function(newUser, callback){
-  for(let i = 0; i < passwordValidators.length; i++){
-    if(!passwordValidators[i].validator(newUser.password)){
-      callback({status: 200, password:{message:passwordValidators[i].message}});
-      return;
-    }
-  }
-  bcrypt.genSalt(10, (err, salt) => {
-    bcrypt.hash(newUser.password, salt, (err, hash) => {
+  if(!newUser.email) {
+    callback({ status: 200, message: 'You must provide an email' });
+  } else if(!newUser.username) {
+    callback({ status: 200, message: 'You must provide a username' });
+  } else if(!newUser.password) {
+    callback({ status: 200, message: 'You must provide a password' });
+  } else {
+    User.encryptPassword(newUser.password, (err, password) => {
       if(err) {
-        callback({status: 500, ...err});
+        callback(err);
       } else {
-        newUser.password = hash;
-        newUser.save(callback);
+        newUser.password = password;
+        newUser.save((err, user) => {
+          if(err) {
+            callback({ status: 500, message: 'Something went wrong' });
+          } else {
+            callback(null, user);
+          }
+        });
       }
     });
-  });
+  }
 }
 
 module.exports.login = function(username, password, callback) {
-  if(username == null) {
-    callback({status: 200, message:'You must provide a username'})
-  } else if(password == null) {
-    callback({status: 200, message:'You must provide a password'});
+  if(!username) {
+    callback({ status: 200, message: 'You must provide a username' });
+  } else if(!password) {
+    callback({ status: 200, message: 'You must provide a password' });
   } else {
     User.findByUsername(username, (err, user) => {
       if(err) {
-        callback({status: 500, message: err});
+        callback({ status: 500, message: 'Something went wrong' });
       } else {
         if(!user) {
-          callback({status: 200, message:'Username not found'});
+          callback({ status: 200, message: 'Username not found' });
         } else {
           User.comparePassword(password, user.password, (err, isMatch) => {
             if(err) {
-              callback({status: 500, message: err});
+              callback(err);
             } else{
               if(isMatch){
-                const token = jwt.sign({user_id: user._id}, config.secret, {
+                const token = jwt.sign({ user_id: user._id }, config.secret, {
                   expiresIn: 604800 // 1 week
                 });
                 callback(null, {
@@ -234,7 +244,7 @@ module.exports.login = function(username, password, callback) {
                   }
                 });
               } else {
-                callback({status: 200, message: 'Wrong password'});
+                callback({ status: 200, message: 'Wrong password' });
               }
             }
           });

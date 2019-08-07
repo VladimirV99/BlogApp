@@ -68,71 +68,56 @@ router.get('/checkUsername/:username', (req, res) => {
 });
 
 router.post('/register', (req, res) => {
-  if(!req.body.email) {
-    res.status(200).json({ success: false, message: 'You must provide an email' });
-  } else if(!req.body.username) {
-    res.status(200).json({ sccuess: false, message: 'You must provide a username' });
-  } else if(!req.body.password) {
-    res.status(200).json({ success: false, message: 'You must provide a password' });
-  } else {
-    let newUser = new User({
-      first_name: req.body.first_name,
-      last_name: req.body.last_name,
-      name: req.body.name,
-      email: req.body.email,
-      username: req.body.username,
-      password: req.body.password
-    });
-    User.register(newUser, (err, user) => {
-      if(err){
-        if(err.email) {
-          res.status(200).json({ success: false, message: err.email.message });
-        } else if(err.username) {
-          res.status(200).json({ success: false, message: err.username.message})
-        } else if(err.password) {
-          res.status(200).json({ success: false, message: err.password.message});
-        } else {
-          res.status(err.status).json({success: false, message: 'Failed to register user'});
-        }
-      }else{
-        User.login(req.body.username, req.body.password, (err, login) => {
-          if(err) {
-            res.status(err.status).json({success: false, message: err.message});
-          } else {
-            res.status(201).json({
-              success: true,
-              message: "Sucess!",
-              token: login.token,
-              user: login.user
-            });
-          }
-        });
+  let newUser = new User({
+    first_name: req.body.first_name,
+    last_name: req.body.last_name,
+    email: req.body.email,
+    username: req.body.username,
+    password: req.body.password
+  });
+  User.register(newUser, (err, user) => {
+    if(err){
+      if(err.email) {
+        res.status(200).json({ success: false, message: err.email.message });
+      } else if(err.username) {
+        res.status(200).json({ success: false, message: err.username.message })
+      } else if(err.password) {
+        res.status(200).json({ success: false, message: err.password.message });
+      } else {
+        res.status(err.status).json({success: false, message: 'Failed to register user'});
       }
-    });
-  }
+    }else{
+      User.login(req.body.username, req.body.password, (err, login) => {
+        if(err) {
+          res.status(err.status).json({ success: false, message: err.message });
+        } else {
+          res.status(201).json({
+            success: true,
+            message: "Sucess!",
+            token: login.token,
+            user: login.user
+          });
+        }
+      });
+    }
+  });
 });
 
 router.post('/login', (req, res) => {
-  if(!req.body.username) {
-    res.status(200).json({ sccuess: false, message: 'You must provide a username' });
-  } else if(!req.body.password) {
-    res.status(200).json({ success: false, message: 'You must provide a password' });
-  } else {
-    const username = req.body.username;
-    const password = req.body.password;
-    User.login(username, password, (err, login) => {
-      if(err) {
-        res.status(err.status).json({success: false, message: err.message});
-      } else {
-        res.status(200).json({
-          success: true,
-          message: "Sucess!",
-          token: login.token,
-          user: login.user
-        });
-      }
-    });
-  }
+  const username = req.body.username;
+  const password = req.body.password;
+  User.login(username, password, (err, login) => {
+    if(err) {
+      res.status(err.status).json({ success: false, message: err.message });
+    } else {
+      res.status(200).json({
+        success: true,
+        message: "Sucess!",
+        token: login.token,
+        user: login.user
+      });
+    }
+  });
 });
 
 router.get('/profile', passport.authenticate('jwt', {session: false}), (req, res) => {
@@ -212,12 +197,12 @@ router.post('/changePassword', passport.authenticate('jwt', {session: false}), (
       } else {
         User.comparePassword(req.body.old_password, user.password, (err, isMatch) => {
           if(err) {
-            res.status(500).json({ success: false, message: err });
+            res.status(err.status).json({ success: false, message: err.message });
           } else {
             if(isMatch){
               User.encryptPassword(req.body.new_password, (err, password) => {
                 if(err) {
-                  res.status(500).json({ success: false, message: err.message });
+                  res.status(err.status).json({ success: false, message: err.message });
                 } else {
                   user.password = password;
                   user.save((err) => {
