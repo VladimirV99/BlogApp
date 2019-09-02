@@ -25,7 +25,7 @@ const upload = multer({
       callback('Images Only');
     }
   }
-}).single('userPhoto');;
+}).single('userPhoto');
 
 const config = require('../config/database');
 const User = require('../models/user');
