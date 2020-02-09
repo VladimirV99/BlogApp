@@ -32,7 +32,7 @@ export class UserComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private authService: AuthService,
     private postService: PostService,
-    private uiService: UiService
+    public uiService: UiService
   ) { }
 
   loadMorePosts(): void {

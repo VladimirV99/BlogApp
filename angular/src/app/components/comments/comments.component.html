@@ -6,7 +6,7 @@
         <textarea class="form-control" name="comment" formControlName="comment" rows="2" placeholder="Join the conversation"></textarea>
       </div>
       <div class="col-12 col-md-2">
-        <input [disabled]="!commentForm.valid || processing" type="submit" class="btn btn-success w-100 h-100" value="Post">
+        <input [disabled]="!commentForm.valid || processingComment" type="submit" class="btn btn-success w-100 h-100" value="Post">
       </div>
     </form>
   </div>

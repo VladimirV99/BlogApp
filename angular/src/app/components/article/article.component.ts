@@ -23,9 +23,9 @@ export class ArticleComponent implements OnInit {
   private dislikesPage: number = 1;
 
   constructor(
-    private authService: AuthService, 
+    public authService: AuthService, 
     private postService: PostService,
-    private uiService: UiService
+    public uiService: UiService
   ) { }
 
   bookmark(): void {

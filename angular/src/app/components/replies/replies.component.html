@@ -3,7 +3,7 @@
 
     <div class="row mx-2">
       <div class="profile-photo-container">
-        <img class="profile-photo" [ngClass]="{'round': uiService.getRoundIcons()}" [src]="(authService.domain + comment.createdBy.photo) || noPhoto" alt="Profile Photo">
+        <img class="profile-photo" [ngClass]="{'round': uiService.getRoundIcons()}" [src]="(authService.getDomain() + comment.createdBy.photo) || uiService.noPhoto()" alt="Profile Photo">
       </div>
       <div class="px-2">
         <strong>
@@ -37,7 +37,7 @@
         <textarea class="form-control" name="reply" formControlName="reply" rows="2" placeholder="Join the conversation"></textarea>
       </div>
       <div class="col-12 col-md-2">
-        <input [disabled]="!replyForm.valid || processing" type="submit" class="btn btn-success w-100 h-100" value="Post">
+        <input [disabled]="!replyForm.valid || processingReply" type="submit" class="btn btn-success w-100 h-100" value="Post">
       </div>
     </form>
   </div>

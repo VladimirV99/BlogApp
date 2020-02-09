@@ -68,7 +68,7 @@
             </ul>
           </div>
         </div>
-        <input [disabled]="!profileUpdateForm.valid || processing || !emailValid" type="submit" class="btn btn-success btn-block" value="Update profile" />
+        <input [disabled]="!profileUpdateForm.valid || processingProfileUpdate || !emailValid" type="submit" class="btn btn-success btn-block" value="Update profile" />
       </form>
       <hr>
 
@@ -111,7 +111,7 @@
           </div>
         </div>
       
-        <input [disabled]="!passwordChangeForm.valid || processing" type="submit" class="btn btn-success btn-block" value="Change Password" />
+        <input [disabled]="!passwordChangeForm.valid || processingPasswordChange" type="submit" class="btn btn-success btn-block" value="Change Password" />
       
       </form>    
     </div>

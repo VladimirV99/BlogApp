@@ -29,8 +29,8 @@ export class HomeComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private uiService: UiService,
-    private postService: PostService
+    public uiService: UiService,
+    public postService: PostService
   ) { }
 
   getPosts(): void {

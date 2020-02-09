@@ -30,8 +30,8 @@ export class RepliesComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private postService: PostService,
-    private authService: AuthService,
-    private uiService: UiService
+    public authService: AuthService,
+    public uiService: UiService
   ) { 
     this.replyForm = this.formBuilder.group({
       reply: ['', Validators.compose([

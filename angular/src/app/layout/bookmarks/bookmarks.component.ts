@@ -27,8 +27,8 @@ export class BookmarksComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private uiService: UiService,
-    private postService: PostService
+    public postService: PostService,
+    public uiService: UiService
   ) { }
 
   getBookmarks(): void {

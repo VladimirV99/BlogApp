@@ -28,7 +28,7 @@
       </li>
       <li *ngIf="authService.loggedIn()" class="nav-item dropdown" [ngClass]="{'show': userMenuVisible}">
         <a class="nav-link" [ngClass]="{'active': userMenuVisible}" role="button" id="dropdown-user" (click)="toggleUserMenu()" aria-haspopup="true" aria-expanded="false">
-          <span class="text-right">{{authService.user.first_name}} {{authService.user.last_name}}</span>
+          <span class="text-right">{{authService.getUser().first_name}} {{authService.getUser().last_name}}</span>
           <img class="profile-icon profile-icon-right" [ngClass]="{'round': uiService.getRoundIcons()}" [src]="uiService.getPhoto(authService.getUser().photo)" alt="Profile Photo">
         </a>
         <div class="dropdown-menu mb-2" [ngClass]="{'show': userMenuVisible, 'navbar-bg-light': !uiService.getDarkMode(), 'navbar-bg-dark': uiService.getDarkMode()}" id="dropdown-menu-user" aria-labelledby="dropdown-user">

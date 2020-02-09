@@ -39,7 +39,7 @@ export class ProfileComponent implements OnInit {
     private formBuilder: FormBuilder,
     private authService: AuthService,
     private validateService: ValidateService,
-    private uiService: UiService
+    public uiService: UiService
   ) {
     this.createPhotoUpdateForm();
     this.createProfileUpdateForm();

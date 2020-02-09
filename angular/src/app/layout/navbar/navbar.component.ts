@@ -11,11 +11,11 @@ import { UiService } from '../../services/ui.service';
 })
 export class NavbarComponent implements OnInit {
 
-  private userMenuVisible: boolean = false;
+  userMenuVisible: boolean = false;
 
   constructor(
     public authService: AuthService,
-    private uiService: UiService,
+    public uiService: UiService,
     private router: Router
   ) { }
 

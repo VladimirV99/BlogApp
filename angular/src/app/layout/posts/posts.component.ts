@@ -23,12 +23,12 @@ export class PostsComponent implements OnInit {
   posts: Post[] = [];
 
   postToDelete: string;
-  loadingPosts: boolean = true;
+  loading: boolean = true;
 
   constructor(
     private authService: AuthService,
     private postService: PostService,
-    private uiService: UiService
+    public uiService: UiService
   ) { }
 
   loadMorePosts(): void {
@@ -39,7 +39,7 @@ export class PostsComponent implements OnInit {
   }
 
   getPosts(): void {
-    this.loadingPosts = true;
+    this.loading = true;
     this.postService.getUserPostCount(this.user.username).subscribe(data => {
       if(!data.success) {
         this.messageClass = 'alert alert-danger';
@@ -48,7 +48,7 @@ export class PostsComponent implements OnInit {
         this.totalPosts = data.count;
         this.postService.getUserPosts(this.user.username, this.page).subscribe(data => {
           this.posts = this.posts.concat(data.posts);
-          this.loadingPosts = false;
+          this.loading = false;
         });
       }
     });

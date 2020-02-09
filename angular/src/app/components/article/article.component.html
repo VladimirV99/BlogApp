@@ -87,12 +87,12 @@
   </header>
   <div [innerHTML]="post.body" class="post-body"></div>
   <footer class="post-footer">
-    <div *ngIf="authService.loggedIn() && user && user.id!=post.createdBy._id">
+    <div *ngIf="authService.loggedIn() && user && user.id!=post.createdBy.id">
       <button type="button" class="btn btn-sm" [ngClass]="{'btn-info': !post.likedByUser, 'btn-primary': post.likedByUser}" (click)="likePost()">Like{{post.likedByUser?'d':''}}: {{post.likes}}</button>
       <button type="button" class="btn btn-sm" [ngClass]="{'btn-info': !post.dislikedByUser, 'btn-primary': post.dislikedByUser}" (click)="dislikePost()">Dislike: {{post.dislikes}}</button>
       <button type="button" class="btn btn-sm btn-warning" [routerLink]="['/post/', post._id]">Comments: {{post.totalComments}}</button>
     </div>
-    <div *ngIf="authService.loggedIn() && user && user.id==post.createdBy._id">
+    <div *ngIf="authService.loggedIn() && user && user.id==post.createdBy.id">
       <button type="button" class="btn btn-sm btn-success" [routerLink]="['/edit/', post._id]">Edit</button>
       <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</button>
       <span data-toggle="modal" data-target="#likesModal" (click)="openLikes()"><small><strong>Likes:</strong> {{post.likes}}</small></span>

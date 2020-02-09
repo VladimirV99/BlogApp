@@ -8,7 +8,7 @@ import { UiService } from './services/ui.service';
 })
 export class AppComponent {
 
-  constructor(private uiService: UiService) {
+  constructor(public uiService: UiService) {
 
   }
 

@@ -5,6 +5,7 @@ import { PostService } from '../../services/post.service';
 import { AuthService } from '../../services/auth.service';
 import { UiService } from '../../services/ui.service';
 import User from 'src/app/models/user';
+import Message from 'src/app/models/message';
 import Post from 'src/app/models/post';
 
 @Component({
@@ -23,12 +24,13 @@ export class PostComponent implements OnInit {
   post: Post;
   loading: boolean = true;
   postToDelete: string;
+  totalComments: Number = 0;
 
   constructor(
     private activatedRoute: ActivatedRoute,
     private authService: AuthService,
-    private postService: PostService,
-    private uiService: UiService
+    public postService: PostService,
+    public uiService: UiService
   ) { }
 
   deletePost(post: string): void {
@@ -68,9 +70,9 @@ export class PostComponent implements OnInit {
     this.post.totalComments = count;
   }
 
-  onMessage(success: boolean, message: string) {
-    this.message = message;
-    if(success)
+  onMessage(message: Message) {
+    this.message = message.message;
+    if(message.success)
       this.messageClass = 'alert alert-success';
     else
       this.messageClass = 'alert alert-danger';
