@@ -233,7 +233,7 @@ module.exports.login = function(username, password, callback) {
                 callback(null, {
                   token: 'bearer ' + token,
                   user: {
-                    id: user._id,
+                    _id: user._id,
                     first_name: user.first_name,
                     last_name: user.last_name,
                     username: user.username,

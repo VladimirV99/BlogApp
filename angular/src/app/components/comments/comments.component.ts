@@ -22,6 +22,7 @@ export class CommentsComponent implements OnInit {
   commentForm: FormGroup;
   processingComment: boolean = false;
 
+  totalComments: number = 0;
   loadedComments: number = 0;
 
   constructor(private formBuilder: FormBuilder,
@@ -35,16 +36,26 @@ export class CommentsComponent implements OnInit {
   }
 
   loadComments() {
-    let before = (this.post && this.post.comments && this.post.comments.length>0)? this.post.comments[this.post.comments.length-1].createdAt : Date.now();
-    this.postService.getComments(this.post._id, before).subscribe(data => {
+    this.postService.getCommentCount(this.post._id).subscribe(data => {
       if(!data.success) {
         this.message.emit({success: false, message: data.message});
       } else {
-        if(data.comments.length == 0){
-          this.refresh.emit(this.loadedComments);
-        } else {
-          this.post.comments = this.post.comments.concat(data.comments);
-          this.loadedComments += data.comments.length;
+        this.totalComments = data.count;
+        this.refresh.emit(this.totalComments);
+        if(this.totalComments>0){
+          let before = (this.post && this.post.comments && this.post.comments.length>0)? this.post.comments[this.post.comments.length-1].createdAt : Date.now();
+          this.postService.getComments(this.post._id, before).subscribe(data => {
+            if(!data.success) {
+              this.message.emit({success: false, message: data.message});
+            } else {
+              if(data.comments.length == 0) {
+                this.loadedComments = this.totalComments;
+              } else {
+                this.post.comments = this.post.comments.concat(data.comments);
+                this.loadedComments += data.comments.length;
+              } 
+            }
+          });
         }
       }
     });

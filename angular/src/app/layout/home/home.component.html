@@ -11,7 +11,7 @@
 
     <h3 *ngIf="loading" class="text-center">Loading...</h3>
 
-    <h5 *ngIf="!loading && posts.length==0" class="text-center mt-4">There are no posts</h5>
+    <h5 *ngIf="!loading && totalPosts==0" class="text-center mt-4">There are no posts</h5>
 
     <div *ngIf="!loading">
       <div *ngFor="let post of posts">

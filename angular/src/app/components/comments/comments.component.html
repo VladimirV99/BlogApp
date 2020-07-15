@@ -11,12 +11,13 @@
     </form>
   </div>
 
+  <h4 *ngIf="totalComments==0" class="text-center">There are no comments</h4>
+
   <div *ngIf="post && post.comments">
     <div *ngFor="let comment of post.comments">
       <app-replies [user]="user" [comment]="comment" [postCreator]="post.createdBy"></app-replies>
     </div>
   </div>
-
-  <h4 *ngIf="totalComments==0" class="text-center">There are no comments</h4>
+  
   <button *ngIf="loadedComments<totalComments" class="btn btn-primary btn-block" (click)="loadComments()">Load More Comments</button>
 </div>

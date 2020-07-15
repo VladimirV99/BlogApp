@@ -13,7 +13,7 @@
     <div *ngIf="!loading" >
       <app-article [post]="post" [user]="user" (delete)="deletePost($event)"></app-article>
   
-      <h3>Comments: {{totalComments}}</h3>
+      <h3>Comments: {{post.totalComments}}</h3>
       <app-comments [post]="post" [user]="user" (message)="onMessage($event)" (refresh)="refreshCommentCount($event)"></app-comments>
     </div>
   </div>

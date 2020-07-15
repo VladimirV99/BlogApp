@@ -24,7 +24,6 @@ export class PostComponent implements OnInit {
   post: Post;
   loading: boolean = true;
   postToDelete: string;
-  totalComments: Number = 0;
 
   constructor(
     private activatedRoute: ActivatedRoute,

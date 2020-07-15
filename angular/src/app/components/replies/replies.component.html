@@ -24,7 +24,7 @@
     </div>
   
     <div class="comment-footer">
-      <button *ngIf="authService.loggedIn() && user && user.id==postCreator._id" class=" btn btn-sm btn-danger comment-button" (click)="deleteComment()">Delete</button>
+      <button *ngIf="authService.loggedIn() && user && user._id==postCreator._id" class=" btn btn-sm btn-danger comment-button" (click)="deleteComment()">Delete</button>
       <button class="btn btn-sm btn-primary comment-button" (click)="toggleReplyForm()">Reply</button>
       <button *ngIf="!showReplies && comment.replies>0" [disabled]="processingReplies" class="btn btn-sm btn-primary comment-button" (click)="showRepliesDiv()">Show Replies</button>
     </div>

@@ -1,7 +1,7 @@
 import Post from './post';
 
 export default interface User {
-  id: string;
+  _id: string;
   first_name: string;
   last_name: string;
   username: string;

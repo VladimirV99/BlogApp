@@ -183,7 +183,7 @@ router.get('/popular', (req, res) => {
 });
 
 router.get('/count', (req, res) => {
-  Post.estimatedDocumentCount({}, (err, count) => {
+  Post.countDocuments({}, (err, count) => {
     if(err) {
       res.status(500).json({ success: false, message: 'Something went wrong' });
     } else {
