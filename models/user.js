@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const config = require('../config/database');
+const config = require('../config/credentials');
 
 let nameLengthChecker = (name) => {
   if (!name || name.length > 30)

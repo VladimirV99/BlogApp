@@ -27,7 +27,6 @@ const upload = multer({
   }
 }).single('userPhoto');
 
-const config = require('../config/database');
 const User = require('../models/user');
 const Post = require('../models/post');
 

@@ -3,7 +3,7 @@ const path = require('path');
 const passport = require('passport');
 const mongoose = require('mongoose');
 
-const config = require('./config/database');
+const config = require('./config/credentials');
 const users = require('./routes/users');
 const posts = require('./routes/posts');
 const comments = require('./routes/comments');
