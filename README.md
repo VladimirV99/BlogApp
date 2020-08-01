@@ -25,6 +25,7 @@ The entire application is written in javascript. The back end is a node server t
 
 ## Environment variables
 
+- NODE_ENV - Set to 'production' to use production mode
 - PORT - Port to run the server on (default 3000)
 - DB_HOST - Database connection URL (default 'mongodb://localhost:27017/blog')
 - PASSPORT_SECRET - Key used for authentication (default 'blog')
@@ -48,6 +49,24 @@ and finally serve the angular front end
     npm run start --prefix angular
 
 You can now open the website on localhost:4200 in the browser. To close the app shut down the servers in the reverse order.
+
+## Building for production
+
+Build the client to get served from the back end server
+
+    npm install --prefix angular
+    npm run prod --prefix angular
+
+or use the heroku postbuild script which will do the same
+
+    npm run heroku-postbuild
+
+then install server-side dependencies and start the server in production mode
+
+    npm install
+    env NODE_ENV=production npm run start
+
+you can also set other environment variables to fit your environment
 
 ## License
 
