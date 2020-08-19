@@ -26,7 +26,7 @@ const CommentSchema = mongoose.Schema({
   },
   createdAt: {
     type: Date,
-    default: Date.now()
+    default: Date.now
   },
   parentPost: {
     type: mongoose.Schema.Types.ObjectId,

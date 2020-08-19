@@ -6,7 +6,7 @@ export default interface Post {
   title: string;
   body: string;
   createdBy: User;
-  createdAt: number;
+  createdAt: string;
   likes: number;
   likedBy?: User[];
   likedByUser: boolean;

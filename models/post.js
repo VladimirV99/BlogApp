@@ -3,7 +3,7 @@ const markdown = require('../libs/markdown.node');
 mongoose.Promise = global.Promise;
 
 let titleLengthChecker = (title) => {
-  if (!title || title.length < 5 || title.length > 30)
+  if (!title || title.length < 1 || title.length > 60)
     return false;
   return true;
 };
@@ -18,7 +18,7 @@ let titleValidityChecker = (title) => {
 const titleValidators = [
   {
     validator: titleLengthChecker,
-    message: 'Title must be more than 5 characters but no more than 50'
+    message: 'Title must be at least 1 character but no more than 60'
   },
   {
     validator: titleValidityChecker,
@@ -27,7 +27,7 @@ const titleValidators = [
 ];
 
 let bodyLengthChecker = (body) => {
-  if (!body || body.length < 5 || body.length > 500)
+  if (!body || body.length < 5 || body.length > 1500)
     return false;
   return true;
 };
@@ -35,7 +35,7 @@ let bodyLengthChecker = (body) => {
 const bodyValidators = [
   {
     validator: bodyLengthChecker,
-    message: 'Body must be more than 5 characters but no more than 500.'
+    message: 'Body must be more than 5 characters but no more than 1500.'
   }
 ];
 
@@ -57,7 +57,7 @@ const PostSchema = mongoose.Schema({
   },
   createdAt: {
     type: Date,
-    default: Date.now()
+    default: Date.now
   },
   likes: {
     type: Number,

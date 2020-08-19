@@ -71,6 +71,7 @@ export class RepliesComponent implements OnInit {
         // this.message = data.message;
         data.comment.createdBy = this.user;
         this.replies.unshift(data.comment);
+        this.showReplies = true;
       }
       this.processingReply = false;
       this.replyForm.get('reply').reset();

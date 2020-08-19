@@ -43,7 +43,7 @@ export class CommentsComponent implements OnInit {
         this.totalComments = data.count;
         this.refresh.emit(this.totalComments);
         if(this.totalComments>0){
-          let before = (this.post && this.post.comments && this.post.comments.length>0)? this.post.comments[this.post.comments.length-1].createdAt : Date.now();
+          let before = (this.post && this.post.comments && this.post.comments.length>0)? Date.parse(this.post.comments[this.post.comments.length-1].createdAt) : Date.now();
           this.postService.getComments(this.post._id, before).subscribe(data => {
             if(!data.success) {
               this.message.emit({success: false, message: data.message});
@@ -87,7 +87,7 @@ export class CommentsComponent implements OnInit {
         this.post.comments.unshift(data.comment);
       }
       this.processingComment = false;
-      this.commentForm.get('reply').reset();
+      this.commentForm.get('comment').reset();
       this.enableCommentForm();
     });
   }

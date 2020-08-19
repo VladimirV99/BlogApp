@@ -35,13 +35,13 @@ export class WriteComponent implements OnInit {
     this.writeForm = this.formBuilder.group({
       title: ['', Validators.compose([
         Validators.required,
-        Validators.maxLength(50),
-        Validators.minLength(5),
+        Validators.maxLength(60),
+        Validators.minLength(1),
         this.validateService.validateTitle
       ])],
       body: ['', Validators.compose([
         Validators.required,
-        Validators.maxLength(500),
+        Validators.maxLength(1500),
         Validators.minLength(5)
       ])]
     });
