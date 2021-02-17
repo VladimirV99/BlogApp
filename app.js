@@ -8,7 +8,13 @@ const users = require('./routes/users');
 const posts = require('./routes/posts');
 const comments = require('./routes/comments');
 
-mongoose.connect(config.database, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false });
+mongoose.connect(config.database, {
+  "auth": { "authSource": "admin" },
+  "useNewUrlParser": true,
+  "useUnifiedTopology": true,
+  "useCreateIndex": true,
+  "useFindAndModify": false
+});
 mongoose.connection.on('connected', () => {
   console.log('Connected to database ' + config.database);
 });
