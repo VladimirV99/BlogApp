@@ -46,7 +46,7 @@ Now you can start the back end server. It will automatically restart itself on w
 
 and finally serve the angular front end
 
-    npm run start --prefix angular
+    npm run start --prefix client
 
 You can now open the website on localhost:4200 in the browser. To close the app shut down the servers in the reverse order.
 
@@ -54,8 +54,8 @@ You can now open the website on localhost:4200 in the browser. To close the app 
 
 Build the client to get served from the back end server
 
-    npm install --prefix angular
-    npm run prod --prefix angular
+    npm install --prefix client
+    npm run prod --prefix client
 
 or use the heroku postbuild script which will do the same
 

@@ -6,7 +6,7 @@
   "scripts": {
     "start": "NODE_ENV=production node app",
     "dev": "nodemon app",
-    "heroku-postbuild": "cd angular && npm install && npm run prod",
+    "heroku-postbuild": "cd client && npm install && npm run prod",
     "dbmake": "docker run -d --name blogdb --user mongodb -p 27017:27017 -v blog_db:/data/db -e MONGO_INITDB_ROOT_USERNAME=root -e MONGO_INITDB_ROOT_PASSWORD=blog -e MONGO_INITDB_DATABASE=blog mongo",
     "dbstart": "docker start blogdb",
     "dbstop": "docker stop blogdb"

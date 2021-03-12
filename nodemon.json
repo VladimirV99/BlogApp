@@ -1,8 +1,8 @@
 {
     "ignore": [
         ".git",
-        "angular",
-        "node_modules/**/node_modules",
+        "client",
+        "**/node_modules/**",
         "README.md",
         "LICENSE"
     ]
