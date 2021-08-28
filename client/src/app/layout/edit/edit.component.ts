@@ -12,7 +12,6 @@ import { EditorComponent } from 'src/app/components/editor/editor.component';
   styleUrls: ['./edit.component.scss', '../../form-validation.scss']
 })
 export class EditComponent implements OnInit {
-
   message: string = '';
   messageClass: string = '';
 
@@ -26,19 +25,25 @@ export class EditComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private postService: PostService,
     private validateService: ValidateService
-  ) { 
+  ) {
     this.editForm = this.formBuilder.group({
-      title: ['', Validators.compose([
-        Validators.required,
-        Validators.maxLength(50),
-        Validators.minLength(5),
-        this.validateService.validateTitle
-      ])],
-      body: ['', Validators.compose([
-        Validators.required,
-        Validators.maxLength(500),
-        Validators.minLength(5)
-      ])]
+      title: [
+        '',
+        Validators.compose([
+          Validators.required,
+          Validators.maxLength(50),
+          Validators.minLength(5),
+          this.validateService.validateTitle
+        ])
+      ],
+      body: [
+        '',
+        Validators.compose([
+          Validators.required,
+          Validators.maxLength(500),
+          Validators.minLength(5)
+        ])
+      ]
     });
   }
 
@@ -55,12 +60,12 @@ export class EditComponent implements OnInit {
   onEditSubmit(): void {
     this.processing = true;
     this.disableForm();
-    
+
     const post = {
       _id: this.currentUrl.id,
       title: this.editForm.get('title').value,
       body: this.editForm.get('body').value
-    }
+    };
 
     this.postService.editPost(post).subscribe(data => {
       if (!data.success) {
@@ -93,5 +98,4 @@ export class EditComponent implements OnInit {
     this.message = '';
     this.messageClass = '';
   }
-
 }

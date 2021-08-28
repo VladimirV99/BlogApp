@@ -6,7 +6,6 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
   styleUrls: ['./pager.component.scss']
 })
 export class PagerComponent implements OnInit {
-
   @Input('totalItems') totalItems: number;
   @Input('itemsPerPage') itemsPerPage: number;
   @Input('currentPage') currentPage: number;
@@ -17,7 +16,7 @@ export class PagerComponent implements OnInit {
   @Output() goNext = new EventEmitter<boolean>();
   @Output() goPage = new EventEmitter<number>();
 
-  constructor() { }
+  constructor() {}
 
   onPage(n: number): void {
     this.goPage.emit(n);
@@ -62,7 +61,5 @@ export class PagerComponent implements OnInit {
     return pages;
   }
 
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 }

@@ -5,15 +5,14 @@ import { FormGroup, FormControl } from '@angular/forms';
   providedIn: 'root'
 })
 export class ValidateService {
-
-  constructor() { }
+  constructor() {}
 
   validateName(controls: FormControl) {
     const nameRegExp = new RegExp(/^[a-zA-Z'-]*$/);
     if (nameRegExp.test(controls.value)) {
       return null;
     } else {
-      return { 'validateName': true }
+      return { validateName: true };
     }
   }
 
@@ -22,36 +21,42 @@ export class ValidateService {
     if (usernameRegExp.test(controls.value)) {
       return null;
     } else {
-      return { 'validateUsername': true }
+      return { validateUsername: true };
     }
   }
 
   validateEmail(controls: FormControl) {
-    const emailRegExp = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+    const emailRegExp = new RegExp(
+      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    );
     if (emailRegExp.test(controls.value)) {
       return null;
     } else {
-      return { 'validateEmail': true }
+      return { validateEmail: true };
     }
   }
 
   validatePassword(controls: FormControl) {
-    const passwordRegExp = new RegExp(/^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[\d]).{0,}$/);
+    const passwordRegExp = new RegExp(
+      /^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[\d]).{0,}$/
+    );
     if (passwordRegExp.test(controls.value)) {
       return null;
     } else {
-      return { 'validatePassword': true }
+      return { validatePassword: true };
     }
   }
 
   matchingPasswords(password: string, confirmPassword: string) {
     return (group: FormGroup) => {
-      if (group.controls[password].value === group.controls[confirmPassword].value) {
+      if (
+        group.controls[password].value === group.controls[confirmPassword].value
+      ) {
         return null;
       } else {
-        return { 'matchingPasswords': true }
+        return { matchingPasswords: true };
       }
-    }
+    };
   }
 
   validateTitle(controls: FormControl) {
@@ -59,8 +64,7 @@ export class ValidateService {
     if (titleRegExp.test(controls.value)) {
       return null;
     } else {
-      return { 'validateTitle': true }
+      return { validateTitle: true };
     }
   }
-
 }

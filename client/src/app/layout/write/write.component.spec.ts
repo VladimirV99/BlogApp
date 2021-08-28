@@ -8,9 +8,8 @@ describe('WriteComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ WriteComponent ]
-    })
-    .compileComponents();
+      declarations: [WriteComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

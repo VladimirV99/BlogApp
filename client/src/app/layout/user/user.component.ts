@@ -13,7 +13,6 @@ import User from '../../models/user';
   styleUrls: ['./user.component.scss', '../../post.scss']
 })
 export class UserComponent implements OnInit {
-
   message: string = '';
   messageClass: string = '';
 
@@ -33,11 +32,11 @@ export class UserComponent implements OnInit {
     private authService: AuthService,
     private postService: PostService,
     public uiService: UiService
-  ) { }
+  ) {}
 
   loadMorePosts(): void {
-    if(this.posts.length<this.totalPosts) {
-      this.page++
+    if (this.posts.length < this.totalPosts) {
+      this.page++;
       this.getPosts();
     }
   }
@@ -45,39 +44,42 @@ export class UserComponent implements OnInit {
   getPosts(): void {
     this.loadingPosts = true;
     this.postService.getUserPostCount(this.profile.username).subscribe(data => {
-      if(!data.success) {
+      if (!data.success) {
         this.messageClass = 'alert alert-danger';
         this.message = data.message;
       } else {
         this.totalPosts = data.count;
-        this.postService.getUserPosts(this.profile.username, this.page).subscribe(data => {
-          this.posts = this.posts.concat(data.posts);
-          this.loadingPosts = false;
-        });
+        this.postService
+          .getUserPosts(this.profile.username, this.page)
+          .subscribe(data => {
+            this.posts = this.posts.concat(data.posts);
+            this.loadingPosts = false;
+          });
       }
     });
   }
 
   ngOnInit() {
-    if(this.authService.loggedIn()){
+    if (this.authService.loggedIn()) {
       this.user = this.authService.getUser();
     }
-    this.authService.getUserProfile(this.activatedRoute.snapshot.params.username).subscribe(data => {
-      if(!data.success) {
-        this.messageClass = 'alert alert-danger';
-        this.message = data.message;
-      } else {
-        this.profile = data.user;
-        if(this.profile.photo)
-          this.profile.photo = this.uiService.getPhoto(this.profile.photo);
-        this.getPosts();
-      }
-    });
+    this.authService
+      .getUserProfile(this.activatedRoute.snapshot.params.username)
+      .subscribe(data => {
+        if (!data.success) {
+          this.messageClass = 'alert alert-danger';
+          this.message = data.message;
+        } else {
+          this.profile = data.user;
+          if (this.profile.photo)
+            this.profile.photo = this.uiService.getPhoto(this.profile.photo);
+          this.getPosts();
+        }
+      });
   }
 
   dismissAlert(): void {
     this.message = '';
     this.messageClass = '';
   }
-
 }

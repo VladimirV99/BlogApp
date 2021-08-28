@@ -12,7 +12,6 @@ import { PostService } from '../../services/post.service';
   styleUrls: ['./comments.component.scss', '../../post.scss']
 })
 export class CommentsComponent implements OnInit {
-
   @Input('post') post: Post;
   @Input('user') user: User;
 
@@ -25,37 +24,46 @@ export class CommentsComponent implements OnInit {
   totalComments: number = 0;
   loadedComments: number = 0;
 
-  constructor(private formBuilder: FormBuilder,
-    private postService: PostService) { 
+  constructor(
+    private formBuilder: FormBuilder,
+    private postService: PostService
+  ) {
     this.commentForm = this.formBuilder.group({
-      comment: ['', Validators.compose([
-        Validators.required,
-        Validators.maxLength(500)
-      ])]
+      comment: [
+        '',
+        Validators.compose([Validators.required, Validators.maxLength(500)])
+      ]
     });
   }
 
   loadComments() {
     this.postService.getCommentCount(this.post._id).subscribe(data => {
-      if(!data.success) {
-        this.message.emit({success: false, message: data.message});
+      if (!data.success) {
+        this.message.emit({ success: false, message: data.message });
       } else {
         this.totalComments = data.count;
         this.refresh.emit(this.totalComments);
-        if(this.totalComments>0){
-          let before = (this.post && this.post.comments && this.post.comments.length>0)? Date.parse(this.post.comments[this.post.comments.length-1].createdAt) : Date.now();
-          this.postService.getComments(this.post._id, before).subscribe(data => {
-            if(!data.success) {
-              this.message.emit({success: false, message: data.message});
-            } else {
-              if(data.comments.length == 0) {
-                this.loadedComments = this.totalComments;
+        if (this.totalComments > 0) {
+          let before =
+            this.post && this.post.comments && this.post.comments.length > 0
+              ? Date.parse(
+                  this.post.comments[this.post.comments.length - 1].createdAt
+                )
+              : Date.now();
+          this.postService
+            .getComments(this.post._id, before)
+            .subscribe(data => {
+              if (!data.success) {
+                this.message.emit({ success: false, message: data.message });
               } else {
-                this.post.comments = this.post.comments.concat(data.comments);
-                this.loadedComments += data.comments.length;
-              } 
-            }
-          });
+                if (data.comments.length == 0) {
+                  this.loadedComments = this.totalComments;
+                } else {
+                  this.post.comments = this.post.comments.concat(data.comments);
+                  this.loadedComments += data.comments.length;
+                }
+              }
+            });
         }
       }
     });
@@ -72,17 +80,17 @@ export class CommentsComponent implements OnInit {
   onCommentSubmit() {
     this.processingComment = true;
     this.disableCommentForm();
-    
+
     const comment = {
       parent_post: this.post._id,
       comment: this.commentForm.get('comment').value
-    }
+    };
 
     this.postService.postComment(comment).subscribe(data => {
       if (!data.success) {
-        this.message.emit({success: false, message: data.message});
+        this.message.emit({ success: false, message: data.message });
       } else {
-        this.message.emit({success: true, message: data.message});
+        this.message.emit({ success: true, message: data.message });
         data.comment.createdBy = this.user;
         this.post.comments.unshift(data.comment);
       }
@@ -95,5 +103,4 @@ export class CommentsComponent implements OnInit {
   ngOnInit() {
     this.loadComments();
   }
-
 }

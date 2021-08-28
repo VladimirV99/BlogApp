@@ -12,7 +12,6 @@ import { UiService } from 'src/app/services/ui.service';
   styleUrls: ['./register.component.scss', '../../form-validation.scss']
 })
 export class RegisterComponent implements OnInit {
-
   message: string = '';
 
   registerForm: FormGroup;
@@ -30,42 +29,65 @@ export class RegisterComponent implements OnInit {
     private authService: AuthService,
     private validateService: ValidateService,
     private uiService: UiService
-  ) { 
+  ) {
     this.createForm();
   }
 
   createForm(): void {
-    this.registerForm = this.formBuilder.group({
-      first_name: ['', Validators.compose([
-        Validators.required,
-        Validators.maxLength(15),
-        this.validateService.validateName
-      ])],
-      last_name: ['', Validators.compose([
-        Validators.required,
-        Validators.maxLength(15),
-        this.validateService.validateName
-      ])],
-      username: ['', Validators.compose([
-        Validators.required,
-        Validators.minLength(3),
-        Validators.maxLength(15),
-        this.validateService.validateUsername
-      ])],
-      email: ['', Validators.compose([
-        Validators.required,
-        Validators.minLength(5),
-        Validators.maxLength(30),
-        this.validateService.validateEmail
-      ])],
-      password: ['', Validators.compose([
-        Validators.required,
-        Validators.minLength(8),
-        Validators.maxLength(35),
-        this.validateService.validatePassword
-      ])],
-      confirmPassword: ['', Validators.required]
-    }, { validator: this.validateService.matchingPasswords('password', 'confirmPassword') });
+    this.registerForm = this.formBuilder.group(
+      {
+        first_name: [
+          '',
+          Validators.compose([
+            Validators.required,
+            Validators.maxLength(15),
+            this.validateService.validateName
+          ])
+        ],
+        last_name: [
+          '',
+          Validators.compose([
+            Validators.required,
+            Validators.maxLength(15),
+            this.validateService.validateName
+          ])
+        ],
+        username: [
+          '',
+          Validators.compose([
+            Validators.required,
+            Validators.minLength(3),
+            Validators.maxLength(15),
+            this.validateService.validateUsername
+          ])
+        ],
+        email: [
+          '',
+          Validators.compose([
+            Validators.required,
+            Validators.minLength(5),
+            Validators.maxLength(30),
+            this.validateService.validateEmail
+          ])
+        ],
+        password: [
+          '',
+          Validators.compose([
+            Validators.required,
+            Validators.minLength(8),
+            Validators.maxLength(35),
+            this.validateService.validatePassword
+          ])
+        ],
+        confirmPassword: ['', Validators.required]
+      },
+      {
+        validator: this.validateService.matchingPasswords(
+          'password',
+          'confirmPassword'
+        )
+      }
+    );
   }
 
   disableForm(): void {
@@ -89,41 +111,48 @@ export class RegisterComponent implements OnInit {
   onRegisterSubmit(): void {
     this.processing = true;
     this.disableForm();
-    
+
     let first_name = this.registerForm.get('first_name').value;
     let last_name = this.registerForm.get('last_name').value;
     let username = this.registerForm.get('username').value;
     let email = this.registerForm.get('email').value;
     let password = this.registerForm.get('password').value;
 
-    this.authService.registerUser(first_name, last_name, username, email, password).subscribe(data => {
-      if (!data.success) {
-        this.message = data.message;
-        this.processing = false;
-        this.enableForm();
-      } else {
-        this.authService.setUserData(data.token, data.user);
-        this.uiService.loadSettings();
-        this.router.navigate(['/']);
-      }
-    });
+    this.authService
+      .registerUser(first_name, last_name, username, email, password)
+      .subscribe(data => {
+        if (!data.success) {
+          this.message = data.message;
+          this.processing = false;
+          this.enableForm();
+        } else {
+          this.authService.setUserData(data.token, data.user);
+          this.uiService.loadSettings();
+          this.router.navigate(['/']);
+        }
+      });
   }
 
   checkEmail(): void {
-    if(this.registerForm.get('email').value=='' || this.registerForm.get('email').errors){
+    if (
+      this.registerForm.get('email').value == '' ||
+      this.registerForm.get('email').errors
+    ) {
       this.clearEmail();
       return;
     }
-    this.authService.checkEmail(this.registerForm.get('email').value).subscribe(data => {
-      this.emailChecked = true;
-      if (!data.success) {
-        this.emailValid = false;
-        this.emailMessage = data.message;
-      } else {
-        this.emailValid = true;
-        this.emailMessage = data.message;
-      }
-    });
+    this.authService
+      .checkEmail(this.registerForm.get('email').value)
+      .subscribe(data => {
+        this.emailChecked = true;
+        if (!data.success) {
+          this.emailValid = false;
+          this.emailMessage = data.message;
+        } else {
+          this.emailValid = true;
+          this.emailMessage = data.message;
+        }
+      });
   }
 
   clearEmail(): void {
@@ -133,20 +162,25 @@ export class RegisterComponent implements OnInit {
   }
 
   checkUsername(): void {
-    if(this.registerForm.get('username').value=='' || this.registerForm.get('username').errors){
+    if (
+      this.registerForm.get('username').value == '' ||
+      this.registerForm.get('username').errors
+    ) {
       this.clearUsername();
       return;
     }
-    this.authService.checkUsername(this.registerForm.get('username').value).subscribe(data => {
-      this.usernameChecked = true;
-      if (!data.success) {
-        this.usernameValid = false;
-        this.usernameMessage = data.message;
-      } else {
-        this.usernameValid = true;
-        this.usernameMessage = data.message;
-      }
-    });
+    this.authService
+      .checkUsername(this.registerForm.get('username').value)
+      .subscribe(data => {
+        this.usernameChecked = true;
+        if (!data.success) {
+          this.usernameValid = false;
+          this.usernameMessage = data.message;
+        } else {
+          this.usernameValid = true;
+          this.usernameMessage = data.message;
+        }
+      });
   }
 
   clearUsername(): void {
@@ -155,11 +189,9 @@ export class RegisterComponent implements OnInit {
     this.usernameMessage = '';
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   dismissAlert(): void {
     this.message = '';
   }
-
 }

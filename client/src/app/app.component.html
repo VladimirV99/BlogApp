@@ -1,6 +1,13 @@
-<div id="window" [ngClass]="{'theme-light': !uiService.getDarkMode(), 'theme-dark': uiService.getDarkMode()}" (click)="closeDropdowns($event)">
-    <app-navbar></app-navbar>
-    <div class="container-fluid">
-        <router-outlet></router-outlet>
-    </div>
+<div
+  id="window"
+  [ngClass]="{
+    'theme-light': !uiService.getDarkMode(),
+    'theme-dark': uiService.getDarkMode()
+  }"
+  (click)="closeDropdowns($event)"
+>
+  <app-navbar></app-navbar>
+  <div class="container-fluid">
+    <router-outlet></router-outlet>
+  </div>
 </div>

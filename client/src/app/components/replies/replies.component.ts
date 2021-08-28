@@ -11,7 +11,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./replies.component.scss', '../../post.scss']
 })
 export class RepliesComponent implements OnInit {
-
   @Input('comment') comment;
   @Input('user') user;
   @Input('postCreator') postCreator;
@@ -32,12 +31,12 @@ export class RepliesComponent implements OnInit {
     private postService: PostService,
     public authService: AuthService,
     public uiService: UiService
-  ) { 
+  ) {
     this.replyForm = this.formBuilder.group({
-      reply: ['', Validators.compose([
-        Validators.required,
-        Validators.maxLength(500)
-      ])]
+      reply: [
+        '',
+        Validators.compose([Validators.required, Validators.maxLength(500)])
+      ]
     });
   }
 
@@ -56,11 +55,11 @@ export class RepliesComponent implements OnInit {
   onReplySubmit() {
     this.processingReply = true;
     this.disableReplyForm();
-    
+
     const reply = {
       parent_comment: this.comment._id,
       comment: this.replyForm.get('reply').value
-    }
+    };
 
     this.postService.postReply(reply).subscribe(data => {
       if (!data.success) {
@@ -86,17 +85,18 @@ export class RepliesComponent implements OnInit {
 
   loadReplies() {
     this.processingReplies = true;
-    let before = (this.replies && this.replies.length>0)? this.replies[this.replies.length-1].createdAt : Date.now();
+    let before =
+      this.replies && this.replies.length > 0
+        ? this.replies[this.replies.length - 1].createdAt
+        : Date.now();
     this.postService.getReplies(this.comment._id, before).subscribe(data => {
-      if(!data.success) {
-
+      if (!data.success) {
       } else {
-        if(data.comments.length==0) {
+        if (data.comments.length == 0) {
           this.comment.replies = this.replies.length;
         } else {
           this.replies = this.replies.concat(data.comments);
         }
-        
       }
       this.processingReplies = false;
     });
@@ -115,7 +115,5 @@ export class RepliesComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 }

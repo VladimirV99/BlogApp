@@ -1,13 +1,15 @@
-@import "../../ui";
+@import '../../ui';
 
 :host-context(.theme-dark) {
-  .modal-header, .modal-footer {
+  .modal-header,
+  .modal-footer {
     @include background-dark-primary;
   }
 }
 
 :host-context(.theme-light) {
-  .modal-header, .modal-footer {
+  .modal-header,
+  .modal-footer {
     @include background-light-primary;
   }
 }
@@ -23,6 +25,6 @@
     }
 
     text-align: left;
-    margin: .25rem 0 .25rem 0;
+    margin: 0.25rem 0 0.25rem 0;
   }
 }

@@ -10,14 +10,13 @@ import { UiService } from '../../services/ui.service';
   styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent implements OnInit {
-
   userMenuVisible: boolean = false;
 
   constructor(
     public authService: AuthService,
     public uiService: UiService,
     private router: Router
-  ) { }
+  ) {}
 
   onLogoutClick(): void {
     this.authService.logout();
@@ -33,13 +32,16 @@ export class NavbarComponent implements OnInit {
   }
 
   toggleUserMenu(): void {
-    if(!this.userMenuVisible)
-      this.uiService.openDropdown('navbarUser');
+    if (!this.userMenuVisible) this.uiService.openDropdown('navbarUser');
     this.userMenuVisible = !this.userMenuVisible;
   }
 
   ngOnInit() {
-    this.uiService.registerDropdown('navbarUser', 'dropdownUser', this.toggleUserMenu.bind(this), false);
+    this.uiService.registerDropdown(
+      'navbarUser',
+      'dropdownUser',
+      this.toggleUserMenu.bind(this),
+      false
+    );
   }
-
 }

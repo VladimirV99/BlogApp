@@ -1,14 +1,15 @@
 .table {
-  th, td {
-    padding-left: .25rem;
-    padding-right: .25rem;
+  th,
+  td {
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
     text-align: center;
     vertical-align: middle;
   }
 
   .col-title {
     text-align: left;
-    padding-left: .75rem;
+    padding-left: 0.75rem;
     overflow-x: hidden;
 
     a {
@@ -16,15 +17,16 @@
       color: inherit;
     }
   }
-  
+
   .col-createdAt {
     width: 110px;
   }
-  
-  .col-likes, .col-dislikes {
+
+  .col-likes,
+  .col-dislikes {
     width: 70px;
   }
-  
+
   .col-comments {
     width: 100px;
   }

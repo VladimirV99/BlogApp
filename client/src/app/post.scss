@@ -1,6 +1,6 @@
-@import "./ui";
+@import './ui';
 
-:host-context(.theme-light) .modal-content{
+:host-context(.theme-light) .modal-content {
   @include background-light-secondary;
 
   .close {
@@ -16,7 +16,7 @@
   }
 }
 
-:host-context(.theme-dark) .modal-content{
+:host-context(.theme-dark) .modal-content {
   @include background-dark-secondary;
 
   .close {
@@ -33,37 +33,37 @@
 }
 
 .post {
-  border-radius: .3rem;
-  padding: .25rem;
+  border-radius: 0.3rem;
+  padding: 0.25rem;
   margin: 10px 0px;
 
   .post-title {
     margin: 0rem;
   }
-  
+
   .post-link {
     text-decoration: none;
     color: inherit;
   }
 
   .post-header {
-    padding: .75rem;
-    padding-top: .5rem;
+    padding: 0.75rem;
+    padding-top: 0.5rem;
     position: relative;
   }
 
   .post-body {
-    padding: .5rem;
+    padding: 0.5rem;
   }
 
   .post-footer {
-    padding: .25rem;
+    padding: 0.25rem;
     padding-bottom: 0rem;
     position: relative;
 
     button,
     span {
-      margin: .12rem;
+      margin: 0.12rem;
     }
   }
 
@@ -75,8 +75,8 @@
 
     li {
       float: left;
-      margin: .5em;
-      
+      margin: 0.5em;
+
       &:hover {
         cursor: pointer;
       }
@@ -88,7 +88,7 @@
   }
 }
 
-:host-context(.theme-light) .post{
+:host-context(.theme-light) .post {
   @include background-light-primary;
 
   .post-body {
@@ -108,7 +108,7 @@
   }
 }
 
-:host-context(.theme-dark) .post{
+:host-context(.theme-dark) .post {
   @include background-dark-primary;
 
   .post-body {
@@ -135,28 +135,27 @@
 }
 
 .comment {
-  padding: .75rem;
+  padding: 0.75rem;
   padding-bottom: 2.5rem;
-  margin-bottom: .5rem;
-  border-radius: .3rem;
+  margin-bottom: 0.5rem;
+  border-radius: 0.3rem;
 
   hr {
-    margin: .4rem;
+    margin: 0.4rem;
   }
 
   .comment-body {
     text-align: justify;
   }
-  
+
   .comment-button {
-    float:right;
-    margin-left: .25rem;
+    float: right;
+    margin-left: 0.25rem;
   }
 
   .comment-footer {
     clear: right;
   }
-
 }
 
 :host-context(.theme-light) .comment {

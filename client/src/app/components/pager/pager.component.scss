@@ -1,4 +1,4 @@
-@import "../../ui";
+@import '../../ui';
 
 .pagination {
   margin: 1rem 0;
@@ -6,7 +6,7 @@
 }
 
 :host-context(.theme-light) .pagination {
-  .page-item:not(.active ) .page-link {
+  .page-item:not(.active) .page-link {
     border-color: $color-light-primary;
     background-color: $color-light-secondary;
 
@@ -21,7 +21,7 @@
 }
 
 :host-context(.theme-dark) .pagination {
-  .page-item:not(.active ) .page-link {
+  .page-item:not(.active) .page-link {
     border-color: $color-dark-primary;
     background-color: $color-dark-secondary;
     color: $color-dark-text;

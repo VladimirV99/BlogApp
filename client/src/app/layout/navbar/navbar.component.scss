@@ -1,4 +1,4 @@
-@import "../../ui";
+@import '../../ui';
 
 .navbar {
   padding-top: 0rem;
@@ -14,14 +14,14 @@
   @include background-dark-primary;
 }
 
-.navbar .navbar-brand{
+.navbar .navbar-brand {
   height: 50px;
   line-height: 20px;
   padding-top: 15px;
   padding-bottom: 15px;
 }
 
-.navbar .navbar-nav .nav-link{
+.navbar .navbar-nav .nav-link {
   line-height: 20px;
   padding-top: 15px;
   padding-bottom: 15px;
@@ -68,12 +68,13 @@
   cursor: pointer;
 }
 
-#dropdown-user, #dropdown-menu-user {
+#dropdown-user,
+#dropdown-menu-user {
   min-width: 180px;
   width: 100%;
 }
 
-#dropdown-user span{
+#dropdown-user span {
   display: inline-block;
   min-width: 110px;
 }
@@ -81,13 +82,13 @@
 #dropdown-menu-user {
   margin: 0;
   margin-top: -1px;
-  border-radius: 0rem 0rem .25rem .25rem;
+  border-radius: 0rem 0rem 0.25rem 0.25rem;
 }
 
 .non-link-dropdown-item {
   display: block;
   width: 100%;
-  padding: .25rem 1.5rem;
+  padding: 0.25rem 1.5rem;
   cursor: default;
 }
 
@@ -98,12 +99,12 @@
   top: -6px;
 
   &.profile-icon-left {
-    margin-right: .4rem;
+    margin-right: 0.4rem;
     float: left;
   }
-  
+
   &.profile-icon-right {
-    margin-left: .4rem;
+    margin-left: 0.4rem;
     float: right;
   }
 
@@ -122,7 +123,9 @@
   margin: 0 5px;
 }
 
-.switch input {display:none;}
+.switch input {
+  display: none;
+}
 
 .slider {
   position: absolute;
@@ -131,8 +134,8 @@
   left: 0;
   right: 0;
   bottom: 0;
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
 }
 
 :host-context(.theme-light) .slider {
@@ -145,13 +148,13 @@
 
 .slider:before {
   position: absolute;
-  content: "";
+  content: '';
   height: 13px;
   width: 13px;
   left: 2px;
   bottom: 2px;
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
 }
 
 :host-context(.theme-light) .slider:before {
@@ -163,11 +166,11 @@
 }
 
 input:checked + .slider {
-  background-color: #2196F3;
+  background-color: #2196f3;
 }
 
 input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
+  box-shadow: 0 0 1px #2196f3;
 }
 
 input:checked + .slider:before {

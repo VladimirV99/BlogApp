@@ -14,7 +14,6 @@ import Post from 'src/app/models/post';
   styleUrls: ['./post.component.scss', '../../post.scss']
 })
 export class PostComponent implements OnInit {
-
   message: string = '';
   messageClass: string = '';
 
@@ -30,31 +29,33 @@ export class PostComponent implements OnInit {
     private authService: AuthService,
     public postService: PostService,
     public uiService: UiService
-  ) { }
+  ) {}
 
   deletePost(post: string): void {
     this.postService.deletePost(post).subscribe(data => {
-      this.messageClass = "alert alert-danger";
+      this.messageClass = 'alert alert-danger';
       this.message = data.message;
       this.getPost();
     });
   }
 
   getPost(): void {
-    this.postService.getPost(this.activatedRoute.snapshot.params.id).subscribe(postData => {
-      if (!postData.success) {
-        this.messageClass = 'alert alert-danger';
-        this.message = postData.message;
-      } else {
-        this.post = postData.post;
-        this.post.comments = [];
-        this.loading = false;
-      }
-    });
+    this.postService
+      .getPost(this.activatedRoute.snapshot.params.id)
+      .subscribe(postData => {
+        if (!postData.success) {
+          this.messageClass = 'alert alert-danger';
+          this.message = postData.message;
+        } else {
+          this.post = postData.post;
+          this.post.comments = [];
+          this.loading = false;
+        }
+      });
   }
 
   ngOnInit() {
-    if(this.authService.loggedIn()){
+    if (this.authService.loggedIn()) {
       this.user = this.authService.getUser();
     }
     this.getPost();
@@ -71,10 +72,7 @@ export class PostComponent implements OnInit {
 
   onMessage(message: Message) {
     this.message = message.message;
-    if(message.success)
-      this.messageClass = 'alert alert-success';
-    else
-      this.messageClass = 'alert alert-danger';
+    if (message.success) this.messageClass = 'alert alert-success';
+    else this.messageClass = 'alert alert-danger';
   }
-
 }

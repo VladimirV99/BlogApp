@@ -12,7 +12,6 @@ export interface Dropdown {
   providedIn: 'root'
 })
 export class UiService {
-
   private darkMode: boolean;
   private roundIcons: boolean;
   private pagesToShow = 8;
@@ -23,27 +22,21 @@ export class UiService {
   }
 
   loadSettings(): void {
-    if(this.authService.loggedIn()) {
-      if(this.authService.getUser().dark_mode)
+    if (this.authService.loggedIn()) {
+      if (this.authService.getUser().dark_mode)
         this.darkMode = this.authService.getUser().dark_mode;
-      else
-        this.darkMode = false;
+      else this.darkMode = false;
     } else {
-      if(localStorage.getItem('dark-mode')=="true")
-        this.darkMode = true;
-      else
-        this.darkMode = false;
+      if (localStorage.getItem('dark-mode') == 'true') this.darkMode = true;
+      else this.darkMode = false;
     }
-    if(this.authService.loggedIn()) {
-      if(this.authService.getUser().round_icons)
+    if (this.authService.loggedIn()) {
+      if (this.authService.getUser().round_icons)
         this.roundIcons = this.authService.getUser().round_icons;
-      else
-        this.roundIcons = false;
+      else this.roundIcons = false;
     } else {
-      if(localStorage.getItem('round-icons')=="true")
-        this.roundIcons = true;
-      else
-        this.roundIcons = false;
+      if (localStorage.getItem('round-icons') == 'true') this.roundIcons = true;
+      else this.roundIcons = false;
     }
   }
 
@@ -70,10 +63,10 @@ export class UiService {
   setDarkMode(flag: boolean): void {
     this.darkMode = flag;
     this.authService.setDarkMode(flag).subscribe(data => {
-      if(data.success){
+      if (data.success) {
         this.authService.getUser().dark_mode = flag;
         this.authService.storeUser(this.authService.getUser());
-        localStorage.setItem('dark-mode', this.darkMode ? "true" : "false");
+        localStorage.setItem('dark-mode', this.darkMode ? 'true' : 'false');
       }
     });
   }
@@ -81,10 +74,10 @@ export class UiService {
   setRoundIcons(flag: boolean): void {
     this.roundIcons = flag;
     this.authService.setRoundIcons(flag).subscribe(data => {
-      if(data.success){
+      if (data.success) {
         this.authService.getUser().round_icons = flag;
         this.authService.storeUser(this.authService.getUser());
-        localStorage.setItem('round-icons', this.roundIcons ? "true" : "false");
+        localStorage.setItem('round-icons', this.roundIcons ? 'true' : 'false');
       }
     });
   }
@@ -93,17 +86,21 @@ export class UiService {
     return this.dropdowns;
   }
 
-  registerDropdown(id: string, toggle: string, callback: Function, open: boolean): void {
-    this.dropdowns.push({id, toggle, callback, open});
+  registerDropdown(
+    id: string,
+    toggle: string,
+    callback: Function,
+    open: boolean
+  ): void {
+    this.dropdowns.push({ id, toggle, callback, open });
   }
 
   openDropdown(id: string): void {
-    for(let i = 0; i < this.dropdowns.length; i++){
-      if(this.dropdowns[i].id == id){
+    for (let i = 0; i < this.dropdowns.length; i++) {
+      if (this.dropdowns[i].id == id) {
         this.dropdowns[i].open = true;
         break;
       }
     }
   }
-
 }

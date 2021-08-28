@@ -13,13 +13,12 @@ import { makeHtml } from '../../libs/markdown.node';
   styleUrls: ['./write.component.scss', '../../form-validation.scss']
 })
 export class WriteComponent implements OnInit {
-
-  @ViewChild('editor', {static: false}) editor: EditorComponent;
+  @ViewChild('editor', { static: false }) editor: EditorComponent;
 
   message: string = '';
   messageClass: string = '';
 
-  writeForm : FormGroup;
+  writeForm: FormGroup;
   processing: boolean = false;
 
   convertedText: string = '';
@@ -33,17 +32,23 @@ export class WriteComponent implements OnInit {
     private validateService: ValidateService
   ) {
     this.writeForm = this.formBuilder.group({
-      title: ['', Validators.compose([
-        Validators.required,
-        Validators.maxLength(60),
-        Validators.minLength(1),
-        this.validateService.validateTitle
-      ])],
-      body: ['', Validators.compose([
-        Validators.required,
-        Validators.maxLength(1500),
-        Validators.minLength(5)
-      ])]
+      title: [
+        '',
+        Validators.compose([
+          Validators.required,
+          Validators.maxLength(60),
+          Validators.minLength(1),
+          this.validateService.validateTitle
+        ])
+      ],
+      body: [
+        '',
+        Validators.compose([
+          Validators.required,
+          Validators.maxLength(1500),
+          Validators.minLength(5)
+        ])
+      ]
     });
   }
 
@@ -60,11 +65,11 @@ export class WriteComponent implements OnInit {
   onWriteSubmit(): void {
     this.processing = true;
     this.disableForm();
-    
+
     const post = {
       title: this.writeForm.get('title').value,
       body: this.writeForm.get('body').value
-    }
+    };
 
     this.postService.newPost(post).subscribe(data => {
       if (!data.success) {
@@ -82,12 +87,10 @@ export class WriteComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   dismissAlert(): void {
     this.message = '';
     this.messageClass = '';
   }
-
 }

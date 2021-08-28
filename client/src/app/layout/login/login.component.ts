@@ -12,7 +12,6 @@ import { UiService } from 'src/app/services/ui.service';
   styleUrls: ['./login.component.scss', '../../form-validation.scss']
 })
 export class LoginComponent implements OnInit {
-
   message: string;
 
   loginForm: FormGroup;
@@ -25,7 +24,7 @@ export class LoginComponent implements OnInit {
     private authService: AuthService,
     private authGuard: AuthGuard,
     private uiService: UiService
-  ) { 
+  ) {
     this.createForm();
   }
 
@@ -49,7 +48,7 @@ export class LoginComponent implements OnInit {
   onLoginSubmit(): void {
     this.processing = true;
     this.disableForm();
-    
+
     let username = this.loginForm.get('username').value;
     let password = this.loginForm.get('password').value;
 
@@ -82,5 +81,4 @@ export class LoginComponent implements OnInit {
   dismissAlert(): void {
     this.message = '';
   }
-
 }

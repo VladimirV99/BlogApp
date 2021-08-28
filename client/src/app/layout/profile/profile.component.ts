@@ -9,10 +9,13 @@ import User from 'src/app/models/user';
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.scss', '../../post.scss', '../../form-validation.scss']
+  styleUrls: [
+    './profile.component.scss',
+    '../../post.scss',
+    '../../form-validation.scss'
+  ]
 })
 export class ProfileComponent implements OnInit {
-
   newPhotoFile: File;
   newPhoto: string;
   noPhoto: string = this.uiService.noPhoto();
@@ -54,38 +57,56 @@ export class ProfileComponent implements OnInit {
 
   createProfileUpdateForm(): void {
     this.profileUpdateForm = this.formBuilder.group({
-      first_name: ['', Validators.compose([
-        Validators.required,
-        Validators.maxLength(15),
-        this.validateService.validateName
-      ])],
-      last_name: ['', Validators.compose([
-        Validators.required,
-        Validators.maxLength(15),
-        this.validateService.validateName
-      ])],
-      email: ['', Validators.compose([
-        Validators.required,
-        Validators.minLength(5),
-        Validators.maxLength(30),
-        this.validateService.validateEmail
-      ])]
+      first_name: [
+        '',
+        Validators.compose([
+          Validators.required,
+          Validators.maxLength(15),
+          this.validateService.validateName
+        ])
+      ],
+      last_name: [
+        '',
+        Validators.compose([
+          Validators.required,
+          Validators.maxLength(15),
+          this.validateService.validateName
+        ])
+      ],
+      email: [
+        '',
+        Validators.compose([
+          Validators.required,
+          Validators.minLength(5),
+          Validators.maxLength(30),
+          this.validateService.validateEmail
+        ])
+      ]
     });
   }
 
   createPasswordChangeForm(): void {
-    this.passwordChangeForm = this.formBuilder.group({
-      old_password: ['', 
-        Validators.required
-      ],
-      new_password: ['', Validators.compose([
-        Validators.required,
-        Validators.minLength(8),
-        Validators.maxLength(35),
-        this.validateService.validatePassword
-      ])],
-      new_password_confirm: ['', Validators.required]
-    }, { validator: this.validateService.matchingPasswords('new_password', 'new_password_confirm') });
+    this.passwordChangeForm = this.formBuilder.group(
+      {
+        old_password: ['', Validators.required],
+        new_password: [
+          '',
+          Validators.compose([
+            Validators.required,
+            Validators.minLength(8),
+            Validators.maxLength(35),
+            this.validateService.validatePassword
+          ])
+        ],
+        new_password_confirm: ['', Validators.required]
+      },
+      {
+        validator: this.validateService.matchingPasswords(
+          'new_password',
+          'new_password_confirm'
+        )
+      }
+    );
   }
 
   disableProfileUpdateForm(): void {
@@ -103,27 +124,29 @@ export class ProfileComponent implements OnInit {
   onProfileUpdateSubmit(): void {
     this.processingProfileUpdate = true;
     this.disableProfileUpdateForm();
-    
+
     let first_name = this.profileUpdateForm.get('first_name').value;
     let last_name = this.profileUpdateForm.get('last_name').value;
     let email = this.profileUpdateForm.get('email').value;
 
-    this.authService.updateProfile(first_name, last_name, email).subscribe(data => {
-      if (!data.success) {
-        this.messageClass = 'alert alert-danger';
-        this.message = data.message;
-      } else {
-        this.messageClass = 'alert alert-success';
-        this.message = data.message;
-        let updatedUser = this.authService.getUser();
-        updatedUser.first_name = data.user.first_name;
-        updatedUser.last_name = data.user.last_name;
-        updatedUser.email = data.user.email;
-        this.authService.storeUser(updatedUser);
-      }
-      this.processingProfileUpdate = false;
-      this.enableProfileUpdateForm();
-    });
+    this.authService
+      .updateProfile(first_name, last_name, email)
+      .subscribe(data => {
+        if (!data.success) {
+          this.messageClass = 'alert alert-danger';
+          this.message = data.message;
+        } else {
+          this.messageClass = 'alert alert-success';
+          this.message = data.message;
+          let updatedUser = this.authService.getUser();
+          updatedUser.first_name = data.user.first_name;
+          updatedUser.last_name = data.user.last_name;
+          updatedUser.email = data.user.email;
+          this.authService.storeUser(updatedUser);
+        }
+        this.processingProfileUpdate = false;
+        this.enableProfileUpdateForm();
+      });
   }
 
   disablePasswordChangeForm(): void {
@@ -141,47 +164,54 @@ export class ProfileComponent implements OnInit {
   onPasswordChangeSubmit(): void {
     this.processingPasswordChange = true;
     this.disablePasswordChangeForm();
-    
+
     let old_password = this.passwordChangeForm.get('old_password').value;
     let new_password = this.passwordChangeForm.get('new_password').value;
 
-    this.authService.changePassword(old_password, new_password).subscribe(data => {
-      if(!data.success) {
-        this.messageClass = 'alert alert-danger';
-        this.message = data.message;
-      } else {
-        this.messageClass = 'alert alert-success';
-        this.message = data.message;
-      }
-      this.passwordChangeForm.controls['old_password'].reset();
-      this.passwordChangeForm.controls['new_password'].reset();
-      this.passwordChangeForm.controls['new_password_confirm'].reset();
-      this.processingPasswordChange = false;
-      this.enablePasswordChangeForm();
-    });
+    this.authService
+      .changePassword(old_password, new_password)
+      .subscribe(data => {
+        if (!data.success) {
+          this.messageClass = 'alert alert-danger';
+          this.message = data.message;
+        } else {
+          this.messageClass = 'alert alert-success';
+          this.message = data.message;
+        }
+        this.passwordChangeForm.controls['old_password'].reset();
+        this.passwordChangeForm.controls['new_password'].reset();
+        this.passwordChangeForm.controls['new_password_confirm'].reset();
+        this.processingPasswordChange = false;
+        this.enablePasswordChangeForm();
+      });
   }
 
   checkEmail(): void {
-    if(this.profileUpdateForm.get('email').value=='' || this.profileUpdateForm.get('email').errors){
+    if (
+      this.profileUpdateForm.get('email').value == '' ||
+      this.profileUpdateForm.get('email').errors
+    ) {
       this.clearEmail();
       return;
     }
-    if(this.profileUpdateForm.get('email').value==this.user.email){
+    if (this.profileUpdateForm.get('email').value == this.user.email) {
       this.emailChecked = true;
       this.emailValid = true;
       this.emailMessage = '';
       return;
     }
-    this.authService.checkEmail(this.profileUpdateForm.get('email').value).subscribe(data => {
-      this.emailChecked = true;
-      if (!data.success) {
-        this.emailValid = false;
-        this.emailMessage = data.message;
-      } else {
-        this.emailValid = true;
-        this.emailMessage = data.message;
-      }
-    });
+    this.authService
+      .checkEmail(this.profileUpdateForm.get('email').value)
+      .subscribe(data => {
+        this.emailChecked = true;
+        if (!data.success) {
+          this.emailValid = false;
+          this.emailMessage = data.message;
+        } else {
+          this.emailValid = true;
+          this.emailMessage = data.message;
+        }
+      });
   }
 
   clearEmail(): void {
@@ -197,9 +227,15 @@ export class ProfileComponent implements OnInit {
         this.message = data.message;
       } else {
         this.user = data.user;
-        this.user.photo = this.user.photo ? this.uiService.getPhoto(this.user.photo) : this.noPhoto;
-        this.profileUpdateForm.controls['first_name'].setValue(data.user.first_name);
-        this.profileUpdateForm.controls['last_name'].setValue(data.user.last_name);
+        this.user.photo = this.user.photo
+          ? this.uiService.getPhoto(this.user.photo)
+          : this.noPhoto;
+        this.profileUpdateForm.controls['first_name'].setValue(
+          data.user.first_name
+        );
+        this.profileUpdateForm.controls['last_name'].setValue(
+          data.user.last_name
+        );
         this.profileUpdateForm.controls['email'].setValue(data.user.email);
         this.emailChecked = true;
         this.emailValid = true;
@@ -223,7 +259,7 @@ export class ProfileComponent implements OnInit {
 
   onPhotoSelect(event): void {
     if (event.target.files && event.target.files[0]) {
-      if(event.target.files[0].size >= 1000000){
+      if (event.target.files[0].size >= 1000000) {
         this.messageClass = 'alert-danger';
         this.message = 'Image must be less than 1Mb';
       } else {
@@ -232,7 +268,7 @@ export class ProfileComponent implements OnInit {
         reader.onload = e => {
           let img = new Image();
           img.onload = () => {
-            if(img.width == img.height) {
+            if (img.width == img.height) {
               this.newPhoto = reader.result.toString();
             } else {
               this.messageClass = 'alert-danger';
@@ -250,5 +286,4 @@ export class ProfileComponent implements OnInit {
     this.message = '';
     this.messageClass = '';
   }
-
 }

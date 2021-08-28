@@ -2,24 +2,49 @@
   <div class="col-md-9">
     <h2 #top class="page-header text-center">Post Feed</h2>
 
-    <div class="alert show" [ngClass]="messageClass" [class.d-none]="!message" role="alert">
+    <div
+      class="alert show"
+      [ngClass]="messageClass"
+      [class.d-none]="!message"
+      role="alert"
+    >
       {{ message }}
-      <button type="button" class="close" aria-label="Close" (click)="dismissAlert()">
+      <button
+        type="button"
+        class="close"
+        aria-label="Close"
+        (click)="dismissAlert()"
+      >
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
 
     <h3 *ngIf="loading" class="text-center">Loading...</h3>
 
-    <h5 *ngIf="!loading && totalPosts==0" class="text-center mt-4">There are no posts</h5>
+    <h5 *ngIf="!loading && totalPosts == 0" class="text-center mt-4">
+      There are no posts
+    </h5>
 
     <div *ngIf="!loading">
       <div *ngFor="let post of posts">
-        <app-article [post]="post" [user]="user" (reload)="getPosts()" (delete)="deletePost($event)"></app-article>
+        <app-article
+          [post]="post"
+          [user]="user"
+          (reload)="getPosts()"
+          (delete)="deletePost($event)"
+        ></app-article>
       </div>
 
-      <app-pager [totalItems]="totalPosts" [itemsPerPage]="postService.getPostsPerPage()" [currentPage]="page" [pagesToShow]="uiService.getPagesToShow()" [loading]="false"
-    (goNext)="onNextPage()" (goPrev)="onPrevPage()" (goPage)="goToPage($event)"></app-pager>
+      <app-pager
+        [totalItems]="totalPosts"
+        [itemsPerPage]="postService.getPostsPerPage()"
+        [currentPage]="page"
+        [pagesToShow]="uiService.getPagesToShow()"
+        [loading]="false"
+        (goNext)="onNextPage()"
+        (goPrev)="onPrevPage()"
+        (goPage)="goToPage($event)"
+      ></app-pager>
     </div>
   </div>
 
@@ -31,14 +56,19 @@
       <div class="post-body p-0">
         <ul class="popular my-0">
           <li *ngFor="let popularPost of popularPosts" class="popular-item">
-            <a class="post-link popular-link" [routerLink]="['/post/', popularPost._id]">
-              <h5 class=my-0>{{popularPost.title}}</h5>
-              <small>by <strong>{{popularPost.createdBy.username}} </strong></small>
+            <a
+              class="post-link popular-link"
+              [routerLink]="['/post/', popularPost._id]"
+            >
+              <h5 class="my-0">{{ popularPost.title }}</h5>
+              <small
+                >by
+                <strong>{{ popularPost.createdBy.username }} </strong></small
+              >
             </a>
           </li>
         </ul>
       </div>
     </div>
   </div>
-
 </div>

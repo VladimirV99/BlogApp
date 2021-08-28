@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 
-import { AuthService } from '../../services/auth.service'
+import { AuthService } from '../../services/auth.service';
 import { UiService } from '../../services/ui.service';
 import { PostService } from '../../services/post.service';
 import User from '../../models/user';
@@ -12,7 +12,6 @@ import Post from '../../models/post';
   styleUrls: ['./home.component.scss', '../../post.scss']
 })
 export class HomeComponent implements OnInit {
-
   @ViewChild('top', { static: true }) top: ElementRef;
 
   message: string = '';
@@ -31,21 +30,24 @@ export class HomeComponent implements OnInit {
     private authService: AuthService,
     public uiService: UiService,
     public postService: PostService
-  ) { }
+  ) {}
 
   getPosts(): void {
     this.postService.getPostCount().subscribe(data => {
-      if(!data.success) {
+      if (!data.success) {
         this.messageClass = 'alert-danger';
         this.message = data.message;
       } else {
         this.totalPosts = data.count;
-        this.page = Math.min(this.page, Math.ceil(this.totalPosts/this.postService.getPostsPerPage()));
-        if(this.totalPosts != 0) {
+        this.page = Math.min(
+          this.page,
+          Math.ceil(this.totalPosts / this.postService.getPostsPerPage())
+        );
+        if (this.totalPosts != 0) {
           this.postService.getPosts(this.page).subscribe(data => {
             this.posts = data.posts;
-            if(!this.loading)
-              this.top.nativeElement.scrollIntoView({ behavior: 'smooth' })
+            if (!this.loading)
+              this.top.nativeElement.scrollIntoView({ behavior: 'smooth' });
             this.loading = false;
           });
         } else {
@@ -58,7 +60,7 @@ export class HomeComponent implements OnInit {
 
   getPopularPosts(): void {
     this.postService.getPopular().subscribe(data => {
-      if(!data.success) {
+      if (!data.success) {
         this.messageClass = 'alert-danger';
         this.message = data.message;
       } else {
@@ -69,21 +71,24 @@ export class HomeComponent implements OnInit {
 
   deletePost(post: string): void {
     this.postService.deletePost(post).subscribe(data => {
-      this.messageClass = "alert alert-danger";
+      this.messageClass = 'alert alert-danger';
       this.message = data.message;
       this.getPosts();
     });
   }
 
   onNextPage(): void {
-    if(this.page<Math.ceil(this.totalPosts/this.postService.getPostsPerPage())){
+    if (
+      this.page <
+      Math.ceil(this.totalPosts / this.postService.getPostsPerPage())
+    ) {
       this.page++;
       this.getPosts();
     }
   }
 
   onPrevPage(): void {
-    if(this.page>0){
+    if (this.page > 0) {
       this.page--;
       this.getPosts();
     }
@@ -95,7 +100,7 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if(this.authService.loggedIn()) {
+    if (this.authService.loggedIn()) {
       this.user = this.authService.getUser();
     }
     this.getPosts();
@@ -106,5 +111,4 @@ export class HomeComponent implements OnInit {
     this.message = '';
     this.messageClass = '';
   }
-
 }
