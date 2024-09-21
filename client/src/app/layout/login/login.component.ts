@@ -1,64 +1,55 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators, FormGroup } from '@angular/forms';
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators
+} from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { AuthService } from '../../services/auth.service';
 import { AuthGuard } from '../../guards/auth.guard';
-import { UiService } from 'src/app/services/ui.service';
+import { AuthService } from '../../services/auth.service';
+import { UiService } from '../../services/ui.service';
+
+interface LoginFormValue {
+  username: string;
+  password: string;
+}
 
 @Component({
   selector: 'app-login',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss', '../../form-validation.scss']
+  styleUrls: ['./login.component.scss', '../../styles/form-validation.scss']
 })
-export class LoginComponent implements OnInit {
-  message: string;
-
+export class LoginComponent {
   loginForm: FormGroup;
-  processing: boolean = false;
-  previousUrl: string;
+  previousUrl: string | null;
+
+  message: string | null = null;
 
   constructor(
     private formBuilder: FormBuilder,
-    private router: Router,
     private authService: AuthService,
+    private uiService: UiService,
     private authGuard: AuthGuard,
-    private uiService: UiService
+    private router: Router
   ) {
-    this.createForm();
-  }
-
-  createForm(): void {
     this.loginForm = this.formBuilder.group({
       username: ['', Validators.required],
       password: ['', Validators.required]
     });
-  }
-
-  disableForm(): void {
-    this.loginForm.controls['username'].disable();
-    this.loginForm.controls['password'].disable();
-  }
-
-  enableForm(): void {
-    this.loginForm.controls['username'].enable();
-    this.loginForm.controls['password'].enable();
+    this.previousUrl = null;
   }
 
   onLoginSubmit(): void {
-    this.processing = true;
-    this.disableForm();
+    this.loginForm.disable();
+    const value = this.loginForm.value as LoginFormValue;
 
-    let username = this.loginForm.get('username').value;
-    let password = this.loginForm.get('password').value;
-
-    this.authService.loginUser(username, password).subscribe(data => {
-      if (!data.success) {
-        this.message = data.message;
-        this.loginForm.controls['password'].reset();
-        this.processing = false;
-        this.enableForm();
-      } else {
+    this.authService.loginUser(value.username, value.password).subscribe({
+      next: data => {
         this.authService.setUserData(data.token, data.user);
         this.uiService.loadSettings();
         if (this.previousUrl) {
@@ -66,19 +57,24 @@ export class LoginComponent implements OnInit {
         } else {
           this.router.navigate(['/']);
         }
+      },
+      error: err => {
+        this.message = err.error.message;
+        this.loginForm.controls['password'].reset();
+        this.loginForm.enable();
       }
     });
   }
 
   ngOnInit() {
-    if (this.authGuard.redirectUrl) {
+    this.previousUrl = this.authGuard.getRedirectUrl();
+    if (this.previousUrl !== null) {
       this.message = 'You must be logged in to view that page.';
-      this.previousUrl = this.authGuard.redirectUrl;
-      this.authGuard.redirectUrl = undefined;
+      this.authGuard.resetRedirectUrl();
     }
   }
 
   dismissAlert(): void {
-    this.message = '';
+    this.message = null;
   }
 }

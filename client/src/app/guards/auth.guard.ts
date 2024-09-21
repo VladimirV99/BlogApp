@@ -1,19 +1,22 @@
 import { Injectable } from '@angular/core';
 import {
-  Router,
-  CanActivate,
   ActivatedRouteSnapshot,
+  Router,
   RouterStateSnapshot
 } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
-@Injectable()
-export class AuthGuard implements CanActivate {
-  redirectUrl: string;
+@Injectable({
+  providedIn: 'root'
+})
+export class AuthGuard {
+  private redirectUrl: string | null;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router) {
+    this.redirectUrl = null;
+  }
 
-  canActivate(router: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     if (this.authService.loggedIn()) {
       return true;
     } else {
@@ -21,5 +24,13 @@ export class AuthGuard implements CanActivate {
       this.router.navigate(['/login']);
       return false;
     }
+  }
+
+  public getRedirectUrl() {
+    return this.redirectUrl;
+  }
+
+  public resetRedirectUrl() {
+    this.redirectUrl = null;
   }
 }

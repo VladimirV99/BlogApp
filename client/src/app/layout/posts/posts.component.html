@@ -2,34 +2,31 @@
   class="modal fade"
   id="deleteModal"
   tabindex="-1"
-  role="dialog"
   aria-labelledby="deleteModal"
   aria-hidden="true"
 >
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Confirm Delete</h5>
+        <h1 class="modal-title fs-5">Confirm Delete</h1>
         <button
           type="button"
-          class="close"
-          data-dismiss="modal"
+          class="btn-close"
+          data-bs-dismiss="modal"
           aria-label="Close"
-        >
-          <span aria-hidden="true">&times;</span>
-        </button>
+        ></button>
       </div>
       <div class="modal-body">
         <p>Are you sure you want to delete this post</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
           Close
         </button>
         <button
           type="button"
           class="btn btn-danger"
-          data-dismiss="modal"
+          data-bs-dismiss="modal"
           (click)="deletePost()"
         >
           Delete
@@ -42,7 +39,7 @@
 <div class="row">
   <div class="col-md-10 offset-md-1">
     <div
-      class="alert show"
+      class="alert alert-dismissible"
       [ngClass]="messageClass"
       [class.d-none]="!message"
       role="alert"
@@ -50,12 +47,10 @@
       {{ message }}
       <button
         type="button"
-        class="close"
+        class="btn-close"
         aria-label="Close"
         (click)="dismissAlert()"
-      >
-        <span aria-hidden="true">&times;</span>
-      </button>
+      ></button>
     </div>
 
     <h2 class="page-header text-center mb-3">Posts</h2>
@@ -85,7 +80,7 @@
             <a [routerLink]="['/post/', post._id]">{{ post.title }}</a>
           </th>
           <td class="col-createdAt d-md-table-cell d-none">
-            {{ post.createdAt | date: 'dd. MM. yyyy.' }}
+            {{ post.createdAt | date : 'dd. MM. yyyy.' }}
           </td>
           <td class="col-likes d-sm-table-cell d-none">{{ post.likes }}</td>
           <td class="col-dislikes d-sm-table-cell d-none">
@@ -97,7 +92,7 @@
           <td class="col-tools">
             <button
               type="button"
-              class="btn btn-sm btn-success mr-2"
+              class="btn btn-sm btn-success me-2"
               [routerLink]="['/edit/', post._id]"
             >
               Edit
@@ -118,7 +113,7 @@
 
     <button
       *ngIf="posts.length < totalPosts"
-      class="btn btn-primary btn-block"
+      class="btn btn-primary w-100 mb-3"
       (click)="loadMorePosts()"
     >
       Load More Posts

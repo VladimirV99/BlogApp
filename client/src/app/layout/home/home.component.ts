@@ -1,26 +1,33 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
+import { RouterLink } from '@angular/router';
 
 import { AuthService } from '../../services/auth.service';
 import { UiService } from '../../services/ui.service';
 import { PostService } from '../../services/post.service';
-import User from '../../models/user';
-import Post from '../../models/post';
+import { postsPerPage } from '../../constants/settings';
+import { Post } from '../../models/post';
+import { User } from '../../models/user';
+import { PagerComponent } from '../../components/pager/pager.component';
+import { ArticleComponent } from '../../components/article/article.component';
 
 @Component({
   selector: 'app-home',
+  standalone: true,
+  imports: [CommonModule, RouterLink, ArticleComponent, PagerComponent],
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss', '../../post.scss']
+  styleUrls: ['./home.component.scss', '../../styles/post.scss']
 })
 export class HomeComponent implements OnInit {
-  @ViewChild('top', { static: true }) top: ElementRef;
+  @ViewChild('top', { static: true }) top!: ElementRef;
 
   message: string = '';
   messageClass: string = '';
 
-  user: User;
+  user: User | null = null;
   posts: Post[] = [];
   popularPosts: Post[] = [];
-  postToDelete: string;
   loading: boolean = true;
 
   totalPosts: number = 0;
@@ -33,15 +40,12 @@ export class HomeComponent implements OnInit {
   ) {}
 
   getPosts(): void {
-    this.postService.getPostCount().subscribe(data => {
-      if (!data.success) {
-        this.messageClass = 'alert-danger';
-        this.message = data.message;
-      } else {
+    this.postService.getPostCount().subscribe({
+      next: data => {
         this.totalPosts = data.count;
         this.page = Math.min(
           this.page,
-          Math.ceil(this.totalPosts / this.postService.getPostsPerPage())
+          Math.ceil(this.totalPosts / postsPerPage)
         );
         if (this.totalPosts != 0) {
           this.postService.getPosts(this.page).subscribe(data => {
@@ -54,34 +58,36 @@ export class HomeComponent implements OnInit {
           this.posts = [];
           this.loading = false;
         }
+      },
+      error: (err: HttpErrorResponse) => {
+        this.messageClass = 'alert-danger';
+        this.message = err.error.message;
       }
     });
   }
 
   getPopularPosts(): void {
-    this.postService.getPopular().subscribe(data => {
-      if (!data.success) {
-        this.messageClass = 'alert-danger';
-        this.message = data.message;
-      } else {
+    this.postService.getPopular().subscribe({
+      next: data => {
         this.popularPosts = data.posts;
+      },
+      error: (err: HttpErrorResponse) => {
+        this.messageClass = 'alert-danger';
+        this.message = err.error.message;
       }
     });
   }
 
   deletePost(post: string): void {
     this.postService.deletePost(post).subscribe(data => {
-      this.messageClass = 'alert alert-danger';
+      this.messageClass = 'alert-danger';
       this.message = data.message;
       this.getPosts();
     });
   }
 
   onNextPage(): void {
-    if (
-      this.page <
-      Math.ceil(this.totalPosts / this.postService.getPostsPerPage())
-    ) {
+    if (this.page < Math.ceil(this.totalPosts / postsPerPage)) {
       this.page++;
       this.getPosts();
     }

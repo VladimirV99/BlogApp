@@ -1,36 +1,36 @@
 {
   "name": "blog",
   "version": "1.0.0",
-  "description": "",
+  "description": "A blog website built using MEAN stack",
   "main": "app.js",
   "scripts": {
     "start": "NODE_ENV=production node app",
     "dev": "nodemon app",
-    "heroku-postbuild": "cd client && npm install && npm run prod",
+    "heroku-postbuild": "cd client && npm install && npm run build",
     "dbmake": "docker run -d --name blogdb --user mongodb -p 27017:27017 -v blog_db:/data/db -e MONGO_INITDB_ROOT_USERNAME=root -e MONGO_INITDB_ROOT_PASSWORD=blog -e MONGO_INITDB_DATABASE=blog mongo",
     "dbstart": "docker start blogdb",
     "dbstop": "docker stop blogdb"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/VladimirV99/Blog.git"
+    "url": "git+https://github.com/VladimirV99/BlogApp.git"
   },
   "author": "Vladimir Vuksanovic",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/VladimirV99/Blog/issues"
+    "url": "https://github.com/VladimirV99/BlogApp/issues"
   },
-  "homepage": "https://github.com/VladimirV99/Blog#readme",
+  "homepage": "https://github.com/VladimirV99/BlogApp#readme",
   "dependencies": {
     "bcryptjs": "^2.4.3",
-    "express": "^4.17.1",
-    "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.13.7",
-    "multer": "^1.4.3",
-    "passport": "^0.4.1",
-    "passport-jwt": "^4.0.0"
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.1.2",
+    "multer": "^1.4.5-lts.1",
+    "passport": "^0.7.0",
+    "passport-jwt": "^4.0.1"
   },
   "devDependencies": {
-    "nodemon": "^2.0.12"
+    "nodemon": "^3.0.3"
   }
 }

@@ -2,28 +2,30 @@
 
 <div class="row">
   <div class="col-md-8 offset-md-2">
-    <div class="alert alert-danger show" [class.d-none]="!message" role="alert">
+    <div
+      class="alert alert-danger alert-dismissible"
+      [class.d-none]="!message"
+      role="alert"
+    >
       {{ message }}
       <button
         type="button"
-        class="close"
+        class="btn-close"
         aria-label="Close"
         (click)="dismissAlert()"
-      >
-        <span aria-hidden="true">&times;</span>
-      </button>
+      ></button>
     </div>
 
     <form [formGroup]="registerForm" (submit)="onRegisterSubmit()">
-      <div class="form-row">
+      <div class="row">
         <div class="col-md-6">
-          <label for="first_name">First Name</label>
+          <label for="first_name" class="form-label">First Name</label>
           <div
             [ngClass]="{
               'has-error':
-                registerForm.controls.first_name.dirty &&
-                registerForm.controls.first_name.errors,
-              'has-success': !registerForm.controls.first_name.errors
+                registerForm.controls['first_name'].dirty &&
+                registerForm.controls['first_name'].errors,
+              'has-success': !registerForm.controls['first_name'].errors
             }"
           >
             <input
@@ -31,15 +33,14 @@
               name="first_name"
               class="form-control"
               autocomplete="off"
-              placeholder="*First Name"
               formControlName="first_name"
             />
 
             <ul class="help-block validation-feedback">
               <li
                 *ngIf="
-                  registerForm.controls.first_name.dirty &&
-                  registerForm.controls.first_name.errors?.required
+                  registerForm.controls['first_name'].dirty &&
+                  registerForm.controls['first_name'].errors?.['required']
                 "
                 class="message-error"
               >
@@ -47,8 +48,8 @@
               </li>
               <li
                 *ngIf="
-                  registerForm.controls.first_name.dirty &&
-                  registerForm.controls.first_name.errors?.maxlength
+                  registerForm.controls['first_name'].dirty &&
+                  registerForm.controls['first_name'].errors?.['maxlength']
                 "
                 class="message-error"
               >
@@ -56,8 +57,8 @@
               </li>
               <li
                 *ngIf="
-                  registerForm.controls.first_name.dirty &&
-                  registerForm.controls.first_name.errors?.validateName
+                  registerForm.controls['first_name'].dirty &&
+                  registerForm.controls['first_name'].errors?.['validateName']
                 "
                 class="message-error"
               >
@@ -68,13 +69,13 @@
         </div>
 
         <div class="col-md-6">
-          <label for="last_name">Last Name</label>
+          <label for="last_name" class="form-label">Last Name</label>
           <div
             [ngClass]="{
               'has-error':
-                registerForm.controls.last_name.dirty &&
-                registerForm.controls.last_name.errors,
-              'has-success': !registerForm.controls.last_name.errors
+                registerForm.controls['last_name'].dirty &&
+                registerForm.controls['last_name'].errors,
+              'has-success': !registerForm.controls['last_name'].errors
             }"
           >
             <input
@@ -82,15 +83,14 @@
               name="last_name"
               class="form-control"
               autocomplete="off"
-              placeholder="*Last Name"
               formControlName="last_name"
             />
 
             <ul class="help-block validation-feedback">
               <li
                 *ngIf="
-                  registerForm.controls.last_name.dirty &&
-                  registerForm.controls.last_name.errors?.required
+                  registerForm.controls['last_name'].dirty &&
+                  registerForm.controls['last_name'].errors?.['required']
                 "
                 class="message-error"
               >
@@ -98,8 +98,8 @@
               </li>
               <li
                 *ngIf="
-                  registerForm.controls.last_name.dirty &&
-                  registerForm.controls.last_name.errors?.maxlength
+                  registerForm.controls['last_name'].dirty &&
+                  registerForm.controls['last_name'].errors?.['maxlength']
                 "
                 class="message-error"
               >
@@ -107,8 +107,8 @@
               </li>
               <li
                 *ngIf="
-                  registerForm.controls.last_name.dirty &&
-                  registerForm.controls.last_name.errors?.validateName
+                  registerForm.controls['last_name'].dirty &&
+                  registerForm.controls['last_name'].errors?.['validateName']
                 "
                 class="message-error"
               >
@@ -119,16 +119,16 @@
         </div>
       </div>
 
-      <div class="form-group">
-        <label for="username">Username</label>
+      <div class="mb-3">
+        <label for="username" class="form-label">Username</label>
         <div
           [ngClass]="{
             'has-error':
-              registerForm.controls.username.dirty &&
-              (registerForm.controls.username.errors ||
+              registerForm.controls['username'].dirty &&
+              (registerForm.controls['username'].errors ||
                 (usernameChecked && !usernameValid)),
             'has-success':
-              !registerForm.controls.username.errors &&
+              !registerForm.controls['username'].errors &&
               (!usernameChecked || (usernameChecked && usernameValid))
           }"
         >
@@ -137,7 +137,6 @@
             name="username"
             class="form-control"
             autocomplete="off"
-            placeholder="*Username"
             formControlName="username"
             (blur)="checkUsername()"
             (keyup)="clearUsername()"
@@ -146,8 +145,8 @@
           <ul class="help-block validation-feedback">
             <li
               *ngIf="
-                registerForm.controls.username.dirty &&
-                registerForm.controls.username.errors?.required
+                registerForm.controls['username'].dirty &&
+                registerForm.controls['username'].errors?.['required']
               "
               class="message-error"
             >
@@ -155,9 +154,9 @@
             </li>
             <li
               *ngIf="
-                registerForm.controls.username.dirty &&
-                (registerForm.controls.username.errors?.minlength ||
-                  registerForm.controls.username.errors?.maxlength)
+                registerForm.controls['username'].dirty &&
+                (registerForm.controls['username'].errors?.['minlength'] ||
+                  registerForm.controls['username'].errors?.['maxlength'])
               "
               class="message-error"
             >
@@ -165,8 +164,8 @@
             </li>
             <li
               *ngIf="
-                registerForm.controls.username.dirty &&
-                registerForm.controls.username.errors?.validateUsername
+                registerForm.controls['username'].dirty &&
+                registerForm.controls['username'].errors?.['validateUsername']
               "
               class="message-error"
             >
@@ -185,16 +184,16 @@
         </div>
       </div>
 
-      <div class="form-group">
-        <label for="email">Email</label>
+      <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
         <div
           [ngClass]="{
             'has-error':
-              registerForm.controls.email.dirty &&
-              (registerForm.controls.email.errors ||
+              registerForm.controls['email'].dirty &&
+              (registerForm.controls['email'].errors ||
                 (emailChecked && !emailValid)),
             'has-success':
-              !registerForm.controls.email.errors &&
+              !registerForm.controls['email'].errors &&
               (!emailChecked || (emailChecked && emailValid))
           }"
         >
@@ -203,7 +202,6 @@
             name="email"
             class="form-control"
             autocomplete="off"
-            placeholder="*Email"
             formControlName="email"
             (blur)="checkEmail()"
             (keyup)="clearEmail()"
@@ -212,8 +210,8 @@
           <ul class="help-block validation-feedback">
             <li
               *ngIf="
-                registerForm.controls.email.dirty &&
-                registerForm.controls.email.errors?.required
+                registerForm.controls['email'].dirty &&
+                registerForm.controls['email'].errors?.['required']
               "
               class="message-error"
             >
@@ -221,9 +219,9 @@
             </li>
             <li
               *ngIf="
-                registerForm.controls.email.dirty &&
-                (registerForm.controls.email.errors?.minlength ||
-                  registerForm.controls.email.errors?.maxlength)
+                registerForm.controls['email'].dirty &&
+                (registerForm.controls['email'].errors?.['minlength'] ||
+                  registerForm.controls['email'].errors?.['maxlength'])
               "
               class="message-error"
             >
@@ -231,8 +229,8 @@
             </li>
             <li
               *ngIf="
-                registerForm.controls.email.dirty &&
-                registerForm.controls.email.errors?.validateEmail
+                registerForm.controls['email'].dirty &&
+                registerForm.controls['email'].errors?.['validateEmail']
               "
               class="message-error"
             >
@@ -251,14 +249,14 @@
         </div>
       </div>
 
-      <div class="form-group">
-        <label for="password">Password</label>
+      <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
         <div
           [ngClass]="{
             'has-error':
-              registerForm.controls.password.dirty &&
-              registerForm.controls.password.errors,
-            'has-success': !registerForm.controls.password.errors
+              registerForm.controls['password'].dirty &&
+              registerForm.controls['password'].errors,
+            'has-success': !registerForm.controls['password'].errors
           }"
         >
           <input
@@ -266,15 +264,14 @@
             name="password"
             class="form-control"
             autocomplete="off"
-            placeholder="*Password"
             formControlName="password"
           />
 
           <ul class="help-block validation-feedback">
             <li
               *ngIf="
-                registerForm.controls.password.dirty &&
-                registerForm.controls.password.errors?.required
+                registerForm.controls['password'].dirty &&
+                registerForm.controls['password'].errors?.['required']
               "
               class="message-error"
             >
@@ -282,9 +279,9 @@
             </li>
             <li
               *ngIf="
-                registerForm.controls.password.dirty &&
-                (registerForm.controls.password.errors?.minlength ||
-                  registerForm.controls.password.errors?.maxlength)
+                registerForm.controls['password'].dirty &&
+                (registerForm.controls['password'].errors?.['minlength'] ||
+                  registerForm.controls['password'].errors?.['maxlength'])
               "
               class="message-error"
             >
@@ -292,8 +289,8 @@
             </li>
             <li
               *ngIf="
-                registerForm.controls.password.dirty &&
-                registerForm.controls.password.errors?.validatePassword
+                registerForm.controls['password'].dirty &&
+                registerForm.controls['password'].errors?.['validatePassword']
               "
               class="message-error"
             >
@@ -304,17 +301,17 @@
         </div>
       </div>
 
-      <div class="form-group">
-        <label for="confirm">Confirm Password</label>
+      <div class="mb-3">
+        <label for="confirm" class="form-label">Confirm Password</label>
         <div
           [ngClass]="{
             'has-error':
-              registerForm.controls.confirmPassword.dirty &&
-              (registerForm.controls.confirmPassword.errors ||
-                registerForm.errors?.matchingPasswords),
+              registerForm.controls['confirmPassword'].dirty &&
+              (registerForm.controls['confirmPassword'].errors ||
+                registerForm.errors?.['matchingPasswords']),
             'has-success':
-              !registerForm.controls.confirmPassword.errors &&
-              !registerForm.errors?.matchingPasswords
+              !registerForm.controls['confirmPassword'].errors &&
+              !registerForm.errors?.['matchingPasswords']
           }"
         >
           <input
@@ -322,15 +319,14 @@
             name="confirmPassword"
             class="form-control"
             autocomplete="off"
-            placeholder="*Confirm Password"
             formControlName="confirmPassword"
           />
 
           <ul class="help-block validation-feedback">
             <li
               *ngIf="
-                registerForm.controls.confirmPassword.dirty &&
-                registerForm.controls.confirmPassword.errors?.required
+                registerForm.controls['confirmPassword'].dirty &&
+                registerForm.controls['confirmPassword'].errors?.['required']
               "
               class="message-error"
             >
@@ -338,8 +334,8 @@
             </li>
             <li
               *ngIf="
-                registerForm.controls.confirmPassword.dirty &&
-                registerForm.errors?.matchingPasswords
+                registerForm.controls['confirmPassword'].dirty &&
+                registerForm.errors?.['matchingPasswords']
               "
               class="message-error"
             >
@@ -350,11 +346,9 @@
       </div>
 
       <input
-        [disabled]="
-          !registerForm.valid || processing || !emailValid || !usernameValid
-        "
+        [disabled]="!registerForm.valid || !emailValid || !usernameValid"
         type="submit"
-        class="btn btn-primary btn-block"
+        class="btn btn-primary w-100 mb-3"
         value="Submit"
       />
     </form>

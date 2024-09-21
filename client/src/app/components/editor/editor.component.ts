@@ -1,23 +1,25 @@
-import { Component, OnInit, ContentChild, ElementRef } from '@angular/core';
+import { Component, ContentChild, ElementRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
-import { makeHtml } from '../../libs/markdown.node';
+// TODO: Remove markdown library
+import * as markdown from '../../libs/markdown.node';
 
 @Component({
   selector: 'app-editor',
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './editor.component.html',
-  styleUrls: ['./editor.component.scss']
+  styleUrl: './editor.component.scss'
 })
-export class EditorComponent implements OnInit {
-  @ContentChild('mdContent', { static: false }) mdContent: ElementRef;
+export class EditorComponent {
+  @ContentChild('mdContent', { static: false }) mdContent!: ElementRef;
 
   convertedText: string = '';
+  previewHtml: string = 'nothing to preview';
 
+  // TODO: This should be an enum
   tabWriteActive: boolean = true;
   tabPreviewActive: boolean = !this.tabWriteActive;
-
-  constructor() {}
-
-  ngOnInit() {}
 
   reset(): void {
     this.convertedText = '';
@@ -35,9 +37,9 @@ export class EditorComponent implements OnInit {
 
       let preview: string = 'nothing to preview';
       if (text != '') {
-        preview = makeHtml(text);
+        preview = markdown.makeHtml(text);
       }
-      document.getElementById('md-preview').innerHTML = preview;
+      this.previewHtml = preview;
     }
 
     return false;

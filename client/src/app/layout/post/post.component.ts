@@ -1,17 +1,23 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 
-import { PostService } from '../../services/post.service';
 import { AuthService } from '../../services/auth.service';
+import { PostService } from '../../services/post.service';
 import { UiService } from '../../services/ui.service';
-import User from 'src/app/models/user';
-import Message from 'src/app/models/message';
-import Post from 'src/app/models/post';
+import { User } from '../../models/user';
+import { Post } from '../../models/post';
+import { Notification } from '../../models/message';
+import { ArticleComponent } from '../../components/article/article.component';
+import { CommentsComponent } from '../../components/comments/comments.component';
 
 @Component({
   selector: 'app-post',
+  standalone: true,
+  imports: [CommonModule, ArticleComponent, CommentsComponent],
   templateUrl: './post.component.html',
-  styleUrls: ['./post.component.scss', '../../post.scss']
+  styleUrl: './post.component.scss'
 })
 export class PostComponent implements OnInit {
   message: string = '';
@@ -19,10 +25,10 @@ export class PostComponent implements OnInit {
 
   noPhoto: string = this.uiService.noPhoto();
 
-  user: User;
-  post: Post;
+  user!: User;
+  post: Post | null = null;
   loading: boolean = true;
-  postToDelete: string;
+  postToDelete: string | null = null;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -33,7 +39,7 @@ export class PostComponent implements OnInit {
 
   deletePost(post: string): void {
     this.postService.deletePost(post).subscribe(data => {
-      this.messageClass = 'alert alert-danger';
+      this.messageClass = 'alert-danger';
       this.message = data.message;
       this.getPost();
     });
@@ -41,22 +47,23 @@ export class PostComponent implements OnInit {
 
   getPost(): void {
     this.postService
-      .getPost(this.activatedRoute.snapshot.params.id)
-      .subscribe(postData => {
-        if (!postData.success) {
-          this.messageClass = 'alert alert-danger';
-          this.message = postData.message;
-        } else {
+      .getPost(this.activatedRoute.snapshot.params['id'])
+      .subscribe({
+        next: postData => {
           this.post = postData.post;
           this.post.comments = [];
           this.loading = false;
+        },
+        error: (err: HttpErrorResponse) => {
+          this.messageClass = 'alert-danger';
+          this.message = err.error.message;
         }
       });
   }
 
   ngOnInit() {
     if (this.authService.loggedIn()) {
-      this.user = this.authService.getUser();
+      this.user = this.authService.getUser()!;
     }
     this.getPost();
   }
@@ -67,12 +74,12 @@ export class PostComponent implements OnInit {
   }
 
   refreshCommentCount(count: number): void {
-    this.post.totalComments = count;
+    this.post!.totalComments = count;
   }
 
-  onMessage(message: Message) {
+  onMessage(message: Notification) {
     this.message = message.message;
-    if (message.success) this.messageClass = 'alert alert-success';
-    else this.messageClass = 'alert alert-danger';
+    if (message.success) this.messageClass = 'alert-success';
+    else this.messageClass = 'alert-danger';
   }
 }

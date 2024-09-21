@@ -200,7 +200,7 @@
     class="md-body"
     [ngClass]="{ 'md-show': tabPreviewActive }"
   >
-    <div id="md-preview"></div>
+    <div id="md-preview" [innerHtml]="previewHtml"></div>
   </div>
 
   <div class="md-footer">Markdown editor</div>

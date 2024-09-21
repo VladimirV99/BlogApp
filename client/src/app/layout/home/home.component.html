@@ -3,7 +3,7 @@
     <h2 #top class="page-header text-center">Post Feed</h2>
 
     <div
-      class="alert show"
+      class="alert alert-dismissible"
       [ngClass]="messageClass"
       [class.d-none]="!message"
       role="alert"
@@ -11,12 +11,10 @@
       {{ message }}
       <button
         type="button"
-        class="close"
+        class="btn-close"
         aria-label="Close"
         (click)="dismissAlert()"
-      >
-        <span aria-hidden="true">&times;</span>
-      </button>
+      ></button>
     </div>
 
     <h3 *ngIf="loading" class="text-center">Loading...</h3>

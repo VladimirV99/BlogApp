@@ -1,16 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 
-import Post from '../../models/post';
 import { AuthService } from '../../services/auth.service';
 import { PostService } from '../../services/post.service';
 import { UiService } from '../../services/ui.service';
-import User from '../../models/user';
+import { User } from '../../models/user';
+import { Post } from '../../models/post';
+import { ArticleComponent } from '../../components/article/article.component';
 
 @Component({
   selector: 'app-user',
+  standalone: true,
+  imports: [CommonModule, ArticleComponent],
   templateUrl: './user.component.html',
-  styleUrls: ['./user.component.scss', '../../post.scss']
+  styleUrls: ['./user.component.scss', '../../styles/post.scss']
 })
 export class UserComponent implements OnInit {
   message: string = '';
@@ -18,10 +23,10 @@ export class UserComponent implements OnInit {
 
   noPhoto: string = this.uiService.noPhoto();
 
-  user: User;
+  user: User | null = null;
 
   page: number = 1;
-  profile: User;
+  profile!: User; // TODO
   totalPosts: number = 0;
   posts: Post[] = [];
 
@@ -43,11 +48,8 @@ export class UserComponent implements OnInit {
 
   getPosts(): void {
     this.loadingPosts = true;
-    this.postService.getUserPostCount(this.profile.username).subscribe(data => {
-      if (!data.success) {
-        this.messageClass = 'alert alert-danger';
-        this.message = data.message;
-      } else {
+    this.postService.getUserPostCount(this.profile.username).subscribe({
+      next: data => {
         this.totalPosts = data.count;
         this.postService
           .getUserPosts(this.profile.username, this.page)
@@ -55,6 +57,10 @@ export class UserComponent implements OnInit {
             this.posts = this.posts.concat(data.posts);
             this.loadingPosts = false;
           });
+      },
+      error: (err: HttpErrorResponse) => {
+        this.messageClass = 'alert-danger';
+        this.message = err.error.message;
       }
     });
   }
@@ -64,16 +70,17 @@ export class UserComponent implements OnInit {
       this.user = this.authService.getUser();
     }
     this.authService
-      .getUserProfile(this.activatedRoute.snapshot.params.username)
-      .subscribe(data => {
-        if (!data.success) {
-          this.messageClass = 'alert alert-danger';
-          this.message = data.message;
-        } else {
+      .getUserProfile(this.activatedRoute.snapshot.params['username'])
+      .subscribe({
+        next: data => {
           this.profile = data.user;
           if (this.profile.photo)
             this.profile.photo = this.uiService.getPhoto(this.profile.photo);
           this.getPosts();
+        },
+        error: (err: HttpErrorResponse) => {
+          this.messageClass = 'alert-danger';
+          this.message = err.error.message;
         }
       });
   }

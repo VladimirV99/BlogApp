@@ -1,15 +1,17 @@
 <div class="row">
   <div class="col-md-10 offset-md-1">
-    <div class="alert show" [ngClass]="messageClass" [class.d-none]="!message">
+    <div
+      class="alert alert-dismissible"
+      [ngClass]="messageClass"
+      [class.d-none]="!message"
+    >
       {{ message }}
       <button
         type="button"
-        class="close"
+        class="btn-close"
         aria-label="Close"
         (click)="dismissAlert()"
-      >
-        <span aria-hidden="true">&times;</span>
-      </button>
+      ></button>
     </div>
 
     <div *ngIf="profile" class="row p-2 mb-4">
@@ -54,7 +56,7 @@
 
         <button
           *ngIf="posts.length < totalPosts"
-          class="btn btn-primary btn-block"
+          class="btn btn-primary w-100 mb-3"
           (click)="loadMorePosts()"
         >
           Load More Posts

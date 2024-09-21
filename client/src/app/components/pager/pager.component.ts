@@ -1,22 +1,23 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-pager',
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './pager.component.html',
-  styleUrls: ['./pager.component.scss']
+  styleUrl: './pager.component.scss'
 })
-export class PagerComponent implements OnInit {
-  @Input('totalItems') totalItems: number;
-  @Input('itemsPerPage') itemsPerPage: number;
-  @Input('currentPage') currentPage: number;
-  @Input('pagesToShow') pagesToShow: number;
-  @Input('loading') loading = true;
+export class PagerComponent {
+  @Input({ required: true }) totalItems!: number;
+  @Input() itemsPerPage: number = 10;
+  @Input() currentPage: number = 1;
+  @Input() pagesToShow: number = 5;
+  @Input() loading = true;
 
   @Output() goPrev = new EventEmitter<boolean>();
   @Output() goNext = new EventEmitter<boolean>();
   @Output() goPage = new EventEmitter<number>();
-
-  constructor() {}
 
   onPage(n: number): void {
     this.goPage.emit(n);
@@ -60,6 +61,4 @@ export class PagerComponent implements OnInit {
     pages.sort((a, b) => a - b);
     return pages;
   }
-
-  ngOnInit() {}
 }

@@ -1,5 +1,5 @@
 <div id="comments" class="comment-box">
-  <div class="container-fluid comment pb-3">
+  <div class="container-fluid comment pb-3" *ngIf="authService.loggedIn()">
     <form
       [formGroup]="commentForm"
       (submit)="onCommentSubmit()"
@@ -16,7 +16,7 @@
       </div>
       <div class="col-12 col-md-2">
         <input
-          [disabled]="!commentForm.valid || processingComment"
+          [disabled]="!commentForm.valid"
           type="submit"
           class="btn btn-success w-100 h-100"
           value="Post"
@@ -27,8 +27,8 @@
 
   <h4 *ngIf="totalComments == 0" class="text-center">There are no comments</h4>
 
-  <div *ngIf="post && post.comments">
-    <div *ngFor="let comment of post.comments">
+  <div *ngIf="post && comments">
+    <div *ngFor="let comment of comments">
       <app-replies
         [user]="user"
         [comment]="comment"
@@ -39,7 +39,7 @@
 
   <button
     *ngIf="loadedComments < totalComments"
-    class="btn btn-primary btn-block"
+    class="btn btn-primary w-100 mb-3"
     (click)="loadComments()"
   >
     Load More Comments

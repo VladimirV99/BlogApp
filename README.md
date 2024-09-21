@@ -1,4 +1,4 @@
-# Blog
+# Blog App
 
 A blog website built using MEAN stack
 
@@ -70,7 +70,7 @@ you can also set other environment variables to fit your environment
 
 ## License
 
-Blog is licensed under the MIT license. That means you are free to modify and distribute the software for commercial purposes (even under different terms or without source code) or use is privately. The only condition is that a copy of the license must be included with the software.
+Blog is licensed under the MIT license. You are free to modify and distribute the software for commercial purposes (even under different terms or without source code) or use it privately. The only condition is that a copy of the license must be included with the software.
 
 ## Contributing
 

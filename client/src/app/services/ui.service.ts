@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+
+import { API_URL } from '../../environments/environment';
 import { AuthService } from './auth.service';
 
 export interface Dropdown {
@@ -12,8 +14,8 @@ export interface Dropdown {
   providedIn: 'root'
 })
 export class UiService {
-  private darkMode: boolean;
-  private roundIcons: boolean;
+  private darkMode: boolean = false;
+  private roundIcons: boolean = true;
   private pagesToShow = 8;
   private dropdowns: Dropdown[] = [];
 
@@ -23,20 +25,11 @@ export class UiService {
 
   loadSettings(): void {
     if (this.authService.loggedIn()) {
-      if (this.authService.getUser().dark_mode)
-        this.darkMode = this.authService.getUser().dark_mode;
-      else this.darkMode = false;
+      this.darkMode = this.authService.getUser()?.dark_mode || false;
+      this.roundIcons = this.authService.getUser()?.round_icons || false;
     } else {
-      if (localStorage.getItem('dark-mode') == 'true') this.darkMode = true;
-      else this.darkMode = false;
-    }
-    if (this.authService.loggedIn()) {
-      if (this.authService.getUser().round_icons)
-        this.roundIcons = this.authService.getUser().round_icons;
-      else this.roundIcons = false;
-    } else {
-      if (localStorage.getItem('round-icons') == 'true') this.roundIcons = true;
-      else this.roundIcons = false;
+      this.darkMode = localStorage.getItem('dark-mode') == 'true';
+      this.roundIcons = localStorage.getItem('round-icons') == 'true';
     }
   }
 
@@ -44,42 +37,42 @@ export class UiService {
     return this.darkMode;
   }
 
-  getRoundIcons(): boolean {
-    return this.roundIcons;
-  }
-
-  noPhoto(): string {
-    return this.authService.getDomain() + 'uploads/no-user.png';
-  }
-
-  getPhoto(photo: string): string {
-    return this.authService.getDomain() + photo;
-  }
-
-  getPagesToShow(): number {
-    return this.pagesToShow;
-  }
-
   setDarkMode(flag: boolean): void {
     this.darkMode = flag;
     this.authService.setDarkMode(flag).subscribe(data => {
       if (data.success) {
-        this.authService.getUser().dark_mode = flag;
-        this.authService.storeUser(this.authService.getUser());
+        this.authService.getUser()!.dark_mode = flag;
+        this.authService.saveUser();
         localStorage.setItem('dark-mode', this.darkMode ? 'true' : 'false');
       }
     });
+  }
+
+  getRoundIcons(): boolean {
+    return this.roundIcons;
   }
 
   setRoundIcons(flag: boolean): void {
     this.roundIcons = flag;
     this.authService.setRoundIcons(flag).subscribe(data => {
       if (data.success) {
-        this.authService.getUser().round_icons = flag;
-        this.authService.storeUser(this.authService.getUser());
+        this.authService.getUser()!.round_icons = flag;
+        this.authService.saveUser();
         localStorage.setItem('round-icons', this.roundIcons ? 'true' : 'false');
       }
     });
+  }
+
+  getPhoto(photo: string): string {
+    return API_URL + photo;
+  }
+
+  noPhoto(): string {
+    return API_URL + 'uploads/no-user.png';
+  }
+
+  getPagesToShow(): number {
+    return this.pagesToShow;
   }
 
   getDropdowns(): Dropdown[] {
@@ -96,9 +89,9 @@ export class UiService {
   }
 
   openDropdown(id: string): void {
-    for (let i = 0; i < this.dropdowns.length; i++) {
-      if (this.dropdowns[i].id == id) {
-        this.dropdowns[i].open = true;
+    for (let dropdown of this.dropdowns) {
+      if (dropdown.id == id) {
+        dropdown.open = true;
         break;
       }
     }

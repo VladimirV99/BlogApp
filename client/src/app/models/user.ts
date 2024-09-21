@@ -1,6 +1,6 @@
-import Post from './post';
+import { Post } from './post';
 
-export default interface User {
+export interface User {
   _id: string;
   first_name: string;
   last_name: string;
@@ -10,4 +10,11 @@ export default interface User {
   bookmarks?: Post[];
   dark_mode?: boolean;
   round_icons?: boolean;
+}
+
+export interface CreatedBy {
+  _id: string;
+  first_name: string;
+  last_name: string;
+  photo: string;
 }

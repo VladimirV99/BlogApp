@@ -1,47 +1,54 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators
+} from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
 
 import { AuthService } from '../../services/auth.service';
-import { ValidateService } from '../../services/validate.service';
-import { UiService } from 'src/app/services/ui.service';
-import User from 'src/app/models/user';
+import { ValidationService } from '../../services/validation.service';
+import { UiService } from '../../services/ui.service';
+import { User } from '../../models/user';
 
 @Component({
   selector: 'app-profile',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './profile.component.html',
   styleUrls: [
     './profile.component.scss',
-    '../../post.scss',
-    '../../form-validation.scss'
+    '../../styles/post.scss',
+    '../../styles/form-validation.scss'
   ]
 })
 export class ProfileComponent implements OnInit {
-  newPhotoFile: File;
-  newPhoto: string;
+  newPhotoFile: File | null = null;
+  newPhoto: string | null = null;
   noPhoto: string = this.uiService.noPhoto();
 
   message: string = '';
   messageClass: string = '';
 
-  user: User;
+  user!: User; // TODO
 
-  processingProfileUpdate: boolean = false;
-  processingPasswordChange: boolean = false;
-
-  photoUpdateForm: FormGroup;
-  profileUpdateForm: FormGroup;
-  passwordChangeForm: FormGroup;
+  photoUpdateForm!: FormGroup;
+  profileUpdateForm!: FormGroup;
+  passwordChangeForm!: FormGroup;
 
   emailChecked: boolean = false;
-  emailValid: boolean;
-  emailMessage: string;
+  emailValid: boolean = false;
+  emailMessage: string = '';
 
   loading: boolean = true;
 
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
-    private validateService: ValidateService,
+    private validationService: ValidationService,
     public uiService: UiService
   ) {
     this.createPhotoUpdateForm();
@@ -62,7 +69,7 @@ export class ProfileComponent implements OnInit {
         Validators.compose([
           Validators.required,
           Validators.maxLength(15),
-          this.validateService.validateName
+          this.validationService.validateName
         ])
       ],
       last_name: [
@@ -70,7 +77,7 @@ export class ProfileComponent implements OnInit {
         Validators.compose([
           Validators.required,
           Validators.maxLength(15),
-          this.validateService.validateName
+          this.validationService.validateName
         ])
       ],
       email: [
@@ -79,7 +86,7 @@ export class ProfileComponent implements OnInit {
           Validators.required,
           Validators.minLength(5),
           Validators.maxLength(30),
-          this.validateService.validateEmail
+          this.validationService.validateEmail
         ])
       ]
     });
@@ -95,13 +102,13 @@ export class ProfileComponent implements OnInit {
             Validators.required,
             Validators.minLength(8),
             Validators.maxLength(35),
-            this.validateService.validatePassword
+            this.validationService.validatePassword
           ])
         ],
         new_password_confirm: ['', Validators.required]
       },
       {
-        validator: this.validateService.matchingPasswords(
+        validator: this.validationService.matchingPasswords(
           'new_password',
           'new_password_confirm'
         )
@@ -109,109 +116,89 @@ export class ProfileComponent implements OnInit {
     );
   }
 
-  disableProfileUpdateForm(): void {
-    this.profileUpdateForm.controls['first_name'].disable();
-    this.profileUpdateForm.controls['last_name'].disable();
-    this.profileUpdateForm.controls['email'].disable();
-  }
-
-  enableProfileUpdateForm(): void {
-    this.profileUpdateForm.controls['first_name'].enable();
-    this.profileUpdateForm.controls['last_name'].enable();
-    this.profileUpdateForm.controls['email'].enable();
-  }
-
   onProfileUpdateSubmit(): void {
-    this.processingProfileUpdate = true;
-    this.disableProfileUpdateForm();
+    this.profileUpdateForm.disable();
 
-    let first_name = this.profileUpdateForm.get('first_name').value;
-    let last_name = this.profileUpdateForm.get('last_name').value;
-    let email = this.profileUpdateForm.get('email').value;
+    const first_name = (
+      this.profileUpdateForm.get('first_name') as FormControl<string>
+    ).value;
+    const last_name = (
+      this.profileUpdateForm.get('last_name') as FormControl<string>
+    ).value;
+    const email = (this.profileUpdateForm.get('email') as FormControl<string>)
+      .value;
 
-    this.authService
-      .updateProfile(first_name, last_name, email)
-      .subscribe(data => {
-        if (!data.success) {
-          this.messageClass = 'alert alert-danger';
-          this.message = data.message;
-        } else {
-          this.messageClass = 'alert alert-success';
-          this.message = data.message;
-          let updatedUser = this.authService.getUser();
-          updatedUser.first_name = data.user.first_name;
-          updatedUser.last_name = data.user.last_name;
-          updatedUser.email = data.user.email;
-          this.authService.storeUser(updatedUser);
-        }
-        this.processingProfileUpdate = false;
-        this.enableProfileUpdateForm();
-      });
-  }
-
-  disablePasswordChangeForm(): void {
-    this.passwordChangeForm.controls['old_password'].disable();
-    this.passwordChangeForm.controls['new_password'].disable();
-    this.passwordChangeForm.controls['new_password_confirm'].disable();
-  }
-
-  enablePasswordChangeForm(): void {
-    this.passwordChangeForm.controls['old_password'].enable();
-    this.passwordChangeForm.controls['new_password'].enable();
-    this.passwordChangeForm.controls['new_password_confirm'].enable();
+    this.authService.updateProfile(first_name, last_name, email).subscribe({
+      next: data => {
+        this.messageClass = 'alert-success';
+        this.message = 'Profile Updated';
+        this.authService.updateUser(
+          data.user.first_name,
+          data.user.last_name,
+          data.user.email
+        );
+      },
+      error: (err: HttpErrorResponse) => {
+        this.messageClass = 'alert-danger';
+        this.message = err.error.message;
+      },
+      complete: () => {
+        this.profileUpdateForm.enable();
+      }
+    });
   }
 
   onPasswordChangeSubmit(): void {
-    this.processingPasswordChange = true;
-    this.disablePasswordChangeForm();
+    this.passwordChangeForm.disable();
 
-    let old_password = this.passwordChangeForm.get('old_password').value;
-    let new_password = this.passwordChangeForm.get('new_password').value;
+    const old_password = (
+      this.passwordChangeForm.get('old_password') as FormControl<string>
+    ).value;
+    const new_password = (
+      this.passwordChangeForm.get('new_password') as FormControl<string>
+    ).value;
 
     this.authService
       .changePassword(old_password, new_password)
       .subscribe(data => {
         if (!data.success) {
-          this.messageClass = 'alert alert-danger';
+          this.messageClass = 'alert-danger';
           this.message = data.message;
         } else {
-          this.messageClass = 'alert alert-success';
+          this.messageClass = 'alert-success';
           this.message = data.message;
         }
         this.passwordChangeForm.controls['old_password'].reset();
         this.passwordChangeForm.controls['new_password'].reset();
         this.passwordChangeForm.controls['new_password_confirm'].reset();
-        this.processingPasswordChange = false;
-        this.enablePasswordChangeForm();
+        this.passwordChangeForm.enable();
       });
   }
 
   checkEmail(): void {
-    if (
-      this.profileUpdateForm.get('email').value == '' ||
-      this.profileUpdateForm.get('email').errors
-    ) {
+    const emailControl = this.profileUpdateForm.get(
+      'email'
+    ) as FormControl<string>;
+    if (emailControl.value == '' || emailControl.errors) {
       this.clearEmail();
       return;
     }
-    if (this.profileUpdateForm.get('email').value == this.user.email) {
+    if (emailControl.value == this.user.email) {
       this.emailChecked = true;
       this.emailValid = true;
       this.emailMessage = '';
       return;
     }
-    this.authService
-      .checkEmail(this.profileUpdateForm.get('email').value)
-      .subscribe(data => {
-        this.emailChecked = true;
-        if (!data.success) {
-          this.emailValid = false;
-          this.emailMessage = data.message;
-        } else {
-          this.emailValid = true;
-          this.emailMessage = data.message;
-        }
-      });
+    this.authService.checkEmail(emailControl.value).subscribe(data => {
+      this.emailChecked = true;
+      if (!data.success) {
+        this.emailValid = false;
+        this.emailMessage = 'E-mail is already taken';
+      } else {
+        this.emailValid = true;
+        this.emailMessage = 'E-mail is available';
+      }
+    });
   }
 
   clearEmail(): void {
@@ -221,11 +208,8 @@ export class ProfileComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.authService.getProfile().subscribe(data => {
-      if (!data.success) {
-        this.messageClass = 'alert alert-danger';
-        this.message = data.message;
-      } else {
+    this.authService.getProfile().subscribe({
+      next: data => {
         this.user = data.user;
         this.user.photo = this.user.photo
           ? this.uiService.getPhoto(this.user.photo)
@@ -241,23 +225,31 @@ export class ProfileComponent implements OnInit {
         this.emailValid = true;
         this.emailMessage = '';
         this.loading = false;
+      },
+      error: (err: HttpErrorResponse) => {
+        this.messageClass = 'alert-danger';
+        this.message = err.error.message;
       }
     });
   }
 
   onPhotoSubmit(): void {
-    this.authService.uploadPhoto(this.newPhotoFile).subscribe(data => {
-      if (!data.success) {
-        this.messageClass = 'alert alert-danger';
+    if (!this.newPhotoFile) return;
+    this.authService.uploadPhoto(this.newPhotoFile).subscribe({
+      next: data => {
+        this.messageClass = 'alert-success';
         this.message = data.message;
-      } else {
-        this.messageClass = 'alert alert-success';
-        this.message = data.message;
+      },
+      error: err => {
+        console.log(err);
+        this.messageClass = 'alert-danger';
+        this.message = err.error.message;
       }
     });
   }
 
-  onPhotoSelect(event): void {
+  // TODO: Type for event
+  onPhotoSelect(event: any): void {
     if (event.target.files && event.target.files[0]) {
       if (event.target.files[0].size >= 1000000) {
         this.messageClass = 'alert-danger';
@@ -266,18 +258,24 @@ export class ProfileComponent implements OnInit {
         this.newPhotoFile = event.target.files[0];
         const reader = new FileReader();
         reader.onload = e => {
+          if (!reader.result) {
+            this.messageClass = 'alert-danger';
+            this.message = 'Error reading image';
+            return;
+          }
+
           let img = new Image();
           img.onload = () => {
             if (img.width == img.height) {
-              this.newPhoto = reader.result.toString();
+              this.newPhoto = reader.result!.toString();
             } else {
               this.messageClass = 'alert-danger';
               this.message = 'Image must have same height and width';
             }
           };
-          img.src = reader.result.toString();
+          img.src = reader.result!.toString();
         };
-        reader.readAsDataURL(this.newPhotoFile);
+        reader.readAsDataURL(this.newPhotoFile!);
       }
     }
   }

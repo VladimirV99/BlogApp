@@ -3,7 +3,7 @@
     <h2 class="page-header text-center">Edit</h2>
 
     <div
-      class="alert show"
+      class="alert alert-dismissible"
       [ngClass]="messageClass"
       [class.d-none]="!message"
       role="alert"
@@ -11,21 +11,20 @@
       {{ message }}
       <button
         type="button"
-        class="close"
+        class="btn-close"
         aria-label="Close"
         (click)="dismissAlert()"
-      >
-        <span aria-hidden="true">&times;</span>
-      </button>
+      ></button>
     </div>
 
     <form [formGroup]="editForm" (submit)="onEditSubmit()">
-      <div class="form-group">
-        <label for="title">Title</label>
+      <div class="mb-3">
+        <label for="title" class="form-label">Title</label>
         <div
           [ngClass]="{
             'has-error':
-              editForm.controls.title.dirty && editForm.controls.title.errors
+              editForm.controls['title'].dirty &&
+              editForm.controls['title'].errors
           }"
         >
           <input
@@ -39,28 +38,28 @@
           <ul class="help-block validation-feedback">
             <li
               *ngIf="
-                editForm.controls.title.dirty &&
-                editForm.controls.title.errors?.required
-              "
+                  editForm.controls['title'].dirty &&
+                  editForm.controls['title'].errors?.['required']
+                "
               class="message-error"
             >
               This field is required.
             </li>
             <li
               *ngIf="
-                editForm.controls.title.dirty &&
-                (editForm.controls.title.errors?.minlength ||
-                  editForm.controls.title.errors?.maxlength)
-              "
+                  editForm.controls['title'].dirty &&
+                  (editForm.controls['title'].errors?.['minlength'] ||
+                    editForm.controls['title'].errors?.['maxlength'])
+                "
               class="message-error"
             >
               Minimum characters: 5, Maximum characters: 50
             </li>
             <li
               *ngIf="
-                editForm.controls.title.dirty &&
-                editForm.controls.title.errors?.validateTitle
-              "
+                  editForm.controls['title'].dirty &&
+                  editForm.controls['title'].errors?.['validateTitle']
+                "
               class="message-error"
             >
               Title must not have any special characters
@@ -69,13 +68,14 @@
         </div>
       </div>
 
-      <div class="form-group">
-        <label for="body">Body</label>
+      <div class="mb-3">
+        <label for="body" class="form-label">Body</label>
         <app-editor>
           <div
             [ngClass]="{
               'has-error':
-                editForm.controls.body.dirty && editForm.controls.body.errors
+                editForm.controls['body'].dirty &&
+                editForm.controls['body'].errors
             }"
           >
             <textarea
@@ -92,19 +92,19 @@
             <ul class="help-block validation-feedback">
               <li
                 *ngIf="
-                  editForm.controls.body.dirty &&
-                  editForm.controls.body.errors?.required
-                "
+                    editForm.controls['body'].dirty &&
+                    editForm.controls['body'].errors?.['required']
+                  "
                 class="message-error"
               >
                 This field is required.
               </li>
               <li
                 *ngIf="
-                  editForm.controls.body.dirty &&
-                  (editForm.controls.body.errors?.minlength ||
-                    editForm.controls.body.errors?.maxlength)
-                "
+                    editForm.controls['body'].dirty &&
+                    (editForm.controls['body'].errors?.['minlength'] ||
+                      editForm.controls['body'].errors?.['maxlength'])
+                  "
                 class="message-error"
               >
                 Minimum characters: 5, Maximum characters: 500
@@ -116,7 +116,7 @@
 
       <input
         [disabled]="!editForm.valid || processing"
-        class="btn btn-primary btn-block"
+        class="btn btn-primary w-100 mb-3"
         type="submit"
         value="Save"
       />

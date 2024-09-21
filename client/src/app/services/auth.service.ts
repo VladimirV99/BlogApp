@@ -1,14 +1,31 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import User from '../models/user';
+import { User } from '../models/user';
 import { Observable } from 'rxjs';
+import { API_URL } from '../../environments/environment';
 
-export interface AuthMessage {
+interface AuthMessage {
   success: boolean;
   message: string;
-  token?: string;
-  user?: User;
+}
+
+interface AvailabilityResponse {
+  // TODO: Rename to 'available'
+  success: boolean;
+}
+
+interface AuthResponse {
+  token: string;
+  user: User;
+}
+
+interface ProfileResponse {
+  user: User;
+}
+
+interface UpdateProfileResponse {
+  user: { first_name: string; last_name: string; email: string };
 }
 
 @Injectable({
@@ -16,68 +33,57 @@ export interface AuthMessage {
 })
 export class AuthService {
   private jwtHelper: JwtHelperService;
-  private domain: string = 'http://localhost:3000/';
-  private authToken: string;
-  private user: User;
+  private authToken: string | null;
+  private user: User | null;
 
   constructor(private http: HttpClient) {
     this.jwtHelper = new JwtHelperService();
+    this.authToken = null;
+    this.user = null;
     this.loadToken();
     this.loadUser();
   }
 
-  loadToken(): void {
+  private loadToken(): void {
     const token = localStorage.getItem('token');
     this.authToken = token;
   }
 
-  loadUser(): void {
+  private loadUser(): void {
     if (this.authToken) {
       let userData = localStorage.getItem('user');
       if (userData) this.user = JSON.parse(userData);
-      this.getProfile().subscribe(data => {
-        if (data.success) {
+      this.getProfile().subscribe({
+        next: data => {
           this.user = data.user;
+        },
+        error: _ => {
+          this.user = null;
         }
       });
     }
   }
 
-  createHeaders(): HttpHeaders {
-    return new HttpHeaders({
-      'Content-Type': 'application/json'
-    });
-  }
-
-  createAuthenticationHeaders(): HttpHeaders {
-    if (!this.authToken) return this.createHeaders();
-    return new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: this.authToken
-    });
-  }
-
-  getUser(): User {
+  getUser(): User | null {
     return this.user;
   }
 
-  getDomain(): string {
-    return this.domain;
-  }
+  // TODO:
+  // getUserAndVerify(): User | null {
+  //   if (this.loggedIn())
+  //     return this.getUser()
+  //   return null;
+  // }
 
-  checkUsername(username: string): Observable<AuthMessage> {
-    let headers = this.createHeaders();
-    return this.http.get<AuthMessage>(
-      this.domain + 'users/checkUsername/' + username,
-      { headers: headers }
+  checkUsername(username: string): Observable<AvailabilityResponse> {
+    return this.http.get<AvailabilityResponse>(
+      API_URL + 'users/checkUsername/' + username
     );
   }
 
-  checkEmail(email: string): Observable<AuthMessage> {
-    let headers = this.createHeaders();
-    return this.http.get<AuthMessage>(
-      this.domain + 'users/checkEmail/' + email,
-      { headers: headers }
+  checkEmail(email: string): Observable<AvailabilityResponse> {
+    return this.http.get<AvailabilityResponse>(
+      API_URL + 'users/checkEmail/' + email
     );
   }
 
@@ -87,37 +93,49 @@ export class AuthService {
     username: string,
     email: string,
     password: string
-  ): Observable<AuthMessage> {
-    let headers = this.createHeaders();
-    return this.http.post<AuthMessage>(
-      this.domain + 'users/register',
-      { first_name, last_name, username, email, password },
-      { headers: headers }
-    );
+  ): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(API_URL + 'users/register', {
+      first_name,
+      last_name,
+      username,
+      email,
+      password
+    });
   }
 
-  loginUser(username: string, password: string): Observable<AuthMessage> {
-    let headers = this.createHeaders();
-    return this.http.post<AuthMessage>(
-      this.domain + 'users/login',
-      { username, password },
-      { headers: headers }
-    );
+  loginUser(username: string, password: string): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(API_URL + 'users/login', {
+      username,
+      password
+    });
   }
 
-  storeToken(token: string): void {
+  private storeToken(token: string): void {
     localStorage.setItem('token', token);
     this.authToken = token;
   }
 
-  storeUser(user: User): void {
+  private storeUser(user: User): void {
     localStorage.setItem('user', JSON.stringify(user));
     this.user = user;
+  }
+
+  saveUser(): void {
+    if (this.user) localStorage.setItem('user', JSON.stringify(this.user));
   }
 
   setUserData(token: string, user: User): void {
     this.storeToken(token);
     this.storeUser(user);
+  }
+
+  updateUser(first_name: string, last_name: string, email: string) {
+    if (this.user) {
+      this.user.first_name = first_name;
+      this.user.last_name = last_name;
+      this.user.email = email;
+      localStorage.setItem('user', JSON.stringify(this.user));
+    }
   }
 
   loggedIn(): boolean {
@@ -134,92 +152,61 @@ export class AuthService {
   }
 
   setDarkMode(status: boolean): Observable<AuthMessage> {
-    let headers = this.createAuthenticationHeaders();
-    return this.http.post<AuthMessage>(
-      this.domain + 'users/darkMode',
-      { status },
-      { headers: headers }
-    );
+    return this.http.post<AuthMessage>(API_URL + 'users/darkMode', { status });
   }
 
   setRoundIcons(status: boolean): Observable<AuthMessage> {
-    let headers = this.createAuthenticationHeaders();
-    return this.http.post<AuthMessage>(
-      this.domain + 'users/roundIcons',
-      { status },
-      { headers: headers }
-    );
-  }
-
-  getProfile(): Observable<AuthMessage> {
-    let headers = this.createAuthenticationHeaders();
-    return this.http.get<AuthMessage>(this.domain + 'users/profile', {
-      headers: headers
+    return this.http.post<AuthMessage>(API_URL + 'users/roundIcons', {
+      status
     });
   }
 
+  getProfile(): Observable<ProfileResponse> {
+    return this.http.get<ProfileResponse>(API_URL + 'users/profile');
+  }
+
+  // TODO: Move to profile service
   updateProfile(
     first_name: string,
     last_name: string,
     email: string
-  ): Observable<AuthMessage> {
-    let headers = this.createAuthenticationHeaders();
-    return this.http.put<AuthMessage>(
-      this.domain + 'users/update',
-      { first_name, last_name, email },
-      { headers: headers }
-    );
+  ): Observable<UpdateProfileResponse> {
+    return this.http.put<UpdateProfileResponse>(API_URL + 'users/update', {
+      first_name,
+      last_name,
+      email
+    });
   }
 
+  // TODO: Move to profile service
+  // TODO: Return Observable<void>
   changePassword(
     old_password: string,
     new_password: string
   ): Observable<AuthMessage> {
-    let headers = this.createAuthenticationHeaders();
-    return this.http.post<AuthMessage>(
-      this.domain + 'users/changePassword',
-      { old_password, new_password },
-      { headers: headers }
-    );
-  }
-
-  uploadPhoto(photo: File): Observable<AuthMessage> {
-    const formData = new FormData();
-    formData.append('userPhoto', photo, photo.name);
-    let options = {
-      headers: new HttpHeaders({
-        Authorization: this.authToken
-      })
-    };
-    return this.http.post<AuthMessage>(
-      this.domain + 'users/uploadPhoto',
-      formData,
-      options
-    );
-  }
-
-  getUserProfile(username: string): Observable<AuthMessage> {
-    let headers = this.createHeaders();
-    return this.http.get<AuthMessage>(this.domain + 'users/get/' + username, {
-      headers: headers
+    return this.http.post<AuthMessage>(API_URL + 'users/changePassword', {
+      old_password,
+      new_password
     });
   }
 
-  addBookmark(id: string): Observable<AuthMessage> {
-    let headers = this.createAuthenticationHeaders();
-    return this.http.put<AuthMessage>(
-      this.domain + 'users/bookmark/add',
-      { id },
-      { headers: headers }
-    );
+  // TODO: Move to profile service
+  // TODO: Return Observable<void>
+  uploadPhoto(photo: File): Observable<AuthMessage> {
+    const formData = new FormData();
+    formData.append('userPhoto', photo, photo.name);
+    return this.http.post<AuthMessage>(API_URL + 'users/uploadPhoto', formData);
   }
 
-  removeBookmark(id: string): Observable<AuthMessage> {
-    let headers = this.createAuthenticationHeaders();
-    return this.http.put<AuthMessage>(
-      this.domain + 'users/bookmark/remove',
-      { id },
-      { headers: headers }
-    );
+  getUserProfile(username: string): Observable<ProfileResponse> {
+    return this.http.get<ProfileResponse>(API_URL + 'users/get/' + username);
+  }
+
+  addBookmark(id: string): Observable<void> {
+    return this.http.put<void>(API_URL + 'users/bookmark/add', { id });
+  }
+
+  removeBookmark(id: string): Observable<void> {
+    return this.http.put<void>(API_URL + 'users/bookmark/remove', { id });
   }
 }

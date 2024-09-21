@@ -1,30 +1,40 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators
+} from '@angular/forms';
 import { ActivatedRoute, Params } from '@angular/router';
-import { ValidateService } from '../../services/validate.service';
+import { HttpErrorResponse } from '@angular/common/http';
+
 import { PostService } from '../../services/post.service';
-import { EditorComponent } from 'src/app/components/editor/editor.component';
+import { ValidationService } from '../../services/validation.service';
+import { EditorComponent } from '../../components/editor/editor.component';
 
 @Component({
   selector: 'app-edit',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, EditorComponent],
   templateUrl: './edit.component.html',
-  styleUrls: ['./edit.component.scss', '../../form-validation.scss']
+  styleUrl: './edit.component.scss'
 })
-export class EditComponent implements OnInit {
+export class EditComponent {
   message: string = '';
   messageClass: string = '';
 
   editForm: FormGroup;
   processing: boolean = false;
-  currentUrl: Params;
+  currentUrl!: Params;
   loading: boolean = true;
 
   constructor(
     private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute,
     private postService: PostService,
-    private validateService: ValidateService
+    private validationService: ValidationService
   ) {
     this.editForm = this.formBuilder.group({
       title: [
@@ -33,7 +43,7 @@ export class EditComponent implements OnInit {
           Validators.required,
           Validators.maxLength(50),
           Validators.minLength(5),
-          this.validateService.validateTitle
+          this.validationService.validateTitle
         ])
       ],
       body: [
@@ -62,34 +72,40 @@ export class EditComponent implements OnInit {
     this.disableForm();
 
     const post = {
-      _id: this.currentUrl.id,
-      title: this.editForm.get('title').value,
-      body: this.editForm.get('body').value
+      _id: this.currentUrl['id'],
+      title: (this.editForm.get('title') as FormControl).value,
+      body: (this.editForm.get('body') as FormControl).value
     };
 
-    this.postService.editPost(post).subscribe(data => {
-      if (!data.success) {
-        this.messageClass = 'alert alert-danger';
-        this.message = data.message;
-      } else {
-        this.messageClass = 'alert alert-success';
-        this.message = data.message;
+    this.postService.editPost(post).subscribe({
+      next: data => {
+        this.messageClass = 'alert-success';
+        this.message = 'Post Updated!';
+
+        this.processing = false;
+        this.enableForm();
+      },
+      error: (err: HttpErrorResponse) => {
+        this.messageClass = 'alert-danger';
+        this.message = err.error.message;
+
+        this.processing = false;
+        this.enableForm();
       }
-      this.processing = false;
-      this.enableForm();
     });
   }
 
   ngOnInit() {
     this.currentUrl = this.activatedRoute.snapshot.params;
-    this.postService.getEditPost(this.currentUrl.id).subscribe(data => {
-      if (!data.success) {
-        this.messageClass = 'alert alert-danger';
-        this.message = data.message;
-      } else {
+    this.postService.getEditPost(this.currentUrl['id']).subscribe({
+      next: data => {
         this.editForm.controls['title'].setValue(data.post.title);
         this.editForm.controls['body'].setValue(data.post.body);
         this.loading = false;
+      },
+      error: (err: HttpErrorResponse) => {
+        this.messageClass = 'alert-danger';
+        this.message = err.error.message;
       }
     });
   }

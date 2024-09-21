@@ -1,18 +1,21 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 import { AuthService } from '../../services/auth.service';
 import { UiService } from '../../services/ui.service';
 
 @Component({
   selector: 'app-navbar',
+  standalone: true,
+  imports: [CommonModule, RouterLink, RouterLinkActive],
   templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.scss']
+  styleUrl: './navbar.component.scss'
 })
 export class NavbarComponent implements OnInit {
   userMenuVisible: boolean = false;
 
-  constructor(
+  public constructor(
     public authService: AuthService,
     public uiService: UiService,
     private router: Router
@@ -23,11 +26,11 @@ export class NavbarComponent implements OnInit {
     this.router.navigate(['/']);
   }
 
-  toggleDarkMode(event): void {
+  toggleDarkMode(event: any): void {
     this.uiService.setDarkMode(event.target.checked);
   }
 
-  toggleRoundIcons(event): void {
+  toggleRoundIcons(event: any): void {
     this.uiService.setRoundIcons(event.target.checked);
   }
 

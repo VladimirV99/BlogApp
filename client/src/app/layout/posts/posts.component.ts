@@ -1,27 +1,31 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
+import { User } from '../../models/user';
+import { Post } from '../../models/post';
 import { AuthService } from '../../services/auth.service';
 import { PostService } from '../../services/post.service';
 import { UiService } from '../../services/ui.service';
-import User from 'src/app/models/user';
-import Post from 'src/app/models/post';
 
 @Component({
   selector: 'app-posts',
+  standalone: true,
+  imports: [CommonModule, RouterLink],
   templateUrl: './posts.component.html',
-  styleUrls: ['./posts.component.scss']
+  styleUrl: './posts.component.scss'
 })
 export class PostsComponent implements OnInit {
   message: string = '';
   messageClass: string = '';
 
-  user: User;
+  user!: User;
   totalPosts: number = 0;
 
   page: number = 1;
   posts: Post[] = [];
 
-  postToDelete: string;
+  postToDelete: string | null = null;
   loading: boolean = true;
 
   constructor(
@@ -39,11 +43,8 @@ export class PostsComponent implements OnInit {
 
   getPosts(): void {
     this.loading = true;
-    this.postService.getUserPostCount(this.user.username).subscribe(data => {
-      if (!data.success) {
-        this.messageClass = 'alert alert-danger';
-        this.message = data.message;
-      } else {
+    this.postService.getUserPostCount(this.user.username).subscribe({
+      next: data => {
         this.totalPosts = data.count;
         this.postService
           .getUserPosts(this.user.username, this.page)
@@ -51,6 +52,10 @@ export class PostsComponent implements OnInit {
             this.posts = this.posts.concat(data.posts);
             this.loading = false;
           });
+      },
+      error: err => {
+        this.messageClass = 'alert-danger';
+        this.message = err.error.message;
       }
     });
   }
@@ -69,7 +74,7 @@ export class PostsComponent implements OnInit {
             break;
           }
         }
-        this.messageClass = 'alert alert-danger';
+        this.messageClass = 'alert-danger';
         this.message = data.message;
         this.getPosts();
       });
@@ -78,7 +83,7 @@ export class PostsComponent implements OnInit {
 
   ngOnInit() {
     if (this.authService.loggedIn()) {
-      this.user = this.authService.getUser();
+      this.user = this.authService.getUser()!;
       this.getPosts();
     }
   }

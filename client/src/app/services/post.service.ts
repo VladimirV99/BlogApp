@@ -1,236 +1,172 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-
-import { AuthService } from './auth.service';
-import Post from '../models/post';
-import Comment from '../models/comment';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-export interface PostMessage {
-  success: boolean;
-  message?: string;
-  posts?: Post[];
-  post?: Post;
-  comments?: Comment[];
-  comment?: Comment;
-  count?: number;
-}
+import { API_URL } from '../../environments/environment';
+import {
+  commentsPerPage,
+  likesPerPage,
+  postsPerPage
+} from '../constants/settings';
+import {
+  CreatePostRequest,
+  EditPostRequest,
+  GetDisikesResponse,
+  GetLikesResponse,
+  GetPostResponse,
+  GetPostsResponse
+} from '../models/post';
+import {
+  GetCommentsResponse,
+  PostCommentRequest,
+  PostCommentResponse,
+  PostReplyRequest
+} from '../models/comment';
+import { Notification, GetCountResponse } from '../models/message';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PostService {
-  private domain: string = this.authService.getDomain();
-  private postsPerPage: number = 2;
-  private likesPerPage: number = 1;
-  private commentsPerPage: number = 1;
-
-  constructor(private http: HttpClient, private authService: AuthService) {}
+  constructor(private http: HttpClient) {}
 
   getPostsPerPage(): number {
-    return this.postsPerPage;
+    return postsPerPage;
   }
 
   getCommentsPerPage(): number {
-    return this.commentsPerPage;
+    return commentsPerPage;
   }
 
-  newPost(post): Observable<PostMessage> {
-    let headers = this.authService.createAuthenticationHeaders();
-    return this.http.post<PostMessage>(this.domain + 'posts/newPost', post, {
-      headers: headers
-    });
+  createPost(post: CreatePostRequest): Observable<void> {
+    return this.http.post<void>(API_URL + 'posts/newPost', post);
   }
 
-  getPosts(page: number): Observable<PostMessage> {
-    let headers = this.authService.createAuthenticationHeaders();
-    return this.http.get<PostMessage>(
-      this.domain + 'posts/page/' + page + '/' + this.postsPerPage.toString(),
-      {
-        headers: headers
-      }
+  getPosts(page: number): Observable<GetPostsResponse> {
+    return this.http.get<GetPostsResponse>(
+      API_URL + 'posts/page/' + page + '/' + postsPerPage.toString()
     );
   }
 
-  getPost(id: string): Observable<PostMessage> {
-    let headers = this.authService.createAuthenticationHeaders();
-    return this.http.get<PostMessage>(this.domain + 'posts/get/' + id, {
-      headers: headers
-    });
+  getPost(id: string): Observable<GetPostResponse> {
+    return this.http.get<GetPostResponse>(API_URL + 'posts/get/' + id);
   }
 
-  getPostCount(): Observable<PostMessage> {
-    let headers = this.authService.createHeaders();
-    return this.http.get<PostMessage>(this.domain + 'posts/count', {
-      headers: headers
-    });
+  getPostCount(): Observable<GetCountResponse> {
+    return this.http.get<GetCountResponse>(API_URL + 'posts/count');
   }
 
-  getEditPost(id: string): Observable<PostMessage> {
-    let headers = this.authService.createAuthenticationHeaders();
-    return this.http.get<PostMessage>(this.domain + 'posts/edit/' + id, {
-      headers: headers
-    });
+  getEditPost(id: string): Observable<GetPostResponse> {
+    return this.http.get<GetPostResponse>(API_URL + 'posts/edit/' + id);
   }
 
-  getUserPosts(username: string, page: number): Observable<PostMessage> {
-    let headers = this.authService.createAuthenticationHeaders();
-    return this.http.get<PostMessage>(
-      this.domain + 'posts/user/' + username + '/page/' + page,
-      { headers: headers }
+  getUserPosts(username: string, page: number): Observable<GetPostsResponse> {
+    return this.http.get<GetPostsResponse>(
+      API_URL + 'posts/user/' + username + '/page/' + page
     );
   }
 
-  getUserPostCount(username: string): Observable<PostMessage> {
-    let headers = this.authService.createHeaders();
-    return this.http.get<PostMessage>(
-      this.domain + 'posts/user/' + username + '/count',
-      { headers: headers }
+  getUserPostCount(username: string): Observable<GetCountResponse> {
+    return this.http.get<GetCountResponse>(
+      API_URL + 'posts/user/' + username + '/count'
     );
   }
 
-  getPopular(): Observable<PostMessage> {
-    let headers = this.authService.createHeaders();
-    return this.http.get<PostMessage>(this.domain + 'posts/popular', {
-      headers: headers
-    });
+  getPopular(): Observable<GetPostsResponse> {
+    return this.http.get<GetPostsResponse>(API_URL + 'posts/popular');
   }
 
-  getLikes(id: string, page: number): Observable<PostMessage> {
-    let headers = this.authService.createAuthenticationHeaders();
-    return this.http.get<PostMessage>(
-      this.domain +
+  getLikes(id: string, page: number): Observable<GetLikesResponse> {
+    return this.http.get<GetLikesResponse>(
+      API_URL +
         'posts/likes/' +
         id +
         '/page/' +
         page +
         '/' +
-        this.likesPerPage.toString(),
-      { headers: headers }
+        likesPerPage.toString()
     );
   }
 
-  likePost(id: string): Observable<PostMessage> {
-    let headers = this.authService.createAuthenticationHeaders();
-    return this.http.put<PostMessage>(
-      this.domain + 'posts/like',
-      { id: id },
-      { headers: headers }
-    );
+  likePost(id: string): Observable<Notification> {
+    return this.http.put<Notification>(API_URL + 'posts/like', { id: id });
   }
 
-  getDislikes(id: string, page: number): Observable<PostMessage> {
-    let headers = this.authService.createAuthenticationHeaders();
-    return this.http.get<PostMessage>(
-      this.domain +
+  getDislikes(id: string, page: number): Observable<GetDisikesResponse> {
+    return this.http.get<GetDisikesResponse>(
+      API_URL +
         'posts/dislikes/' +
         id +
         '/page/' +
         page +
         '/' +
-        this.likesPerPage.toString(),
-      { headers: headers }
+        likesPerPage.toString()
     );
   }
 
-  dislikePost(id: string): Observable<PostMessage> {
-    let headers = this.authService.createAuthenticationHeaders();
-    return this.http.put<PostMessage>(
-      this.domain + 'posts/dislike',
-      { id: id },
-      { headers: headers }
-    );
+  dislikePost(id: string): Observable<Notification> {
+    return this.http.put<Notification>(API_URL + 'posts/dislike', { id: id });
   }
 
-  editPost(post): Observable<PostMessage> {
-    let headers = this.authService.createAuthenticationHeaders();
-    return this.http.put<PostMessage>(this.domain + 'posts/update/', post, {
-      headers: headers
-    });
+  editPost(post: EditPostRequest): Observable<Notification> {
+    return this.http.put<Notification>(API_URL + 'posts/update/', post);
   }
 
-  deletePost(id: string): Observable<PostMessage> {
-    let headers = this.authService.createAuthenticationHeaders();
-    return this.http.delete<PostMessage>(this.domain + 'posts/delete/' + id, {
-      headers: headers
-    });
+  deletePost(id: string): Observable<Notification> {
+    return this.http.delete<Notification>(API_URL + 'posts/delete/' + id);
   }
 
-  postComment(comment): Observable<PostMessage> {
-    let headers = this.authService.createAuthenticationHeaders();
-    return this.http.post<PostMessage>(
-      this.domain + 'comments/newComment',
-      comment,
-      { headers: headers }
-    );
-  }
-
-  postReply(reply): Observable<PostMessage> {
-    let headers = this.authService.createAuthenticationHeaders();
-    return this.http.post<PostMessage>(
-      this.domain + 'comments/newReply',
-      reply,
-      { headers: headers }
+  postComment(comment: PostCommentRequest): Observable<PostCommentResponse> {
+    return this.http.post<PostCommentResponse>(
+      API_URL + 'comments/newComment',
+      comment
     );
   }
 
   getComments(
     post_id: string,
     before = Date.now(),
-    limit = this.commentsPerPage
-  ): Observable<PostMessage> {
-    let headers = this.authService.createHeaders();
-    return this.http.post<PostMessage>(
-      this.domain + 'comments/getComments/' + post_id,
-      { before: before, limit: limit },
-      { headers: headers }
+    limit = commentsPerPage
+  ): Observable<GetCommentsResponse> {
+    return this.http.post<GetCommentsResponse>(
+      API_URL + 'comments/getComments/' + post_id,
+      { before: before, limit: limit }
+    );
+  }
+
+  getCommentCount(id: string): Observable<GetCountResponse> {
+    return this.http.get<GetCountResponse>(API_URL + 'comments/count/' + id);
+  }
+
+  deleteComment(id: string): Observable<Notification> {
+    return this.http.delete<Notification>(API_URL + 'comments/delete/' + id);
+  }
+
+  postReply(reply: PostReplyRequest): Observable<PostCommentResponse> {
+    return this.http.post<PostCommentResponse>(
+      API_URL + 'comments/newReply',
+      reply
     );
   }
 
   getReplies(
     comment_id: string,
     before = Date.now(),
-    limit = this.commentsPerPage
-  ): Observable<PostMessage> {
-    let headers = this.authService.createHeaders();
-    return this.http.post<PostMessage>(
-      this.domain + 'comments/getReplies/' + comment_id,
-      { before: before, limit: limit },
-      { headers: headers }
+    limit = commentsPerPage
+  ): Observable<GetCommentsResponse> {
+    return this.http.post<GetCommentsResponse>(
+      API_URL + 'comments/getReplies/' + comment_id,
+      { before: before, limit: limit }
     );
   }
 
-  getCommentCount(id: string): Observable<PostMessage> {
-    let headers = this.authService.createHeaders();
-    return this.http.get<PostMessage>(this.domain + 'comments/count/' + id, {
-      headers: headers
-    });
+  getBookmarkCount(): Observable<GetCountResponse> {
+    return this.http.get<GetCountResponse>(API_URL + 'users/bookmark/count');
   }
 
-  deleteComment(id: string): Observable<PostMessage> {
-    let headers = this.authService.createAuthenticationHeaders();
-    return this.http.delete<PostMessage>(
-      this.domain + 'comments/delete/' + id,
-      { headers: headers }
-    );
-  }
-
-  getBookmarkCount(): Observable<PostMessage> {
-    let headers = this.authService.createAuthenticationHeaders();
-    return this.http.get<PostMessage>(this.domain + 'users/bookmark/count', {
-      headers: headers
-    });
-  }
-
-  getBookmarks(page: number): Observable<PostMessage> {
-    let headers = this.authService.createAuthenticationHeaders();
-    return this.http.get<PostMessage>(
-      this.domain +
-        'users/bookmark/page/' +
-        page +
-        '/' +
-        this.postsPerPage.toString(),
-      { headers: headers }
+  getBookmarks(page: number): Observable<GetPostsResponse> {
+    return this.http.get<GetPostsResponse>(
+      API_URL + 'users/bookmark/page/' + page + '/' + postsPerPage.toString()
     );
   }
 }

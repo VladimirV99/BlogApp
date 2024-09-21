@@ -1,31 +1,47 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators
+} from '@angular/forms';
 
-import User from 'src/app/models/user';
-import Message from 'src/app/models/message';
-import Post from 'src/app/models/post';
+import { Post } from '../../models/post';
+import { User } from '../../models/user';
+import { BasicComment } from '../../models/comment';
+import { Notification } from '../../models/message';
+import { AuthService } from '../../services/auth.service';
 import { PostService } from '../../services/post.service';
+import { RepliesComponent } from '../replies/replies.component';
+
+interface CommentFormValue {
+  comment: string;
+}
 
 @Component({
   selector: 'app-comments',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, RepliesComponent],
   templateUrl: './comments.component.html',
-  styleUrls: ['./comments.component.scss', '../../post.scss']
+  styleUrls: ['./comments.component.scss', '../../styles/post.scss']
 })
 export class CommentsComponent implements OnInit {
-  @Input('post') post: Post;
-  @Input('user') user: User;
+  @Input({ required: true }) post!: Post;
+  @Input({ required: true }) user!: User;
 
-  @Output() message = new EventEmitter<Message>();
+  @Output() notification = new EventEmitter<Notification>();
   @Output() refresh = new EventEmitter<number>();
 
   commentForm: FormGroup;
-  processingComment: boolean = false;
 
   totalComments: number = 0;
+  comments: BasicComment[] = [];
   loadedComments: number = 0;
 
   constructor(
     private formBuilder: FormBuilder,
+    public authService: AuthService,
     private postService: PostService
   ) {
     this.commentForm = this.formBuilder.group({
@@ -37,66 +53,59 @@ export class CommentsComponent implements OnInit {
   }
 
   loadComments() {
-    this.postService.getCommentCount(this.post._id).subscribe(data => {
-      if (!data.success) {
-        this.message.emit({ success: false, message: data.message });
-      } else {
+    this.postService.getCommentCount(this.post._id).subscribe({
+      next: data => {
         this.totalComments = data.count;
         this.refresh.emit(this.totalComments);
         if (this.totalComments > 0) {
           let before =
-            this.post && this.post.comments && this.post.comments.length > 0
-              ? Date.parse(
-                  this.post.comments[this.post.comments.length - 1].createdAt
-                )
+            this.comments && this.comments.length > 0
+              ? Date.parse(this.comments[this.comments.length - 1].createdAt)
               : Date.now();
-          this.postService
-            .getComments(this.post._id, before)
-            .subscribe(data => {
-              if (!data.success) {
-                this.message.emit({ success: false, message: data.message });
+          this.postService.getComments(this.post._id, before).subscribe({
+            next: data => {
+              if (data.comments.length == 0) {
+                this.loadedComments = this.totalComments;
               } else {
-                if (data.comments.length == 0) {
-                  this.loadedComments = this.totalComments;
-                } else {
-                  this.post.comments = this.post.comments.concat(data.comments);
-                  this.loadedComments += data.comments.length;
-                }
+                this.comments = this.comments.concat(data.comments);
+                this.loadedComments += data.comments.length;
               }
-            });
+            },
+            error: err => {
+              this.notification.emit({ success: false, message: err.message });
+            }
+          });
         }
+      },
+      error: err => {
+        this.notification.emit({ success: false, message: err.message });
       }
     });
   }
 
-  disableCommentForm() {
-    this.commentForm.controls['comment'].disable();
-  }
-
-  enableCommentForm() {
-    this.commentForm.controls['comment'].enable();
-  }
-
   onCommentSubmit() {
-    this.processingComment = true;
-    this.disableCommentForm();
+    this.commentForm.disable();
 
+    const formValue = this.commentForm.value as CommentFormValue;
     const comment = {
       parent_post: this.post._id,
-      comment: this.commentForm.get('comment').value
+      comment: formValue.comment
     };
 
-    this.postService.postComment(comment).subscribe(data => {
-      if (!data.success) {
-        this.message.emit({ success: false, message: data.message });
-      } else {
-        this.message.emit({ success: true, message: data.message });
+    this.postService.postComment(comment).subscribe({
+      next: data => {
+        this.notification.emit({ success: true, message: data.message });
         data.comment.createdBy = this.user;
-        this.post.comments.unshift(data.comment);
+        this.totalComments++;
+        this.comments.unshift(data.comment);
+
+        this.commentForm.reset();
+        this.commentForm.enable();
+      },
+      error: err => {
+        this.notification.emit({ success: false, message: err.message });
+        this.commentForm.enable();
       }
-      this.processingComment = false;
-      this.commentForm.get('comment').reset();
-      this.enableCommentForm();
     });
   }
 

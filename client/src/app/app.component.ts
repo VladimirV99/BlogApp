@@ -1,15 +1,21 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterOutlet } from '@angular/router';
+
 import { UiService } from './services/ui.service';
+import { NavbarComponent } from './layout/navbar/navbar.component';
 
 @Component({
   selector: 'app-root',
+  standalone: true,
+  imports: [CommonModule, NavbarComponent, RouterOutlet],
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrl: './app.component.scss'
 })
 export class AppComponent {
   constructor(public uiService: UiService) {}
 
-  hasParentWithId(element: Element, id: string): boolean {
+  hasParentWithId(element: Element | null, id: string): boolean {
     while (element != null) {
       if (element.id == id) return true;
       element = element.parentElement;
@@ -17,7 +23,7 @@ export class AppComponent {
     return false;
   }
 
-  closeDropdowns(event): boolean {
+  closeDropdowns(event: any): boolean {
     this.uiService.getDropdowns().forEach(element => {
       if (
         element.open &&

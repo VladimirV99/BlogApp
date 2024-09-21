@@ -1,35 +1,41 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, Validators, FormGroup } from '@angular/forms';
+import { Component, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators
+} from '@angular/forms';
 
+import { EditorComponent } from '../../components/editor/editor.component';
 import { PostService } from '../../services/post.service';
-import { ValidateService } from '../../services/validate.service';
-import { EditorComponent } from 'src/app/components/editor/editor.component';
+import { ValidationService } from '../../services/validation.service';
 
-import { makeHtml } from '../../libs/markdown.node';
+export interface CreatePostRequest {
+  title: string;
+  body: string;
+}
 
 @Component({
   selector: 'app-write',
+  standalone: true,
+  imports: [CommonModule, EditorComponent, ReactiveFormsModule],
   templateUrl: './write.component.html',
-  styleUrls: ['./write.component.scss', '../../form-validation.scss']
+  styleUrls: ['./write.component.scss', '../../styles/form-validation.scss']
 })
-export class WriteComponent implements OnInit {
-  @ViewChild('editor', { static: false }) editor: EditorComponent;
+export class WriteComponent {
+  @ViewChild('editor', { static: false }) editor!: EditorComponent;
 
+  // TODO: Notification service
   message: string = '';
   messageClass: string = '';
 
   writeForm: FormGroup;
-  processing: boolean = false;
-
-  convertedText: string = '';
-
-  tabWriteActive: boolean = true;
-  tabPreviewActive: boolean = !this.tabWriteActive;
 
   constructor(
     private formBuilder: FormBuilder,
     private postService: PostService,
-    private validateService: ValidateService
+    private validationService: ValidationService
   ) {
     this.writeForm = this.formBuilder.group({
       title: [
@@ -38,7 +44,7 @@ export class WriteComponent implements OnInit {
           Validators.required,
           Validators.maxLength(60),
           Validators.minLength(1),
-          this.validateService.validateTitle
+          this.validationService.validateTitle
         ])
       ],
       body: [
@@ -52,42 +58,26 @@ export class WriteComponent implements OnInit {
     });
   }
 
-  disableForm(): void {
-    this.writeForm.controls['title'].disable();
-    this.writeForm.controls['body'].disable();
-  }
-
-  enableForm(): void {
-    this.writeForm.controls['title'].enable();
-    this.writeForm.controls['body'].enable();
-  }
-
   onWriteSubmit(): void {
-    this.processing = true;
-    this.disableForm();
+    this.writeForm.disable();
 
-    const post = {
-      title: this.writeForm.get('title').value,
-      body: this.writeForm.get('body').value
-    };
+    const post: CreatePostRequest = this.writeForm.value;
+    this.postService.createPost(post).subscribe({
+      next: data => {
+        this.messageClass = 'alert-success';
+        this.message = 'Post Saved!';
 
-    this.postService.newPost(post).subscribe(data => {
-      if (!data.success) {
-        this.messageClass = 'alert alert-danger';
-        this.message = data.message;
-      } else {
-        this.messageClass = 'alert alert-success';
-        this.message = data.message;
+        this.editor.reset();
+        this.writeForm.reset();
+        this.writeForm.enable();
+      },
+      error: err => {
+        this.messageClass = 'alert-danger';
+        this.message = err.error.message;
+        this.writeForm.enable();
       }
-      this.editor.reset();
-      this.writeForm.controls['title'].reset();
-      this.writeForm.controls['body'].reset();
-      this.processing = false;
-      this.enableForm();
     });
   }
-
-  ngOnInit() {}
 
   dismissAlert(): void {
     this.message = '';

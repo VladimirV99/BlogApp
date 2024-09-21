@@ -1,13 +1,12 @@
 <div *ngIf="!deleted">
   <div class="comment">
-    <div class="row mx-2">
+    <div class="comment-header mx-2">
       <div class="profile-photo-container">
         <img
           class="profile-photo"
           [ngClass]="{ round: uiService.getRoundIcons() }"
           [src]="
-            authService.getDomain() + comment.createdBy.photo ||
-            uiService.noPhoto()
+            uiService.getPhoto(comment.createdBy.photo) || uiService.noPhoto()
           "
           alt="Profile Photo"
         />
@@ -18,7 +17,7 @@
         </strong>
         <footer>
           <small>
-            Posted on: {{ comment.createdAt | date: 'HH:mm MMM dd, yyyy' }}
+            Posted on: {{ comment.createdAt | date : 'HH:mm MMM dd, yyyy' }}
           </small>
         </footer>
       </div>
@@ -32,7 +31,11 @@
 
     <div class="comment-footer">
       <button
-        *ngIf="authService.loggedIn() && user && user._id == postCreator._id"
+        *ngIf="
+          authService.loggedIn() &&
+          user &&
+          (user._id == postCreator._id || user._id == comment.createdBy._id)
+        "
         class="btn btn-sm btn-danger comment-button"
         (click)="deleteComment()"
       >
@@ -41,6 +44,7 @@
       <button
         class="btn btn-sm btn-primary comment-button"
         (click)="toggleReplyForm()"
+        *ngIf="authService.loggedIn()"
       >
         Reply
       </button>
@@ -95,7 +99,7 @@
 
       <button
         *ngIf="replies.length < comment.replies"
-        class="btn btn-primary btn-block mb-2"
+        class="btn btn-primary w-100 mb-2"
         (click)="loadReplies()"
       >
         Load More Replies

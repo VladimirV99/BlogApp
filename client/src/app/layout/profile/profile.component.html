@@ -1,7 +1,7 @@
 <div class="row">
   <div class="col-md-10 offset-md-1">
     <div
-      class="alert show"
+      class="alert alert-dismissible"
       [ngClass]="messageClass"
       [class.d-none]="!message"
       role="alert"
@@ -9,12 +9,10 @@
       {{ message }}
       <button
         type="button"
-        class="close"
+        class="btn-close"
         aria-label="Close"
         (click)="dismissAlert()"
-      >
-        <span aria-hidden="true">&times;</span>
-      </button>
+      ></button>
     </div>
   </div>
 </div>
@@ -31,7 +29,7 @@
         class="profile-photo mb-3"
         [ngClass]="{ round: uiService.getRoundIcons() }"
       />
-      <label class="btn btn-secondary w-100">
+      <label class="btn btn-secondary w-100 mb-3">
         Select photo<input
           type="file"
           style="display: none"
@@ -43,7 +41,7 @@
       <input
         [disabled]="!photoUpdateForm.valid"
         type="submit"
-        class="btn btn-success w-100"
+        class="btn btn-success w-100 mb-3"
         value="Save"
       />
     </form>
@@ -53,15 +51,15 @@
   <div class="col-sm-7 mb-3">
     <h3 class="text-center">Update Profile</h3>
     <form [formGroup]="profileUpdateForm" (submit)="onProfileUpdateSubmit()">
-      <div class="form-row">
+      <div class="row mb-3">
         <div class="col-md-6">
-          <label for="first_name">First Name</label>
+          <label for="first_name" class="form-label">First Name</label>
           <div
             [ngClass]="{
               'has-error':
-                profileUpdateForm.controls.first_name.dirty &&
-                profileUpdateForm.controls.first_name.errors,
-              'has-success': !profileUpdateForm.controls.first_name.errors
+                profileUpdateForm.controls['first_name'].dirty &&
+                profileUpdateForm.controls['first_name'].errors,
+              'has-success': !profileUpdateForm.controls['first_name'].errors
             }"
           >
             <input
@@ -69,34 +67,33 @@
               name="first_name"
               class="form-control"
               autocomplete="off"
-              placeholder="*First Name"
               formControlName="first_name"
             />
 
             <ul class="help-block validation-feedback">
               <li
                 *ngIf="
-                  profileUpdateForm.controls.first_name.dirty &&
-                  profileUpdateForm.controls.first_name.errors?.required
-                "
+                    profileUpdateForm.controls['first_name'].dirty &&
+                    profileUpdateForm.controls['first_name'].errors?.['required']
+                  "
                 class="message-error"
               >
                 This field is required
               </li>
               <li
                 *ngIf="
-                  profileUpdateForm.controls.first_name.dirty &&
-                  profileUpdateForm.controls.first_name.errors?.maxlength
-                "
+                    profileUpdateForm.controls['first_name'].dirty &&
+                    profileUpdateForm.controls['first_name'].errors?.['maxlength']
+                  "
                 class="message-error"
               >
                 Maximum characters: 15
               </li>
               <li
                 *ngIf="
-                  profileUpdateForm.controls.first_name.dirty &&
-                  profileUpdateForm.controls.first_name.errors?.validateName
-                "
+                    profileUpdateForm.controls['first_name'].dirty &&
+                    profileUpdateForm.controls['first_name'].errors?.['validateName']
+                  "
                 class="message-error"
               >
                 First name must not have any special characters
@@ -106,13 +103,13 @@
         </div>
 
         <div class="col-md-6">
-          <label for="last_name">Last Name</label>
+          <label for="last_name" class="form-label">Last Name</label>
           <div
             [ngClass]="{
               'has-error':
-                profileUpdateForm.controls.last_name.dirty &&
-                profileUpdateForm.controls.last_name.errors,
-              'has-success': !profileUpdateForm.controls.last_name.errors
+                profileUpdateForm.controls['last_name'].dirty &&
+                profileUpdateForm.controls['last_name'].errors,
+              'has-success': !profileUpdateForm.controls['last_name'].errors
             }"
           >
             <input
@@ -120,34 +117,33 @@
               name="last_name"
               class="form-control"
               autocomplete="off"
-              placeholder="*Last Name"
               formControlName="last_name"
             />
 
             <ul class="help-block validation-feedback">
               <li
                 *ngIf="
-                  profileUpdateForm.controls.last_name.dirty &&
-                  profileUpdateForm.controls.last_name.errors?.required
-                "
+                    profileUpdateForm.controls['last_name'].dirty &&
+                    profileUpdateForm.controls['last_name'].errors?.['required']
+                  "
                 class="message-error"
               >
                 This field is required
               </li>
               <li
                 *ngIf="
-                  profileUpdateForm.controls.last_name.dirty &&
-                  profileUpdateForm.controls.last_name.errors?.maxlength
-                "
+                    profileUpdateForm.controls['last_name'].dirty &&
+                    profileUpdateForm.controls['last_name'].errors?.['maxlength']
+                  "
                 class="message-error"
               >
                 Maximum characters: 15
               </li>
               <li
                 *ngIf="
-                  profileUpdateForm.controls.last_name.dirty &&
-                  profileUpdateForm.controls.last_name.errors?.validateName
-                "
+                    profileUpdateForm.controls['last_name'].dirty &&
+                    profileUpdateForm.controls['last_name'].errors?.['validateName']
+                  "
                 class="message-error"
               >
                 Last name must not have any special characters
@@ -157,16 +153,16 @@
         </div>
       </div>
 
-      <div class="form-group">
-        <label for="email">Email</label>
+      <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
         <div
           [ngClass]="{
             'has-error':
-              profileUpdateForm.controls.email.dirty &&
-              (profileUpdateForm.controls.email.errors ||
+              profileUpdateForm.controls['email'].dirty &&
+              (profileUpdateForm.controls['email'].errors ||
                 (emailChecked && !emailValid)),
             'has-success':
-              !profileUpdateForm.controls.email.errors &&
+              !profileUpdateForm.controls['email'].errors &&
               (!emailChecked || (emailChecked && emailValid))
           }"
         >
@@ -175,7 +171,6 @@
             name="email"
             class="form-control"
             autocomplete="off"
-            placeholder="*Email"
             formControlName="email"
             (keyup)="checkEmail()"
           />
@@ -183,28 +178,28 @@
           <ul class="help-block validation-feedback">
             <li
               *ngIf="
-                profileUpdateForm.controls.email.dirty &&
-                profileUpdateForm.controls.email.errors?.required
-              "
+                  profileUpdateForm.controls['email'].dirty &&
+                  profileUpdateForm.controls['email'].errors?.['required']
+                "
               class="message-error"
             >
               This field is required
             </li>
             <li
               *ngIf="
-                profileUpdateForm.controls.email.dirty &&
-                (profileUpdateForm.controls.email.errors?.minlength ||
-                  profileUpdateForm.controls.email.errors?.maxlength)
-              "
+                  profileUpdateForm.controls['email'].dirty &&
+                  (profileUpdateForm.controls['email'].errors?.['minlength'] ||
+                    profileUpdateForm.controls['email'].errors?.['maxlength'])
+                "
               class="message-error"
             >
               Minimum characters: 5, Maximum characters: 30
             </li>
             <li
               *ngIf="
-                profileUpdateForm.controls.email.dirty &&
-                profileUpdateForm.controls.email.errors?.validateEmail
-              "
+                  profileUpdateForm.controls['email'].dirty &&
+                  profileUpdateForm.controls['email'].errors?.['validateEmail']
+                "
               class="message-error"
             >
               This must be a valid e-mail
@@ -222,11 +217,9 @@
         </div>
       </div>
       <input
-        [disabled]="
-          !profileUpdateForm.valid || processingProfileUpdate || !emailValid
-        "
+        [disabled]="!profileUpdateForm.valid || !emailValid"
         type="submit"
-        class="btn btn-success btn-block"
+        class="btn btn-success w-100"
         value="Update profile"
       />
     </form>
@@ -234,14 +227,14 @@
 
     <h3 class="text-center">Change Password</h3>
     <form [formGroup]="passwordChangeForm" (submit)="onPasswordChangeSubmit()">
-      <div class="form-group">
-        <label for="old_password">Old Password</label>
+      <div class="mb-3">
+        <label for="old_password" class="form-label">Old Password</label>
         <div
           [ngClass]="{
             'has-error':
-              passwordChangeForm.controls.old_password.dirty &&
-              passwordChangeForm.controls.old_password.errors,
-            'has-success': !passwordChangeForm.controls.old_password.errors
+              passwordChangeForm.controls['old_password'].dirty &&
+              passwordChangeForm.controls['old_password'].errors,
+            'has-success': !passwordChangeForm.controls['old_password'].errors
           }"
         >
           <input
@@ -249,16 +242,15 @@
             name="old_password"
             class="form-control"
             autocomplete="off"
-            placeholder="*Old Password"
             formControlName="old_password"
           />
 
           <ul class="help-block validation-feedback">
             <li
               *ngIf="
-                passwordChangeForm.controls.old_password.dirty &&
-                passwordChangeForm.controls.old_password.errors?.required
-              "
+                  passwordChangeForm.controls['old_password'].dirty &&
+                  passwordChangeForm.controls['old_password'].errors?.['required']
+                "
               class="message-error"
             >
               This field is required
@@ -267,14 +259,14 @@
         </div>
       </div>
 
-      <div class="form-group">
-        <label for="new_password">New Password</label>
+      <div class="mb-3">
+        <label for="new_password" class="form-label">New Password</label>
         <div
           [ngClass]="{
             'has-error':
-              passwordChangeForm.controls.new_password.dirty &&
-              passwordChangeForm.controls.new_password.errors,
-            'has-success': !passwordChangeForm.controls.new_password.errors
+              passwordChangeForm.controls['new_password'].dirty &&
+              passwordChangeForm.controls['new_password'].errors,
+            'has-success': !passwordChangeForm.controls['new_password'].errors
           }"
         >
           <input
@@ -282,36 +274,34 @@
             name="new_password"
             class="form-control"
             autocomplete="off"
-            placeholder="*New Password"
             formControlName="new_password"
           />
 
           <ul class="help-block validation-feedback">
             <li
               *ngIf="
-                passwordChangeForm.controls.new_password.dirty &&
-                passwordChangeForm.controls.new_password.errors?.required
-              "
+                  passwordChangeForm.controls['new_password'].dirty &&
+                  passwordChangeForm.controls['new_password'].errors?.['required']
+                "
               class="message-error"
             >
               This field is required
             </li>
             <li
               *ngIf="
-                passwordChangeForm.controls.new_password.dirty &&
-                (passwordChangeForm.controls.new_password.errors?.minlength ||
-                  passwordChangeForm.controls.new_password.errors?.maxlength)
-              "
+                  passwordChangeForm.controls['new_password'].dirty &&
+                  (passwordChangeForm.controls['new_password'].errors?.['minlength'] ||
+                    passwordChangeForm.controls['new_password'].errors?.['maxlength'])
+                "
               class="message-error"
             >
               Minimum characters: 8, Maximum characters: 35
             </li>
             <li
               *ngIf="
-                passwordChangeForm.controls.new_password.dirty &&
-                passwordChangeForm.controls.new_password.errors
-                  ?.validatePassword
-              "
+                  passwordChangeForm.controls['new_password'].dirty &&
+                  passwordChangeForm.controls['new_password'].errors?.['validatePassword']
+                "
               class="message-error"
             >
               Password must be at least 8 characters but no more than 35
@@ -320,44 +310,45 @@
         </div>
       </div>
 
-      <div class="form-group">
-        <label for="new_password_confirm">Confirm New Password</label>
+      <div class="mb-3">
+        <label for="new_password_confirm" class="form-label"
+          >Confirm New Password</label
+        >
         <div
           [ngClass]="{
-            'has-error':
-              passwordChangeForm.controls.new_password_confirm.dirty &&
-              (passwordChangeForm.controls.new_password_confirm.errors ||
-                passwordChangeForm.errors?.matchingPasswords),
-            'has-success':
-              !passwordChangeForm.controls.new_password_confirm.errors &&
-              !passwordChangeForm.errors?.matchingPasswords
-          }"
+              'has-error':
+                passwordChangeForm.controls['new_password_confirm'].dirty &&
+                (passwordChangeForm.controls['new_password_confirm'].errors ||
+                  passwordChangeForm.errors?.['matchingPasswords']),
+              'has-success':
+                !passwordChangeForm.controls['new_password_confirm'].errors &&
+                !passwordChangeForm.errors?.['matchingPasswords']
+            }"
         >
           <input
             type="password"
             name="new_password_confirm"
             class="form-control"
             autocomplete="off"
-            placeholder="*Confirm Password"
             formControlName="new_password_confirm"
           />
 
           <ul class="help-block validation-feedback">
             <li
               *ngIf="
-                passwordChangeForm.controls.new_password_confirm.dirty &&
-                passwordChangeForm.controls.new_password_confirm.errors
-                  ?.required
-              "
+                  passwordChangeForm.controls['new_password_confirm'].dirty &&
+                  passwordChangeForm.controls['new_password_confirm'].errors
+                    ?.['required']
+                "
               class="message-error"
             >
               This field is required
             </li>
             <li
               *ngIf="
-                passwordChangeForm.controls.new_password_confirm.dirty &&
-                passwordChangeForm.errors?.matchingPasswords
-              "
+                  passwordChangeForm.controls['new_password_confirm'].dirty &&
+                  passwordChangeForm.errors?.['matchingPasswords']
+                "
               class="message-error"
             >
               Password do not match
@@ -367,9 +358,9 @@
       </div>
 
       <input
-        [disabled]="!passwordChangeForm.valid || processingPasswordChange"
+        [disabled]="!passwordChangeForm.valid"
         type="submit"
-        class="btn btn-success btn-block"
+        class="btn btn-success w-100"
         value="Change Password"
       />
     </form>
