@@ -14,6 +14,7 @@ import { Notification } from '../../models/message';
 import { AuthService } from '../../services/auth.service';
 import { PostService } from '../../services/post.service';
 import { RepliesComponent } from '../replies/replies.component';
+import { HttpErrorResponse } from '@angular/common/http';
 
 interface CommentFormValue {
   comment: string;
@@ -71,14 +72,17 @@ export class CommentsComponent implements OnInit {
                 this.loadedComments += data.comments.length;
               }
             },
-            error: err => {
-              this.notification.emit({ success: false, message: err.message });
+            error: (err: HttpErrorResponse) => {
+              this.notification.emit({
+                success: false,
+                message: err.error.message
+              });
             }
           });
         }
       },
-      error: err => {
-        this.notification.emit({ success: false, message: err.message });
+      error: (err: HttpErrorResponse) => {
+        this.notification.emit({ success: false, message: err.error.message });
       }
     });
   }
@@ -94,7 +98,7 @@ export class CommentsComponent implements OnInit {
 
     this.postService.postComment(comment).subscribe({
       next: data => {
-        this.notification.emit({ success: true, message: data.message });
+        this.notification.emit({ success: true, message: 'Commend Added' });
         data.comment.createdBy = this.user;
         this.totalComments++;
         this.comments.unshift(data.comment);
@@ -102,8 +106,8 @@ export class CommentsComponent implements OnInit {
         this.commentForm.reset();
         this.commentForm.enable();
       },
-      error: err => {
-        this.notification.emit({ success: false, message: err.message });
+      error: (err: HttpErrorResponse) => {
+        this.notification.emit({ success: false, message: err.error.message });
         this.commentForm.enable();
       }
     });

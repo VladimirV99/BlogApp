@@ -1,9 +1,11 @@
 {
-    "ignore": [
-        ".git",
-        "client",
-        "**/node_modules/**",
-        "README.md",
-        "LICENSE"
-    ]
+  "ignore": [
+    ".git",
+    "build",
+    "client",
+    "**/node_modules/**",
+    "README.md",
+    "LICENSE",
+    "Dockerfile"
+  ]
 }

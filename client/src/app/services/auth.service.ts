@@ -11,8 +11,7 @@ interface AuthMessage {
 }
 
 interface AvailabilityResponse {
-  // TODO: Rename to 'available'
-  success: boolean;
+  available: boolean;
 }
 
 interface AuthResponse {
@@ -26,6 +25,10 @@ interface ProfileResponse {
 
 interface UpdateProfileResponse {
   user: { first_name: string; last_name: string; email: string };
+}
+
+interface UploadPhotoResponse {
+  photo: string;
 }
 
 @Injectable({
@@ -179,23 +182,21 @@ export class AuthService {
   }
 
   // TODO: Move to profile service
-  // TODO: Return Observable<void>
-  changePassword(
-    old_password: string,
-    new_password: string
-  ): Observable<AuthMessage> {
-    return this.http.post<AuthMessage>(API_URL + 'users/changePassword', {
+  changePassword(old_password: string, new_password: string): Observable<void> {
+    return this.http.post<void>(API_URL + 'users/changePassword', {
       old_password,
       new_password
     });
   }
 
   // TODO: Move to profile service
-  // TODO: Return Observable<void>
-  uploadPhoto(photo: File): Observable<AuthMessage> {
+  uploadPhoto(photo: File): Observable<UploadPhotoResponse> {
     const formData = new FormData();
     formData.append('userPhoto', photo, photo.name);
-    return this.http.post<AuthMessage>(API_URL + 'users/uploadPhoto', formData);
+    return this.http.post<UploadPhotoResponse>(
+      API_URL + 'users/uploadPhoto',
+      formData
+    );
   }
 
   getUserProfile(username: string): Observable<ProfileResponse> {

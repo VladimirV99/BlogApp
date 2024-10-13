@@ -108,7 +108,7 @@ export class ProfileComponent implements OnInit {
         new_password_confirm: ['', Validators.required]
       },
       {
-        validator: this.validationService.matchingPasswords(
+        validators: this.validationService.matchingPasswords(
           'new_password',
           'new_password_confirm'
         )
@@ -137,12 +137,11 @@ export class ProfileComponent implements OnInit {
           data.user.last_name,
           data.user.email
         );
+        this.profileUpdateForm.enable();
       },
       error: (err: HttpErrorResponse) => {
         this.messageClass = 'alert-danger';
         this.message = err.error.message;
-      },
-      complete: () => {
         this.profileUpdateForm.enable();
       }
     });
@@ -158,21 +157,20 @@ export class ProfileComponent implements OnInit {
       this.passwordChangeForm.get('new_password') as FormControl<string>
     ).value;
 
-    this.authService
-      .changePassword(old_password, new_password)
-      .subscribe(data => {
-        if (!data.success) {
-          this.messageClass = 'alert-danger';
-          this.message = data.message;
-        } else {
-          this.messageClass = 'alert-success';
-          this.message = data.message;
-        }
-        this.passwordChangeForm.controls['old_password'].reset();
-        this.passwordChangeForm.controls['new_password'].reset();
-        this.passwordChangeForm.controls['new_password_confirm'].reset();
+    this.authService.changePassword(old_password, new_password).subscribe({
+      next: data => {
+        this.messageClass = 'alert-success';
+        this.message = 'Password Changed';
+        this.passwordChangeForm.reset();
         this.passwordChangeForm.enable();
-      });
+      },
+      error: (err: HttpErrorResponse) => {
+        this.messageClass = 'alert-danger';
+        this.message = err.error.message;
+        this.passwordChangeForm.reset();
+        this.passwordChangeForm.enable();
+      }
+    });
   }
 
   checkEmail(): void {
@@ -191,7 +189,7 @@ export class ProfileComponent implements OnInit {
     }
     this.authService.checkEmail(emailControl.value).subscribe(data => {
       this.emailChecked = true;
-      if (!data.success) {
+      if (!data.available) {
         this.emailValid = false;
         this.emailMessage = 'E-mail is already taken';
       } else {
@@ -238,10 +236,9 @@ export class ProfileComponent implements OnInit {
     this.authService.uploadPhoto(this.newPhotoFile).subscribe({
       next: data => {
         this.messageClass = 'alert-success';
-        this.message = data.message;
+        this.message = 'Photo uploaded';
       },
       error: err => {
-        console.log(err);
         this.messageClass = 'alert-danger';
         this.message = err.error.message;
       }

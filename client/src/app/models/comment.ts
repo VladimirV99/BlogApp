@@ -26,7 +26,6 @@ export interface PostCommentRequest {
 }
 
 export interface PostCommentResponse {
-  message: string;
   comment: BasicComment;
 }
 

@@ -26,6 +26,14 @@ export interface CreatePostRequest {
   body: string;
 }
 
+export interface CreatePostResponse {
+  _id: string;
+  title: string;
+  body: string;
+  createdBy: string;
+  createdAt: string;
+}
+
 // TODO: This should not contain likedBy, dislikedBy or comments.
 export interface GetPostsResponse {
   posts: Post[];

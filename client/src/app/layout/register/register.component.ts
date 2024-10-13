@@ -130,7 +130,7 @@ export class RegisterComponent {
     // TODO: Error handling
     this.authService.checkEmail(emailControl.value).subscribe(data => {
       this.emailChecked = true;
-      if (!data.success) {
+      if (!data.available) {
         this.emailValid = false;
         this.emailMessage = 'E-mail is already taken';
       } else {
@@ -155,7 +155,7 @@ export class RegisterComponent {
     // TODO: Error handling
     this.authService.checkUsername(usernameControl.value).subscribe(data => {
       this.usernameChecked = true;
-      if (!data.success) {
+      if (!data.available) {
         this.usernameValid = false;
         this.usernameMessage = 'Username is already taken';
       } else {

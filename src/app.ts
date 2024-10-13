@@ -1,22 +1,24 @@
-const express = require("express");
-const path = require("path");
-const passport = require("passport");
-const mongoose = require("mongoose");
+import express from "express";
+import path from "path";
+import mongoose from "mongoose";
+import passport from "passport";
 
-const config = require("./config/credentials");
-const users = require("./routes/users");
-const posts = require("./routes/posts");
-const comments = require("./routes/comments");
+import * as config from "./config/credentials";
+import passportStrategy from "./config/passport";
+import users from "./routes/users";
+import posts from "./routes/posts";
+import comments from "./routes/comments";
 
-mongoose.connect(config.database, {
-  authSource: "admin",
-});
-mongoose.connection.on("connected", () => {
-  console.log("Connected to database " + config.database);
-});
-mongoose.connection.on("error", (err) => {
-  console.log("Database error " + err);
-});
+mongoose
+  .connect(config.database, {
+    authSource: "admin",
+  })
+  .then(() => {
+    console.log("Connected to database " + config.database);
+  })
+  .catch((err) => {
+    console.log("Database error " + err);
+  });
 
 const app = express();
 
@@ -24,7 +26,7 @@ const port = process.env.PORT || 3000;
 
 /* CORS */
 if (process.env.NODE_ENV !== "production") {
-  app.use(function (req, res, next) {
+  app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "http://localhost:4200");
     res.header(
       "Access-Control-Allow-Headers",
@@ -35,13 +37,12 @@ if (process.env.NODE_ENV !== "production") {
   });
 }
 
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "..", "public")));
 
 app.use(express.json());
 
 app.use(passport.initialize());
-// app.use(passport.session());
-require("./config/passport")(passport);
+passportStrategy(passport);
 
 app.use("/users", users);
 app.use("/posts", posts);

@@ -10,6 +10,7 @@ import {
 } from '../constants/settings';
 import {
   CreatePostRequest,
+  CreatePostResponse,
   EditPostRequest,
   GetDisikesResponse,
   GetLikesResponse,
@@ -38,13 +39,13 @@ export class PostService {
     return commentsPerPage;
   }
 
-  createPost(post: CreatePostRequest): Observable<void> {
-    return this.http.post<void>(API_URL + 'posts/newPost', post);
+  createPost(post: CreatePostRequest): Observable<CreatePostResponse> {
+    return this.http.post<CreatePostResponse>(API_URL + 'posts/newPost', post);
   }
 
   getPosts(page: number): Observable<GetPostsResponse> {
     return this.http.get<GetPostsResponse>(
-      API_URL + 'posts/page/' + page + '/' + postsPerPage.toString()
+      `${API_URL}posts/page/${page}/{postsPerPage}`
     );
   }
 
@@ -62,7 +63,7 @@ export class PostService {
 
   getUserPosts(username: string, page: number): Observable<GetPostsResponse> {
     return this.http.get<GetPostsResponse>(
-      API_URL + 'posts/user/' + username + '/page/' + page
+      `${API_URL}posts/user/${username}/page/${page}/${postsPerPage}`
     );
   }
 
